@@ -14,10 +14,11 @@ namespace TraceDefense.Entities.Search
         /// </summary>
         [JsonProperty("point", Required = Required.Always)]
         public Point Point { get; set; }
+
         /// <summary>
-        /// Geographic radius limit (kilometers)
+        /// Time-space range
         /// </summary>
-        [JsonProperty("radiusKilometers", Required = Required.Always)]
-        public int RadiusKilometers { get; set; }
+        [JsonProperty("range", Required = Required.Always)]
+        public TimeRange Range { get; set; }
     }
 }

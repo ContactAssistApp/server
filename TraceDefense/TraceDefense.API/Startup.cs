@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using TraceDefense.DAL.Repositories;
 
 namespace TraceDefense.API
 {
@@ -28,6 +29,12 @@ namespace TraceDefense.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Configure data repository implementations
+            // TODO: Remove in-memory variants with database repositories
+            services.AddSingleton<IDeviceRegistrationRepository, DeviceRegistrationRepository>();
+            services.AddSingleton<IQueryRepository, QueryRepository>();
+            services.AddSingleton<IRegionRepository, RegionRepository>();
 
             // Add Swagger generator
             services.AddSwaggerGen(c =>

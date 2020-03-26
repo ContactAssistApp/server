@@ -1,53 +1,90 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TraceDefense.API.Models;
 using TraceDefense.API.Models.Trace;
+using TraceDefense.DAL.Repositories;
+using TraceDefense.Entities;
+using TraceDefense.Entities.Geospatial;
 
 namespace TraceDefense.API.Controllers.Trace
 {
     /// <summary>
-    /// Handles <see cref="Entities.Trace"/> query submissions
+    /// Handles trace query submissions
     /// </summary>
     [Route("api/Trace/[controller]")]
     [ApiController]
     public class QueryController : ControllerBase
     {
         /// <summary>
-        /// Submits a query for <see cref="Entities.Trace"/> objects
+        /// <see cref="Query"/> repository
         /// </summary>
-        /// <param name="request">Query request parameters</param>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
-        /// <response code="404">No query results</response>
-        [HttpPut]
+        private IQueryRepository _queryRepo;
+        /// <summary>
+        /// <see cref="RegionRef"/> repository
+        /// </summary>
+        private IRegionRepository _regionRepo;
+
+
+        /// <summary>
+        /// Creates a new <see cref="QueryController"/> instance
+        /// </summary>
+        /// <param name="queryRepo"><see cref="Query"/> repository instance</param>
+        /// <param name="regionRepo"><see cref="RegionRef"/> repository instance</param>
+        public QueryController(IQueryRepository queryRepo, IRegionRepository regionRepo)
+        {
+            // Assign local values
+            this._queryRepo = queryRepo;
+            this._regionRepo = regionRepo;
+        }
+
+        /// <summary>
+        /// Requests possible <see cref="Query"/> identifiers
+        /// </summary>
+        /// <response code="200">Successful request with results</response>
+        /// <response code="400">Malformed or invalid request provided</response>
+        [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(QueryResult), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryResult>> PutAsync([FromBody] QueryRequest request)
+        public async Task<ActionResult<QueryResult>> GetAsync(GetQueriesRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
-            // Validate inputs
-            // JSON library package will make request null if required fields are not met
-            if(request == null)
-            {
-                return BadRequest();
-            }
+            // TODO: Validate inputs
 
             // TODO: Submit query
+            var result = await this._queryRepo.GetQueries(request.queryIds);
 
-            // Process results
             QueryResult results = new QueryResult();
 
-            if(results.Traces.Count() == 0)
-            {
-                return NotFound();
-            }
 
             return Ok(results);
+        }
+
+        /// <summary>
+        /// Submits a request to pull the selected <see cref="Query"/>
+        /// </summary>
+        /// <response code="200">Successful request with results</response>
+        /// <response code="400">Malformed or invalid request provided</response>
+        /// <response code="404">No query matched request</response>
+        [HttpPut]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<ActionResult> PutAsync(PublishQueryRequest request)
+        {
+            CancellationToken ct = new CancellationToken();
+
+            // TODO: Validate inputs
+
+            var regions = await this._regionRepo.GetRegions(request.Area);
+
+            await this._queryRepo.Publish(regions, request.Query);
+
+            return Ok();
         }
     }
 }

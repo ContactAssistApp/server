@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceDefense.API", "TraceDe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceDefense.Entities", "TraceDefense.Entities\TraceDefense.Entities.csproj", "{1142E516-7A78-413C-A98F-4A8DC22CE974}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceDefense.API.Test", "TraceDefense.API.Test\TraceDefense.API.Test.csproj", "{AF31136B-7969-49BE-80E7-51F6035EEA50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceDefense.API.Test", "TraceDefense.API.Test\TraceDefense.API.Test.csproj", "{AF31136B-7969-49BE-80E7-51F6035EEA50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceDefense.DAL", "TraceDefense.DAL\TraceDefense.DAL.csproj", "{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceDefense.DAL", "TraceDefense.DAL\TraceDefense.DAL.csproj", "{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

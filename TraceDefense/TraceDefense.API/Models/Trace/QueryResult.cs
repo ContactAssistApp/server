@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TraceDefense.Entities;
 
 namespace TraceDefense.API.Models.Trace
 {
@@ -7,9 +8,6 @@ namespace TraceDefense.API.Models.Trace
     /// </summary>
     public class QueryResult
     {
-        /// <summary>
-        /// Collection of <see cref="TraceResult"/> objects matching submitted query
-        /// </summary>
-        public IEnumerable<TraceResult> Traces { get; set; }
+        
     }
 }
