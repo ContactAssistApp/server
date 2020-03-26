@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TraceDefense.API.Models
+namespace TraceDefense.API.Models.Trace
 {
     /// <summary>
     /// Base query result object

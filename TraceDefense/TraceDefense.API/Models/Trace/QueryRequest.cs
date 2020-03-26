@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using TraceDefense.Entities.Search;
 
-namespace TraceDefense.API.Models
+namespace TraceDefense.API.Models.Trace
 {
     /// <summary>
     /// Query request
