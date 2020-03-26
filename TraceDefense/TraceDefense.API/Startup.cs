@@ -8,22 +8,34 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories;
+using TraceDefense.DAL.Repositories.CosmosDb;
 
 namespace TraceDefense.API
 {
+    /// <summary>
+    /// Service registration for the web application
+    /// </summary>
     /// <remarks>
     /// Ignores missing documentation warnings.
     /// </remarks>
 #pragma warning disable CS1591
     public class Startup
     {
+        /// <summary>
+        /// Application configuration singleton
+        /// </summary>
+        public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Creates a new <see cref="Startup"/> instance
+        /// </summary>
+        /// <param name="configuration">Application configuration singleton</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -31,9 +43,11 @@ namespace TraceDefense.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Configure data repository implementations
+            services.AddTransient<AzureStorageConnectionFactory>();
+            services.AddSingleton<IQueryRepository, AzureTableQueryRepository>();
+
             // TODO: Remove in-memory variants with database repositories
             services.AddSingleton<IDeviceRegistrationRepository, DeviceRegistrationRepository>();
-            services.AddSingleton<IQueryRepository, QueryRepository>();
             services.AddSingleton<IRegionRepository, RegionRepository>();
 
             // Add Swagger generator
