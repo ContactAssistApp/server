@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TraceDefence.Core\TraceDefence.Core.csproj" />
     <ProjectReference Include="..\TraceDefense.DAL\TraceDefense.DAL.csproj" />
     <ProjectReference Include="..\TraceDefense.Entities\TraceDefense.Entities.csproj" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TraceDefense.Entities;
 
 namespace TraceDefense.API.Models
 {
@@ -7,5 +8,6 @@ namespace TraceDefense.API.Models
     /// </summary>
     public class QueryResult
     {
+        
     }
 }
