@@ -7,9 +7,5 @@ namespace TraceDefense.API.Models
     /// </summary>
     public class QueryResult
     {
-        /// <summary>
-        /// Collection of <see cref="TraceResult"/> objects matching submitted query
-        /// </summary>
-        public IEnumerable<TraceResult> Traces { get; set; }
     }
 }

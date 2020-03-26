@@ -24,9 +24,30 @@ namespace TraceDefense.API.Controllers.Trace
         /// <response code="404">No query results</response>
         [HttpPut]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<ActionResult> PutAsync()
+        {
+            CancellationToken ct = new CancellationToken();
+
+            // TODO: Validate inputs
+
+            // TODO: Upload trace
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Submits a query for <see cref="TraceEvent"/> objects
+        /// </summary>
+        /// <response code="200">Query matched Trace results</response>
+        /// <response code="400">Malformed or invalid query provided</response>
+        /// <response code="404">No query results</response>
+        [HttpGet]
+        [Produces("application/json")]
         [ProducesResponseType(typeof(QueryResult), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryResult>> PutAsync()
+        public async Task<ActionResult<QueryResult>> GetAsync()
         {
             CancellationToken ct = new CancellationToken();
 
@@ -34,11 +55,6 @@ namespace TraceDefense.API.Controllers.Trace
 
             // TODO: Submit query
             QueryResult results = new QueryResult();
-
-            if(results.Traces.Count() == 0)
-            {
-                return NotFound();
-            }
 
             return Ok(results);
         }
