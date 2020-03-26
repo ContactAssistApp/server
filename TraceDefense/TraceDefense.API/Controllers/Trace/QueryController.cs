@@ -10,7 +10,7 @@ using TraceDefense.Entities;
 namespace TraceDefense.API.Controllers.Trace
 {
     /// <summary>
-    /// Handles trace query submissions
+    /// Handles <see cref="TraceEvent"/> query submissions
     /// </summary>
     [Route("api/Trace/[controller]")]
     [ApiController]

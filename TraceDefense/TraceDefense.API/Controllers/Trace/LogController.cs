@@ -1,16 +1,14 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.API.Models;
 using TraceDefense.Entities;
 
 namespace TraceDefense.API.Controllers.Trace
 {
     /// <summary>
-    /// Uploads a new <see cref="TraceEvent"/> entry for a user
+    /// Uploads a new <see cref="TraceEvent"/> entry for a device
     /// </summary>
     [Route("api/Trace/[controller]")]
     [ApiController]
@@ -19,8 +17,9 @@ namespace TraceDefense.API.Controllers.Trace
         /// <summary>
         /// Submits a query for <see cref="TraceEvent"/> objects
         /// </summary>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
+        /// <response code="200"><see cref="TraceEvent"/> successfully submitted</response>
+        /// <response code="400">Malformed or invalid <see cref="TraceEvent"/> provided</response>
+        /// <response code="404">Invalid or unknown device identifier presented</response>
         [HttpPut]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
