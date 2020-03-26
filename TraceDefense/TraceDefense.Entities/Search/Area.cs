@@ -10,15 +10,23 @@ namespace TraceDefense.Entities.Search
     public class Area
     {
         /// <summary>
-        /// Geographic point in time
+        /// First corner of search region
         /// </summary>
-        [JsonProperty("point", Required = Required.Always)]
-        public Point Point { get; set; }
+        [JsonProperty("first", Required = Required.Always)]
+        public Location First { get; set; }
+
 
         /// <summary>
-        /// Time-space range
+        /// Second corner of search region
+        /// </summary>
+        [JsonProperty("second", Required = Required.Always)]
+        public Location Second { get; set; }
+
+
+        /// <summary>
+        /// Time range
         /// </summary>
         [JsonProperty("range", Required = Required.Always)]
-        public TimeRange Range { get; set; }
+        public TimeRange TimeRange { get; set; }
     }
 }

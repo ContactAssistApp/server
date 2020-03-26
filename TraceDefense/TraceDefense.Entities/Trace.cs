@@ -13,7 +13,7 @@ namespace TraceDefense.Entities
         /// Geographic location of event
         /// </summary>
         [JsonProperty("coordinates", Required = Required.Always)]
-        public Coordinate Coordinates { get; set; }
+        public Location Coordinates { get; set; }
         /// <summary>
         /// Device identifier which generated this event
         /// </summary>
