@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.API.Models;
-using TraceDefense.Entities;
+using TraceDefense.API.Models.Trace;
 
 namespace TraceDefense.API.Controllers.Trace
 {
@@ -19,6 +18,7 @@ namespace TraceDefense.API.Controllers.Trace
         /// <summary>
         /// Submits a query for <see cref="Entities.Trace"/> objects
         /// </summary>
+        /// <param name="request">Query request parameters</param>
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
         /// <response code="404">No query results</response>

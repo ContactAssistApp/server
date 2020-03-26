@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.Entities;
 
 namespace TraceDefense.API.Controllers.Trace
 {
@@ -17,6 +16,7 @@ namespace TraceDefense.API.Controllers.Trace
         /// <summary>
         /// Submits a query for <see cref="Entities.Trace"/> objects
         /// </summary>
+        /// <param name="traceEvent">Trace event parameters</param>
         /// <response code="200"><see cref="Entities.Trace"/> successfully submitted</response>
         /// <response code="400">Malformed or invalid <see cref="Entities.Trace"/> provided</response>
         /// <response code="404">Invalid or unknown device identifier presented</response>
