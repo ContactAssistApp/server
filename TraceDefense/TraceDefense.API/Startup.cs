@@ -34,15 +34,14 @@ namespace TraceDefense.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Description = "API for communicating between TraceDefense client apps and the backend data processors.",
-                    Title = "TraceDefense",
+                    Description = "API enabling CovidSafe client applications to communicate with backend services.",
+                    Title = "CovidSafe",
                     Version = "v1"
                 });
 
-                var xmlPath = Path.Combine(
-                    AppContext.BaseDirectory,
-                    $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"
-                );
+                // Set the comments path for the Swagger JSON
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
         }
@@ -61,6 +60,9 @@ namespace TraceDefense.API
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            // Add Swagger UI
+            app.UseSwagger();
         }
     }
 #pragma warning restore CS1591

@@ -23,6 +23,7 @@ namespace TraceDefense.API.Controllers.Trace
         /// <response code="400">Malformed or invalid query provided</response>
         /// <response code="404">No query results</response>
         [HttpPut]
+        [Produces("application/json")]
         [ProducesResponseType(typeof(QueryResult), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<QueryResult>> PutAsync()
