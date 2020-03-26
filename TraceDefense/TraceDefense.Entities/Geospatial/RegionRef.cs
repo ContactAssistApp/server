@@ -6,6 +6,10 @@ namespace TraceDefense.Entities.Geospatial
 {
     public class RegionRef
     {
-        public int Id { get; set; }
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
+        public int T { get; set; }
     }
 }
