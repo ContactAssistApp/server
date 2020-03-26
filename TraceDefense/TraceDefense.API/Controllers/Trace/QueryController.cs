@@ -47,31 +47,6 @@ namespace TraceDefense.API.Controllers.Trace
         /// <response code="400">Malformed or invalid request provided</response>
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(QueryResult), StatusCodes.Status200OK)]
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryResult>> GetAsync(GetQueriesRequest request)
-        {
-            CancellationToken ct = new CancellationToken();
-
-            // TODO: Validate inputs
-
-            // TODO: Submit query
-            var result = await this._queryRepo.GetQueries(request.queryIds);
-
-            QueryResult results = new QueryResult();
-
-
-            return Ok(results);
-        }
-
-        /// <summary>
-        /// Submits a request to pull the selected <see cref="Query"/>
-        /// </summary>
-        /// <response code="200">Successful request with results</response>
-        /// <response code="400">Malformed or invalid request provided</response>
-        /// <response code="404">No query matched request</response>
-        [HttpPut]
-        [Produces("application/json")]
         [ProducesResponseType(typeof(GetQueriesReponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<GetQueriesReponse>> GetAsync(GetQueriesRequest request)
@@ -87,30 +62,6 @@ namespace TraceDefense.API.Controllers.Trace
 
 
             return Ok(results);
-        }
-
-        /// <summary>
-        /// Submits a query for <see cref="TraceEvent"/> objects
-        /// </summary>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
-        /// <response code="404">No query results</response>
-        [HttpGet]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(GetQueryIdsResponse), StatusCodes.Status200OK)]
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<GetQueryIdsResponse>> GetAsync(GetQueryIdsRequest request)
-        {
-            CancellationToken ct = new CancellationToken();
-
-            // TODO: Validate inputs
-
-            // TODO: Submit query
-            var result = await this._queryRepo.GetQueryIds(request.regions);
-
-            GetQueryIdsResponse results = new GetQueryIdsResponse { QueryIds = result };
-
-            return Ok();
         }
     }
 }
