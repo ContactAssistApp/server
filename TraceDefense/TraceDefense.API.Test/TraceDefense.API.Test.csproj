@@ -18,4 +18,8 @@
     <ProjectReference Include="..\TraceDefense.Entities\TraceDefense.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
