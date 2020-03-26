@@ -14,5 +14,11 @@ namespace TraceDefense.Entities.Search
         /// </summary>
         [JsonProperty("point", Required = Required.Always)]
         public Point Point { get; set; }
+
+        /// <summary>
+        /// Time-space range
+        /// </summary>
+        [JsonProperty("range", Required = Required.Always)]
+        public Range Range { get; set; }
     }
 }
