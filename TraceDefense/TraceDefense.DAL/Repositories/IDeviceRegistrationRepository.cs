@@ -6,7 +6,7 @@ using TraceDefense.Entities.Registration;
 namespace TraceDefense.DAL.Repositories
 {
     /// <summary>
-    /// <see cref="DeviceRegistration"/> repository
+    /// <see cref="DeviceRegistration"/> repository definition
     /// </summary>
     public interface IDeviceRegistrationRepository : IRepository<DeviceRegistration>
     {

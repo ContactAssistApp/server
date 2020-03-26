@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TraceDefense.DAL.Repositories
+﻿namespace TraceDefense.DAL.Repositories
 {
     /// <summary>
     /// Base data repository interface

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraceDefense.DAL.Repositories;
+using TraceDefense.Entities.Registration;
 
 namespace TraceDefense.API.Controllers
 {
@@ -23,7 +24,7 @@ namespace TraceDefense.API.Controllers
         /// <summary>
         /// Creates a new <see cref="RegisterController"/> instance
         /// </summary>
-        /// <param name="registrationRepo"></param>
+        /// <param name="registrationRepo"><see cref="DeviceRegistration"/> repository instance</param>
         public RegisterController(IDeviceRegistrationRepository registrationRepo)
         {
             this._registrationRepo = registrationRepo;

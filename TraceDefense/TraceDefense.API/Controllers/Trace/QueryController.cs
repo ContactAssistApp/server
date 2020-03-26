@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraceDefense.API.Models;
+using TraceDefense.API.Models.Trace;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.Entities;
+using TraceDefense.Entities.Geospatial;
 
 namespace TraceDefense.API.Controllers.Trace
 {
@@ -18,55 +19,58 @@ namespace TraceDefense.API.Controllers.Trace
     public class QueryController : ControllerBase
     {
         /// <summary>
-        /// Time-space discretization manager
+        /// <see cref="Query"/> repository
         /// </summary>
-        private IRegionManager _regionManager;
+        private IQueryRepository _queryRepo;
+        /// <summary>
+        /// <see cref="RegionRef"/> repository
+        /// </summary>
+        private IRegionRepository _regionRepo;
+
 
         /// <summary>
-        /// Query repository
+        /// Creates a new <see cref="QueryController"/> instance
         /// </summary>
-        private IQueryRepository<int> _queryRepo;
-
-
-        public QueryController()
+        /// <param name="queryRepo"><see cref="Query"/> repository instance</param>
+        /// <param name="regionRepo"><see cref="RegionRef"/> repository instance</param>
+        public QueryController(IQueryRepository queryRepo, IRegionRepository regionRepo)
         {
-            this._regionManager = new TraceDefence.Core.RegionManager();
-            this._queryRepo = new TraceDefence.Core.QueryRepository();
+            // Assign local values
+            this._queryRepo = queryRepo;
+            this._regionRepo = regionRepo;
         }
 
         /// <summary>
-        /// Submits a query for <see cref="TraceEvent"/> objects
+        /// Requests possible <see cref="Query"/> identifiers
         /// </summary>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
-        /// <response code="404">No query results</response>
-        [HttpPut]
+        /// <response code="200">Successful request with results</response>
+        /// <response code="400">Malformed or invalid request provided</response>
+        [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(QueryResult), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(PublishQueryRequest request)
+        public async Task<ActionResult<QueryResult>> GetAsync(GetQueriesRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
-
             // TODO: Validate inputs
 
-            // TODO:
+            // TODO: Submit query
+            var result = await this._queryRepo.GetQueries(request.queryIds);
 
-            var regions = await this._regionManager.GetRegions(request.Area);
+            QueryResult results = new QueryResult();
 
-            await this._queryRepo.Publish(regions, request.Query);
 
-            return Ok();
+            return Ok(results);
         }
 
         /// <summary>
-        /// Submits a query for <see cref="TraceEvent"/> objects
+        /// Submits a request to pull the selected <see cref="Query"/>
         /// </summary>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
-        /// <response code="404">No query results</response>
-        [HttpGet]
+        /// <response code="200">Successful request with results</response>
+        /// <response code="400">Malformed or invalid request provided</response>
+        /// <response code="404">No query matched request</response>
+        [HttpPut]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetQueriesReponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
@@ -106,7 +110,7 @@ namespace TraceDefense.API.Controllers.Trace
 
             GetQueryIdsResponse results = new GetQueryIdsResponse { QueryIds = result };
 
-            return Ok(results);
+            return Ok();
         }
     }
 }

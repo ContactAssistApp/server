@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using TraceDefense.Entities;
 using TraceDefense.Entities.Geospatial;
 
 namespace TraceDefense.DAL.Repositories
 {
-    public interface IQueryRepository<QueryId>
+    /// <summary>
+    /// <see cref="Query"/> repository definition
+    /// </summary>
+    public interface IQueryRepository : IRepository<Query>
     {
-        Task<QueryId> Publish(IList<RegionRef> regions, Query query);
+        Task<Query> Publish(IList<RegionRef> regions, Query query);
 
 
-        Task<IList<QueryId>> GetQueryIds(IList<RegionRef> regions);
+        Task<IList<Query>> GetQueryIds(IList<RegionRef> regions);
 
-        Task<IList<Query>> GetQueries(IList<QueryId> queryIds);
+        Task<IList<Query>> GetQueries(IList<int> queryIds);
     }
 }

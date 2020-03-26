@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TraceDefense.DAL.Repositories;
+
 using TraceDefense.Entities.Geospatial;
 using TraceDefense.Entities.Search;
 
-namespace TraceDefence.Core
+namespace TraceDefense.DAL.Repositories
 {
-    public class RegionManager : IRegionManager
+    /// <summary>
+    /// In-memory <see cref="RegionRef"/> repository implementation
+    /// </summary>
+    public class RegionRepository : IRegionRepository
     {
         public Task<IList<RegionRef>> GetRegions(Area area)
         {

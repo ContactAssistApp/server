@@ -19,6 +19,6 @@ namespace TraceDefense.Entities.Search
         /// Time-space range
         /// </summary>
         [JsonProperty("range", Required = Required.Always)]
-        public Range Range { get; set; }
+        public TimeRange Range { get; set; }
     }
 }

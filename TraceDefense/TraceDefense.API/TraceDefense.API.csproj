@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TraceDefence.Core\TraceDefence.Core.csproj" />
     <ProjectReference Include="..\TraceDefense.DAL\TraceDefense.DAL.csproj" />
     <ProjectReference Include="..\TraceDefense.Entities\TraceDefense.Entities.csproj" />
   </ItemGroup>
