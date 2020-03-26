@@ -26,13 +26,20 @@ namespace TraceDefense.API.Controllers.Trace
         [Produces("application/json")]
         [ProducesResponseType(typeof(QueryResult), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryResult>> PutAsync()
+        public async Task<ActionResult<QueryResult>> PutAsync([FromBody] QueryRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
-            // TODO: Validate inputs
+            // Validate inputs
+            // JSON library package will make request null if required fields are not met
+            if(request == null)
+            {
+                return BadRequest();
+            }
 
             // TODO: Submit query
+
+            // Process results
             QueryResult results = new QueryResult();
 
             if(results.Traces.Count() == 0)

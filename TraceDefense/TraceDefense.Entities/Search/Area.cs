@@ -14,5 +14,10 @@ namespace TraceDefense.Entities.Search
         /// </summary>
         [JsonProperty("point", Required = Required.Always)]
         public Point Point { get; set; }
+        /// <summary>
+        /// Geographic radius limit (kilometers)
+        /// </summary>
+        [JsonProperty("radiusKilometers", Required = Required.Always)]
+        public int RadiusKilometers { get; set; }
     }
 }
