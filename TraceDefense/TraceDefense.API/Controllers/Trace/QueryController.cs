@@ -10,14 +10,14 @@ using TraceDefense.Entities;
 namespace TraceDefense.API.Controllers.Trace
 {
     /// <summary>
-    /// Handles <see cref="TraceEvent"/> query submissions
+    /// Handles <see cref="Entities.Trace"/> query submissions
     /// </summary>
     [Route("api/Trace/[controller]")]
     [ApiController]
     public class QueryController : ControllerBase
     {
         /// <summary>
-        /// Submits a query for <see cref="TraceEvent"/> objects
+        /// Submits a query for <see cref="Entities.Trace"/> objects
         /// </summary>
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
