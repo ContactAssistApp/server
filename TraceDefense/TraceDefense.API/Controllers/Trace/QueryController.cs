@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -45,35 +47,46 @@ namespace TraceDefense.API.Controllers.Trace
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///     POST /GetQueriesRequest
-        ///     {
-        ///        "Region": {"id": "39,-74" },
-        ///        "LastTimestamp": 0
-        ///     }
+        ///     GET /Trace/Query?regionId=39%2c-74&amp;lastTimestamp=0
         /// </remarks>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
+        /// <response code="404">No results found for request parameters</response>
         /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
-        [HttpPost]
+        [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(GetQueriesResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(QueryGetResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<GetQueriesResponse>> PostAsync([FromBody] GetQueriesRequest request)
+        public async Task<ActionResult<QueryGetResponse>> GetAsync(string regionId, long lastTimestamp)
         {
             CancellationToken ct = new CancellationToken();
 
-            // TODO: Validate inputs
+            // Validate inputs
+            if(String.IsNullOrEmpty(regionId))
+            {
+                return BadRequest();
+            }
+            if(lastTimestamp < 0)
+            {
+                return BadRequest();
+            }
 
-            // TODO: Submit query
-            var timestamp = TimestampProvider.GetTimestamp();
+            // Get results
+            IList<Query> result = await this._queryRepo.GetQueriesAsync(regionId, lastTimestamp, ct);
 
-            var result = await this._queryRepo.GetQueriesAsync(request.Region, request.LastTimestamp, ct);
-
-            var results = new GetQueriesResponse { Queries = result, Timestamp = timestamp };
-
-            return Ok(results);
+            if(result.Count > 0)
+            {
+                return Ok(new QueryGetResponse
+                {
+                    Queries = result,
+                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                });
+            }
+            else
+            {
+                return NotFound();
+            }
         }
-
 
         /// <summary>
         /// Publish a query for distribution among devices relevant to Area
@@ -98,13 +111,13 @@ namespace TraceDefense.API.Controllers.Trace
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(PublishQueryRequest request)
+        public async Task<ActionResult> PutAsync(QueryPutRequest request)
         {
             CancellationToken ct = new CancellationToken();
             // TODO: Validate inputs
             // TODO:
             var regions = await this._regionRepo.GetRegions(request.Area);
-            await this._queryRepo.PublishAsync(regions, request.Query);
+            await this._queryRepo.PublishAsync(regions, request.Query, ct);
             return Ok();
         }
     }

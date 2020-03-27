@@ -36,12 +36,12 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Query>> GetQueriesAsync(RegionRef region, int lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IList<Query>> GetQueriesAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Build query
             string sqlQuery = String.Format("SELECT * FROM c WHERE c.RegionId = @regionId AND c.Timestamp > @timestamp");
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery)
-                .WithParameter("@regionId", region.Id)
+                .WithParameter("@regionId", regionId)
                 .WithParameter("@timestamp", lastTimestamp);
 
             // Get results
@@ -63,7 +63,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         {
             var queryId = Guid.NewGuid().ToString();
 
-            var timestamp = TimestampProvider.GetTimestamp();
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             foreach (var r in regions)
             {

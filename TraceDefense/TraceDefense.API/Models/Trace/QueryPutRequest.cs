@@ -1,26 +1,28 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+
+using TraceDefense.Entities;
 using TraceDefense.Entities.Search;
 
 namespace TraceDefense.API.Models.Trace
 {
     /// <summary>
-    /// Query request
+    /// Request model for HTTP PUT operations against /Trace/Query
     /// </summary>
     [JsonObject]
-    public class QueryRequest
+    public class QueryPutRequest
     {
         /// <summary>
-        /// Geographic <see cref="Area"/> used to scope query
+        /// Geographic area tagged by <see cref="Query"/>
         /// </summary>
         [JsonProperty("area", Required = Required.Always)]
         [Required]
         public Area Area { get; set; }
         /// <summary>
-        /// Query text
+        /// <see cref="Query"/> content
         /// </summary>
         [JsonProperty("query", Required = Required.Always)]
         [Required]
-        public string Query { get; set; }
+        public Query Query { get; set; }
     }
 }
