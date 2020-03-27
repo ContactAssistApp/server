@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Options;
 using TraceDefense.DAL.Providers;
 using TraceDefense.Entities;
 using TraceDefense.Entities.Geospatial;
@@ -20,19 +21,17 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <see cref="Query"/> container object
         /// </summary>
         private Container _queryContainer;
-        /// <summary>
-        /// Name of <see cref="Query"/> container
-        /// </summary>
-        public const string QUERIES_CONTAINER_NAME = "queries_v3";
 
         /// <summary>
         /// Creates a new <see cref="CosmosQueryRepository"/> instance
         /// </summary>
-        /// <param name="connectionFactory">CosmosDB connection factory instance</param>
-        public CosmosQueryRepository(CosmosConnectionFactory connectionFactory) : base(connectionFactory)
+        /// <param name="connectionFactory">Database connection factory instance</param>
+        /// <param name="schemaOptions">Schema options object</param>
+        public CosmosQueryRepository(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaOptions) : base(connectionFactory, schemaOptions)
         {
             // Create container reference
-            this._queryContainer = this.Database.GetContainer(QUERIES_CONTAINER_NAME);
+            this._queryContainer = this.Database
+                .GetContainer(this.SchemaOptions.QueryContainerName);
         }
 
         /// <inheritdoc/>
