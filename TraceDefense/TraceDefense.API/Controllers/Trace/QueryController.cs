@@ -64,30 +64,6 @@ namespace TraceDefense.API.Controllers.Trace
             return Ok(results);
         }
 
-        /// <summary>
-        /// Requests possible <see cref="Query"/> identifiers
-        /// </summary>
-        /// <response code="200">Successful request with results</response>
-        /// <response code="400">Malformed or invalid request provided</response>
-        /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
-        [HttpGet]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(GetQueriesReponse), StatusCodes.Status200OK)]
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<GetQueriesReponse>> GetAsync(GetQueryIdsRequest request)
-        {
-            CancellationToken ct = new CancellationToken();
-
-            // TODO: Validate inputs
-
-            // TODO: Submit query
-            var result = await this._queryRepo.GetQueryIdsAsync(request.Regions, ct);
-
-            var results = new GetQueryIdsResponse { QueryIds = result };
-
-            return Ok(results);
-        }
-
 
         /// <summary>
         /// Submits a query for <see cref="TraceEvent"/> objects
