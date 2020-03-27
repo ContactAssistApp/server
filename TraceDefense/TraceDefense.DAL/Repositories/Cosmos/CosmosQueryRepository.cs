@@ -101,7 +101,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public Task<string> PublishAsync(IList<RegionRef> regions, Query query, CancellationToken cancellationToken = default)
+        public Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using TraceDefense.Entities;
@@ -12,17 +13,17 @@ namespace TraceDefense.DAL.Repositories
     /// </summary>
     public class QueryRepository : IQueryRepository
     {
-        public Task<IList<Query>> GetQueries(IList<int> queryIds)
+        public Task<IList<Query>> GetQueriesAsync(IList<string> queryIds, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<Query>> GetQueryIds(IList<RegionRef> regions)
+        public Task<IList<string>> GetQueryIdsAsync(IList<RegionRef> regions, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Query> Publish(IList<RegionRef> regions, Query query)
+        public Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
