@@ -53,14 +53,14 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
-            FeedIterator<Query> resultIterator = this._queryContainer
-                .GetItemQueryIterator<Query>(cosmosQueryDef);
-            List<Query> queries = new List<Query>();
+            FeedIterator<Record> resultIterator = this._queryContainer
+                .GetItemQueryIterator<Record>(cosmosQueryDef);
+            var queries = new List<Query>();
 
             while (resultIterator.HasMoreResults)
             {
-                FeedResponse<Query> result = await resultIterator.ReadNextAsync(cancellationToken);
-                queries.AddRange(result);
+                FeedResponse<Record> result = await resultIterator.ReadNextAsync(cancellationToken);
+                queries.AddRange(result.Select(r => new Query { TBD = r.Query }));
             }
 
             return queries;
@@ -84,16 +84,16 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
-            FeedIterator<Query> resultIterator = this._queryContainer
-                .GetItemQueryIterator<Query>(cosmosQueryDef);
+            FeedIterator<Record> resultIterator = this._queryContainer
+                .GetItemQueryIterator<Record>(cosmosQueryDef);
             List<string> queryIds = new List<string>();
 
             while(resultIterator.HasMoreResults)
             {
-                FeedResponse<Query> result = await resultIterator.ReadNextAsync(cancellationToken);
-                foreach(Query query in result)
+                FeedResponse<Record> result = await resultIterator.ReadNextAsync(cancellationToken);
+                foreach(Record record in result)
                 {
-                    queryIds.Add(query.Id);
+                    queryIds.Add(record.Id);
                 }
             }
 
@@ -101,14 +101,15 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default)
+        public async Task PublishAsync(IList<RegionRef> regions, Query query, CancellationToken cancellationToken = default)
         {
-            // Create Query in database
-            ItemResponse<Query> insertResponse = await this._queryContainer
-                .CreateItemAsync<Query>(query, new PartitionKey(query.RegionId), cancellationToken: cancellationToken);
-
-            // Return ID of newly created object
-            return insertResponse.Resource.Id;
+            foreach (var r in regions)
+            {
+                var record = new Record { Id = Guid.NewGuid().ToString(), Query = query.TBD, RegionId = r.Id };
+                // Create Query in database
+                ItemResponse<Record> insertResponse = await this._queryContainer
+                    .CreateItemAsync<Record>(record, new PartitionKey(record.RegionId), cancellationToken: cancellationToken);
+            }
         }
     }
 }

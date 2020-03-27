@@ -36,7 +36,7 @@ namespace TraceDefense.DAL.Repositories
                 {
                     for (var t = tmin; t <= tmax; ++t)
                     {
-                        result.Add(new RegionRef { X = x, Y = y, T = t });
+                        result.Add(new RegionRef { Id = $"{x},{y},{t}" });
                     }
                 }
             }
