@@ -101,9 +101,14 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            // Create Query in database
+            ItemResponse<Query> insertResponse = await this._queryContainer
+                .CreateItemAsync<Query>(query, new PartitionKey(query.RegionId), cancellationToken: cancellationToken);
+
+            // Return ID of newly created object
+            return insertResponse.Resource.Id;
         }
     }
 }
