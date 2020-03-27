@@ -56,9 +56,9 @@ namespace TraceDefense.API.Controllers.Trace
         /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(GetQueriesReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetQueriesResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<GetQueriesReponse>> PostAsync(GetQueriesRequest request)
+        public async Task<ActionResult<GetQueriesResponse>> PostAsync([FromBody] GetQueriesRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
@@ -69,7 +69,7 @@ namespace TraceDefense.API.Controllers.Trace
 
             var result = await this._queryRepo.GetQueriesAsync(request.Region, request.LastTimestamp, ct);
 
-            var results = new GetQueriesReponse { Queries = result, Timestamp = timestamp };
+            var results = new GetQueriesResponse { Queries = result, Timestamp = timestamp };
 
             return Ok(results);
         }

@@ -7,7 +7,7 @@ namespace TraceDefense.API.Models
     /// <summary>
     /// Base query result object
     /// </summary>
-    public class GetQueriesReponse
+    public class GetQueriesResponse
     {
         [Required]
         public IList<Query> Queries { get; set; }
