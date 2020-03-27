@@ -56,10 +56,9 @@ namespace TraceDefense.API.Controllers.Trace
             // TODO: Validate inputs
 
             // TODO: Submit query
-            var result = await this._queryRepo.GetQueries(request.queryIds);
+            var result = await this._queryRepo.GetQueriesAsync(request.queryIds, ct);
 
             GetQueriesReponse results = new GetQueriesReponse { Queries = result };
-
 
             return Ok(results);
         }
