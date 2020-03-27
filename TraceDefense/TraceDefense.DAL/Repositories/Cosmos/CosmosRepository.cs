@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Options;
 using TraceDefense.DAL.Providers;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
@@ -17,18 +18,23 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// </summary>
         protected Database Database;
         /// <summary>
-        /// Name of database used by all implementing repositories
+        /// Schema configuration object
         /// </summary>
-        public const string DATABASE_NAME = "traces";
+        protected CosmosCovidSafeSchemaOptions SchemaOptions;
 
         /// <summary>
         /// Creates a new <see cref="CosmosRepository"/> instance
         /// </summary>
-        /// <param name="connectionFactory"></param>
-        public CosmosRepository(CosmosConnectionFactory connectionFactory)
+        /// <param name="connectionFactory">Database connection factory instance</param>
+        /// <param name="schemaOptions">Schema options object</param>
+        public CosmosRepository(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaOptions)
         {
+            // Set local variables
             this.ConnectionFactory = connectionFactory;
-            this.Database = this.ConnectionFactory.Client.GetDatabase(DATABASE_NAME);
+            this.SchemaOptions = schemaOptions.CurrentValue;
+
+            // Create Database object reference
+            this.Database = this.ConnectionFactory.Client.GetDatabase(this.SchemaOptions.DatabaseName);
         }
     }
 }

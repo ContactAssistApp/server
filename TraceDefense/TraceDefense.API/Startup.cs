@@ -42,6 +42,9 @@ namespace TraceDefense.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // Get configuration for data repository
+            services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));
+
             // Configure data repository implementations
             services.AddTransient<CosmosConnectionFactory>();
             services.AddSingleton<IQueryRepository, CosmosQueryRepository>();
