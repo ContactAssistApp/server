@@ -18,14 +18,7 @@ namespace TraceDefense.DAL.Repositories
         /// <param name="queryIds">Collection of <see cref="Query"/> identifiers to pull</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of <see cref="Query"/> data</returns>
-        Task<IList<Query>> GetQueriesAsync(IList<string> queryIds, CancellationToken cancellationToken = default);
-        /// <summary>
-        /// Pulls a list of available query IDs based on a collection of <see cref="RegionRef"/> entities
-        /// </summary>
-        /// <param name="regions"><see cref="RegionRef"/> collection</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Collection of <See cref="Query"/> identifiers</returns>
-        Task<IList<string>> GetQueryIdsAsync(IList<RegionRef> regions, CancellationToken cancellationToken = default);
+        Task<IList<Query>> GetQueriesAsync(RegionRef region, int lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Stores a new <see cref="Query"/>
         /// </summary>

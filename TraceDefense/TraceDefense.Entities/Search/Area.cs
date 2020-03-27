@@ -21,12 +21,5 @@ namespace TraceDefense.Entities.Search
         /// </summary>
         [JsonProperty("second", Required = Required.Always)]
         public Location Second { get; set; }
-
-
-        /// <summary>
-        /// Time range
-        /// </summary>
-        [JsonProperty("range", Required = Required.Always)]
-        public TimeRange TimeRange { get; set; }
     }
 }

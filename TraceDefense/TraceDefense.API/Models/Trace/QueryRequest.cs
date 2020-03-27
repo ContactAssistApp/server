@@ -22,11 +22,5 @@ namespace TraceDefense.API.Models.Trace
         [JsonProperty("query", Required = Required.Always)]
         [Required]
         public string Query { get; set; }
-        /// <summary>
-        /// <see cref="TimeRange"/> used to scope query
-        /// </summary>
-        [JsonProperty("timeRange", Required = Required.Always)]
-        [Required]
-        public TimeRange TimeRange { get; set; }
     }
 }

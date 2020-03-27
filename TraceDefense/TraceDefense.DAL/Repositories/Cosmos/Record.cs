@@ -14,15 +14,9 @@ namespace TraceDefense.DAL.Repositories.Cosmos
 
         public string Query { get; set; }
 
-    }
-
-    public class QueryIdRecord
-    {
-        [JsonProperty(PropertyName = "id")]
-        [Required]
-        public string Id { get; set; }
-
         public string RegionId { get; set; }
+
+        public int Timestamp { get; set; }
 
     }
 }

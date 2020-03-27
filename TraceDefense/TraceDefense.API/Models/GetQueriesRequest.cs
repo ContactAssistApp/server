@@ -11,6 +11,9 @@ namespace TraceDefense.API.Models
     public class GetQueriesRequest
     {
         [Required]
-        public IList<string> queryIds { get; set; }
+        public RegionRef Region { get; set; }
+
+        [Required]
+        public int LastTimestamp { get; set; }
     }
 }

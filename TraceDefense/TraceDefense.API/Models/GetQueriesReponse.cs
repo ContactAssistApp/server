@@ -11,5 +11,8 @@ namespace TraceDefense.API.Models
     {
         [Required]
         public IList<Query> Queries { get; set; }
+
+        [Required]
+        public int Timestamp { get; set; }
     }
 }

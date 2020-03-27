@@ -47,7 +47,8 @@ namespace TraceDefense.API.Controllers.Trace
         /// Sample request:
         ///     GET /GetQueriesRequest
         ///     {
-        ///        "queryIds": ["08093263-4530-4bf2-9bd7-c6c338213349"]
+        ///        "Region": {"id": "39,-74" },
+        ///        "LastTimestamp": 0
         ///     }
         /// </remarks>
         /// <response code="200">Successful request with results</response>
@@ -64,9 +65,11 @@ namespace TraceDefense.API.Controllers.Trace
             // TODO: Validate inputs
 
             // TODO: Submit query
-            var result = await this._queryRepo.GetQueriesAsync(request.queryIds, ct);
+            var timestamp = TimestampProvider.GetTimestamp();
 
-            var results = new GetQueriesReponse { Queries = result };
+            var result = await this._queryRepo.GetQueriesAsync(request.Region, request.LastTimestamp, ct);
+
+            var results = new GetQueriesReponse { Queries = result, Timestamp = timestamp };
 
             return Ok(results);
         }
@@ -83,8 +86,7 @@ namespace TraceDefense.API.Controllers.Trace
         ///        "Query": { "tbd": "if you visited Trader Joe's on 3rd Ave 03/26/2020 between 18.00 and 19.00, call me" },
         ///        "Area": { 
         ///             "first": { "lat": 39.5, "lng": -74.5 },
-        ///             "second": { "lat": 41.5, "lng": -72.5 },
-        ///             "range": {"start": 1585094400, "end": 1585267200} 
+        ///             "second": { "lat": 41.5, "lng": -72.5 }
         ///        }
         ///     }
         ///

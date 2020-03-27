@@ -22,11 +22,9 @@ namespace TraceDefense.DAL.Repositories
         {
             var xmin = (int)(Math.Min(area.First.Latitude, area.Second.Latitude) / LatStepDegree);
             var ymin = (int)(Math.Min(area.First.Longitude, area.Second.Longitude) / LonStepDegree);
-            var tmin = (int)(area.TimeRange.StartTimeS / TimeStepS);
 
             var xmax = (int)(Math.Max(area.First.Latitude, area.Second.Latitude) / LatStepDegree);
             var ymax = (int)(Math.Max(area.First.Longitude, area.Second.Longitude) / LonStepDegree);
-            var tmax = (int)(area.TimeRange.StartTimeS / TimeStepS);
 
             var result = new List<RegionRef>();
 
@@ -34,10 +32,7 @@ namespace TraceDefense.DAL.Repositories
             {
                 for (var y = ymin; y <= ymax; ++y)
                 {
-                    for (var t = tmin; t <= tmax; ++t)
-                    {
-                        result.Add(new RegionRef { Id = $"{x},{y},{t}" });
-                    }
+                    result.Add(new RegionRef { Id = $"{x},{y}" });
                 }
             }
             return result;
