@@ -41,8 +41,15 @@ namespace TraceDefense.API.Controllers.Trace
         }
 
         /// <summary>
-        /// Requests possible <see cref="Query"/> identifiers
+        /// Get queries for given query ids
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     GET /GetQueriesRequest
+        ///     {
+        ///        "queryIds": ["08093263-4530-4bf2-9bd7-c6c338213349"]
+        ///     }
+        /// </remarks>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
@@ -66,8 +73,22 @@ namespace TraceDefense.API.Controllers.Trace
 
 
         /// <summary>
-        /// Submits a query for <see cref="TraceEvent"/> objects
+        /// Publish a query for distribution among devices relevant to Area
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT /PublishQueryRequest
+        ///     {
+        ///        "Query": { "tbd": "if you visited Trader Joe's on 3rd Ave 03/26/2020 between 18.00 and 19.00, call me" },
+        ///        "Area": { 
+        ///             "first": { "lat": 39.5, "lng": -74.5 },
+        ///             "second": { "lat": 41.5, "lng": -72.5 },
+        ///             "range": {"start": 1585094400, "end": 1585267200} 
+        ///        }
+        ///     }
+        ///
+        /// </remarks>
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
         /// <response code="404">No query results</response>

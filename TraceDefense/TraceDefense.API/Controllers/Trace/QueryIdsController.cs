@@ -30,8 +30,15 @@ namespace TraceDefense.API.Controllers.Trace
         }
 
         /// <summary>
-        /// Requests possible <see cref="Query"/> identifiers
+        /// Get query ids for given regions
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     GET /GetQueryIdsRequest
+        ///     {
+        ///        "Regions": [ {"id": "39,-74,18346" } ]
+        ///     }
+        /// </remarks>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>

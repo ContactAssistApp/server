@@ -16,17 +16,17 @@ namespace TraceDefense.DAL.Repositories
 
         private float LonStepDegree = 1;
 
-        private int TimeStepMs = 24 * 60 * 1000;
+        private int TimeStepS = 24 * 3600;
 
         public async Task<IList<RegionRef>> GetRegions(Area area)
         {
             var xmin = (int)(Math.Min(area.First.Latitude, area.Second.Latitude) / LatStepDegree);
             var ymin = (int)(Math.Min(area.First.Longitude, area.Second.Longitude) / LonStepDegree);
-            var tmin = (int)(area.TimeRange.StartTimeMs / TimeStepMs);
+            var tmin = (int)(area.TimeRange.StartTimeS / TimeStepS);
 
             var xmax = (int)(Math.Max(area.First.Latitude, area.Second.Latitude) / LatStepDegree);
             var ymax = (int)(Math.Max(area.First.Longitude, area.Second.Longitude) / LonStepDegree);
-            var tmax = (int)(area.TimeRange.StartTimeMs / TimeStepMs);
+            var tmax = (int)(area.TimeRange.StartTimeS / TimeStepS);
 
             var result = new List<RegionRef>();
 

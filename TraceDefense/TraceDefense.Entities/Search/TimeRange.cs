@@ -12,11 +12,11 @@ namespace TraceDefense.Entities.Search
         /// End of time range (epoch ms)
         /// </summary>
         [JsonProperty("end", Required = Required.Always)]
-        public long EndTimeMs { get; set; }
+        public long EndTimeS { get; set; }
         /// <summary>
         /// Start of time range (epoch ms)
         /// </summary>
         [JsonProperty("start", Required = Required.Always)]
-        public long StartTimeMs { get; set; }
+        public long StartTimeS { get; set; }
     }
 }
