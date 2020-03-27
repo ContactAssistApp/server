@@ -30,9 +30,9 @@ namespace TraceDefense.DAL.Repositories
 
             var result = new List<RegionRef>();
 
-            for (var x = xmin; xmin <= xmax; ++x)
+            for (var x = xmin; x <= xmax; ++x)
             {
-                for (var y = ymin; ymin <= ymax; ++y)
+                for (var y = ymin; y <= ymax; ++y)
                 {
                     for (var t = tmin; t <= tmax; ++t)
                     {
