@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories;
-using TraceDefense.DAL.Repositories.CosmosDb;
+using TraceDefense.DAL.Repositories.Cosmos;
 
 namespace TraceDefense.API
 {
@@ -43,8 +43,8 @@ namespace TraceDefense.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Configure data repository implementations
-            services.AddTransient<AzureStorageConnectionFactory>();
-            services.AddSingleton<IQueryRepository, AzureTableQueryRepository>();
+            services.AddTransient<CosmosConnectionFactory>();
+            services.AddSingleton<IQueryRepository, CosmosQueryRepository>();
 
             // TODO: Remove in-memory variants with database repositories
             services.AddSingleton<IDeviceRegistrationRepository, DeviceRegistrationRepository>();
