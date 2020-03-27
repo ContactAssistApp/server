@@ -38,7 +38,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         public async Task<IList<Query>> GetQueriesAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Build query
-            string sqlQuery = String.Format("SELECT * FROM c WHERE c.RegionId = @regionId AND c.Timestamp > @timestamp");
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.regionId = @regionId AND c.timestamp > @timestamp");
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery)
                 .WithParameter("@regionId", regionId)
                 .WithParameter("@timestamp", lastTimestamp);
