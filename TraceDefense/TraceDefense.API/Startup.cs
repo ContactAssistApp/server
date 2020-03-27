@@ -47,7 +47,6 @@ namespace TraceDefense.API
             services.AddSingleton<IQueryRepository, CosmosQueryRepository>();
 
             // TODO: Remove in-memory variants with database repositories
-            services.AddSingleton<IDeviceRegistrationRepository, DeviceRegistrationRepository>();
             services.AddSingleton<IRegionRepository, RegionRepository>();
 
             // Add Swagger generator
