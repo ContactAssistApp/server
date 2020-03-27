@@ -45,7 +45,7 @@ namespace TraceDefense.API.Controllers.Trace
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///     GET /GetQueriesRequest
+        ///     POST /GetQueriesRequest
         ///     {
         ///        "Region": {"id": "39,-74" },
         ///        "LastTimestamp": 0
@@ -54,11 +54,11 @@ namespace TraceDefense.API.Controllers.Trace
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
-        [HttpGet]
+        [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetQueriesReponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<GetQueriesReponse>> GetAsync(GetQueriesRequest request)
+        public async Task<ActionResult<GetQueriesReponse>> PostAsync(GetQueriesRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
