@@ -22,7 +22,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         [Required]
         public string Id { get; set; }
 
-        public string QueryId { get; set; }
+        public string RegionId { get; set; }
 
     }
 }

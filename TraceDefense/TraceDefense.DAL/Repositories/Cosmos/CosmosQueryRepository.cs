@@ -26,7 +26,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// </summary>
         public const string QUERIES_CONTAINER_NAME = "queries_test";
 
-        public const string QUERYIDS_CONTAINER_NAME = "query_ids_test";
+        public const string QUERYIDS_CONTAINER_NAME = "query_ids_1";
 
         /// <summary>
         /// Creates a new <see cref="CosmosQueryRepository"/> instance
@@ -85,7 +85,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             string whereIds = String.Join(",", regionIds);
 
             // Build query
-            string sqlQuery = String.Format("SELECT * FROM c WHERE c.id IN ({0})", whereIds);
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.RegionId IN ({0})", whereIds);
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
@@ -98,7 +98,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 FeedResponse<QueryIdRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
                 foreach(QueryIdRecord record in result)
                 {
-                    queryIds.Add(record.QueryId);
+                    queryIds.Add(record.Id);
                 }
             }
 
@@ -116,10 +116,10 @@ namespace TraceDefense.DAL.Repositories.Cosmos
 
             foreach (var r in regions)
             {
-                var queryIdRecord = new QueryIdRecord { Id = r.Id, QueryId = queryId };
+                var queryIdRecord = new QueryIdRecord { Id = queryId, RegionId = r.Id };
                 // Create Query in database
                 ItemResponse<QueryIdRecord> response = await this._queryIdsContainer
-                    .CreateItemAsync<QueryIdRecord>(queryIdRecord, new PartitionKey(queryIdRecord.Id), cancellationToken: cancellationToken);
+                    .CreateItemAsync<QueryIdRecord>(queryIdRecord, new PartitionKey(queryIdRecord.RegionId), cancellationToken: cancellationToken);
             }
         }
     }
