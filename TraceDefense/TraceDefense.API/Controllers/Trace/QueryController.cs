@@ -45,6 +45,7 @@ namespace TraceDefense.API.Controllers.Trace
         /// </summary>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
+        /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetQueriesReponse), StatusCodes.Status200OK)]
