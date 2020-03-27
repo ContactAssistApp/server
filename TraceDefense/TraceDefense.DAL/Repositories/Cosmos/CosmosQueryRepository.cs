@@ -20,10 +20,13 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <see cref="Query"/> container object
         /// </summary>
         private Container _queryContainer;
+        private Container _queryIdsContainer;
         /// <summary>
         /// Name of <see cref="Query"/> container
         /// </summary>
-        public const string CONTAINER_NAME = "queries";
+        public const string QUERIES_CONTAINER_NAME = "queries_test";
+
+        public const string QUERYIDS_CONTAINER_NAME = "query_ids_test";
 
         /// <summary>
         /// Creates a new <see cref="CosmosQueryRepository"/> instance
@@ -32,7 +35,9 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         public CosmosQueryRepository(CosmosConnectionFactory connectionFactory) : base(connectionFactory)
         {
             // Create container reference
-            this._queryContainer = this.Database.GetContainer(CONTAINER_NAME);
+            this._queryContainer = this.Database.GetContainer(QUERIES_CONTAINER_NAME);
+
+            this._queryIdsContainer = this.Database.GetContainer(QUERYIDS_CONTAINER_NAME);
         }
 
         /// <inheritdoc/>
@@ -46,20 +51,20 @@ namespace TraceDefense.DAL.Repositories.Cosmos
 
             // Get unique Query IDs from provided collection to build WHERE clause
             IEnumerable<string> queryIdsSanitized = queryIds.Select(q => String.Format("'{0}'", q));
-            string whereIds = String.Join(",", queryIds);
+            string whereIds = String.Join(",", queryIdsSanitized);
 
             // Build query
-            string sqlQuery = String.Format("SELECT * FROM c WHERE queryId IN ({0})", whereIds);
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.id IN ({0})", whereIds);
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
-            FeedIterator<Record> resultIterator = this._queryContainer
-                .GetItemQueryIterator<Record>(cosmosQueryDef);
+            FeedIterator<QueryRecord> resultIterator = this._queryContainer
+                .GetItemQueryIterator<QueryRecord>(cosmosQueryDef);
             var queries = new List<Query>();
 
             while (resultIterator.HasMoreResults)
             {
-                FeedResponse<Record> result = await resultIterator.ReadNextAsync(cancellationToken);
+                FeedResponse<QueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
                 queries.AddRange(result.Select(r => new Query { TBD = r.Query }));
             }
 
@@ -80,20 +85,20 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             string whereIds = String.Join(",", regionIds);
 
             // Build query
-            string sqlQuery = String.Format("SELECT id FROM c WHERE regionId IN ({0})", whereIds);
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.id IN ({0})", whereIds);
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
-            FeedIterator<Record> resultIterator = this._queryContainer
-                .GetItemQueryIterator<Record>(cosmosQueryDef);
+            FeedIterator<QueryIdRecord> resultIterator = this._queryIdsContainer
+                .GetItemQueryIterator<QueryIdRecord>(cosmosQueryDef);
             List<string> queryIds = new List<string>();
 
             while(resultIterator.HasMoreResults)
             {
-                FeedResponse<Record> result = await resultIterator.ReadNextAsync(cancellationToken);
-                foreach(Record record in result)
+                FeedResponse<QueryIdRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
+                foreach(QueryIdRecord record in result)
                 {
-                    queryIds.Add(record.Id);
+                    queryIds.Add(record.QueryId);
                 }
             }
 
@@ -103,12 +108,18 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task PublishAsync(IList<RegionRef> regions, Query query, CancellationToken cancellationToken = default)
         {
+            var queryId = Guid.NewGuid().ToString();
+            var record = new QueryRecord { Id = queryId, Query = query.TBD };
+
+            ItemResponse<QueryRecord> insertResponse = await this._queryContainer
+                 .CreateItemAsync<QueryRecord>(record, new PartitionKey(record.Id), cancellationToken: cancellationToken);
+
             foreach (var r in regions)
             {
-                var record = new Record { Id = Guid.NewGuid().ToString(), Query = query.TBD, RegionId = r.Id };
+                var queryIdRecord = new QueryIdRecord { Id = r.Id, QueryId = queryId };
                 // Create Query in database
-                ItemResponse<Record> insertResponse = await this._queryContainer
-                    .CreateItemAsync<Record>(record, new PartitionKey(record.RegionId), cancellationToken: cancellationToken);
+                ItemResponse<QueryIdRecord> response = await this._queryIdsContainer
+                    .CreateItemAsync<QueryIdRecord>(queryIdRecord, new PartitionKey(queryIdRecord.Id), cancellationToken: cancellationToken);
             }
         }
     }
