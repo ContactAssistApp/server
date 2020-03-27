@@ -22,7 +22,7 @@ namespace TraceDefense.API.Models.Trace
         /// <summary>
         /// Timestamp of server response, in miliseconds, from the Unix epoch
         /// </summary>
-        [JsonProperty("timestampUtcMs", Required = Required.Always)]
+        [JsonProperty("timestamp", Required = Required.Always)]
         [Required]
         public long Timestamp { get; set; }
     }
