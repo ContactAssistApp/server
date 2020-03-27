@@ -24,7 +24,7 @@ namespace TraceDefense.DAL.Providers
         public CosmosConnectionFactory(IConfiguration appConfig)
         {
             // Get Cosmos connection data from application configuration
-            this._connectionString = appConfig.GetConnectionString("CosmosConnection");
+            this._connectionString = appConfig["CosmosConnection"];
 
             // Define client connection options
             CosmosClientOptions options = new CosmosClientOptions

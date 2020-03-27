@@ -18,6 +18,7 @@
     <PackageReference Include="AutoMapper.Collection" Version="6.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.2.1" />
