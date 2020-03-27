@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraceDefense.API.Models;
 using TraceDefense.API.Models.Trace;
+using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories;
+using TraceDefense.DAL.Services;
 using TraceDefense.Entities;
 using TraceDefense.Entities.Geospatial;
 
@@ -21,25 +23,19 @@ namespace TraceDefense.API.Controllers.Trace
     public class QueryController : ControllerBase
     {
         /// <summary>
-        /// <see cref="Query"/> repository
+        /// <see cref="Query"/> service layer
         /// </summary>
-        private IQueryRepository _queryRepo;
-        /// <summary>
-        /// <see cref="RegionRef"/> repository
-        /// </summary>
-        private IRegionRepository _regionRepo;
+        private IQueryService _queryService;
 
 
         /// <summary>
         /// Creates a new <see cref="QueryController"/> instance
         /// </summary>
-        /// <param name="queryRepo"><see cref="Query"/> repository instance</param>
-        /// <param name="regionRepo"><see cref="RegionRef"/> repository instance</param>
-        public QueryController(IQueryRepository queryRepo, IRegionRepository regionRepo)
+        /// <param name="queryService"><see cref="Query"/> service layer</param>
+        public QueryController(IQueryService queryService)
         {
             // Assign local values
-            this._queryRepo = queryRepo;
-            this._regionRepo = regionRepo;
+            this._queryService = queryService;
         }
 
         /// <summary>
@@ -72,7 +68,7 @@ namespace TraceDefense.API.Controllers.Trace
             }
 
             // Get results
-            IList<Query> result = await this._queryRepo.GetQueriesAsync(regionId, lastTimestamp, ct);
+            IList<Query> result = await this._queryService.GetByRegionAsync(regionId, lastTimestamp, ct);
 
             if(result.Count > 0)
             {
@@ -115,9 +111,9 @@ namespace TraceDefense.API.Controllers.Trace
         {
             CancellationToken ct = new CancellationToken();
             // TODO: Validate inputs
-            // TODO:
-            var regions = await this._regionRepo.GetRegions(request.Area);
-            await this._queryRepo.PublishAsync(regions, request.Query, ct);
+
+            var regions = RegionProvider.GetRegions(request.Area);
+            await this._queryService.PublishAsync(regions, request.Query, ct);
             return Ok();
         }
     }

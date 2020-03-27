@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using TraceDefense.Entities.Geospatial;
 
-namespace TraceDefense.Entities.Search
+namespace TraceDefense.Entities.Geospatial
 {
     /// <summary>
     /// Defined search region

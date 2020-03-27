@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
+using TraceDefense.DAL.Services;
 
 namespace TraceDefense.API
 {
@@ -49,8 +50,8 @@ namespace TraceDefense.API
             services.AddTransient<CosmosConnectionFactory>();
             services.AddSingleton<IQueryRepository, CosmosQueryRepository>();
 
-            // TODO: Remove in-memory variants with database repositories
-            services.AddSingleton<IRegionRepository, RegionRepository>();
+            // Configure service layer
+            services.AddSingleton<IQueryService, QueryService>();
 
             // Add Swagger generator
             services.AddSwaggerGen(c =>

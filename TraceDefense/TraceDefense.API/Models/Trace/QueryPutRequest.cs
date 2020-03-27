@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using TraceDefense.Entities;
-using TraceDefense.Entities.Search;
+using TraceDefense.Entities.Geospatial;
 
 namespace TraceDefense.API.Models.Trace
 {

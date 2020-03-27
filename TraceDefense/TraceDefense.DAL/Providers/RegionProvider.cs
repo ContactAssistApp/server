@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 using TraceDefense.Entities.Geospatial;
-using TraceDefense.Entities.Search;
 
-namespace TraceDefense.DAL.Repositories
+namespace TraceDefense.DAL.Providers
 {
     /// <summary>
-    /// In-memory <see cref="RegionRef"/> repository implementation
+    /// <see cref="RegionRef"/> mapping provider
     /// </summary>
-    public class RegionRepository : IRegionRepository
+    public static class RegionProvider
     {
-        private float LatStepDegree = 1;
+        private static float LatStepDegree = 1;
+        private static float LonStepDegree = 1;
 
-        private float LonStepDegree = 1;
-
-        private int TimeStepS = 24 * 3600;
-
-        /// <inheritdoc/>
-        public Task<IList<RegionRef>> GetRegions(Area area)
+        /// <summary>
+        /// Generates a collection of <see cref="RegionRef"/> objects based on a provided <see cref="Area"/>
+        /// </summary>
+        /// <param name="area">Target <see cref="Area"/></param>
+        /// <returns>Collection of <see cref="RegionRef"/> objects corresponding to provided <see cref="Area"/></returns>
+        public static IList<RegionRef> GetRegions(Area area)
         {
             var xmin = (int)(Math.Min(area.First.Latitude, area.Second.Latitude) / LatStepDegree);
             var ymin = (int)(Math.Min(area.First.Longitude, area.Second.Longitude) / LonStepDegree);
@@ -36,7 +35,7 @@ namespace TraceDefense.DAL.Repositories
                     result.Add(new RegionRef { Id = $"{x},{y}" });
                 }
             }
-            return Task.FromResult(result);
+            return result;
         }
     }
 }

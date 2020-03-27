@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 
-namespace TraceDefense.DAL.Providers
+namespace TraceDefense.DAL.Repositories.Cosmos
 {
     /// <summary>
     /// Helper class for creating a Cosmos account connection

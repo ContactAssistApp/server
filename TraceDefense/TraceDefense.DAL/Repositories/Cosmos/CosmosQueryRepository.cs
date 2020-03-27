@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
-using TraceDefense.DAL.Providers;
+using TraceDefense.DAL.Repositories.Cosmos.Records;
 using TraceDefense.Entities;
 using TraceDefense.Entities.Geospatial;
 

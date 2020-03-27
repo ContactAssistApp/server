@@ -3,7 +3,7 @@
 using Newtonsoft.Json;
 using TraceDefense.Entities.Geospatial;
 
-namespace TraceDefense.DAL.Repositories.Cosmos
+namespace TraceDefense.DAL.Repositories.Cosmos.Records
 {
     /// <summary>
     /// <see cref="Query"/> database record
