@@ -10,6 +10,6 @@ namespace TraceDefense.API.Models
     public class GetQueryIdsRequest
     {
         [Required]
-        public IList<RegionRef> regions { get; set; }
+        public IList<RegionRef> Regions { get; set; }
     }
 }

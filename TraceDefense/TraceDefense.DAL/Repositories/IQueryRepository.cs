@@ -29,9 +29,10 @@ namespace TraceDefense.DAL.Repositories
         /// <summary>
         /// Stores a new <see cref="Query"/>
         /// </summary>
+        /// <param name="regions"></param>
         /// <param name="query"><see cref="Query"/> content</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>New <see cref="Query"/> identifier</returns>
-        Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default);
+        Task PublishAsync(IList<RegionRef> regions,  Query query, CancellationToken cancellationToken = default);
     }
 }

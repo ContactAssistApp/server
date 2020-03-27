@@ -9,6 +9,6 @@ namespace TraceDefense.API.Models
     public class GetQueryIdsResponse
     {
         [Required]
-        public IList<int> QueryIds { get; set; }
+        public IList<string> QueryIds { get; set; }
     }
 }

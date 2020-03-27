@@ -9,15 +9,8 @@ namespace TraceDefense.Entities
         /// <summary>
         /// Unique <see cref="Query"/> identifier used by CosmosDB
         /// </summary>
-        [JsonProperty(PropertyName = "id")]
+        [JsonProperty(PropertyName = "tbd")]
         [Required]
-        public string Id { get; set; }
-        /// <summary>
-        /// Unique <see cref="RegionRef"/> identifier of <see cref="Query"/>
-        /// </summary>
-        [JsonProperty(PropertyName = "regionId", Required = Required.Always)]
-        [Required]
-        public string RegionId { get; set; }
         public string TBD { get; set; }
     }
 }

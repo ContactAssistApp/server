@@ -59,9 +59,30 @@ namespace TraceDefense.API.Controllers.Trace
             // TODO: Submit query
             var result = await this._queryRepo.GetQueriesAsync(request.queryIds, ct);
 
-            GetQueriesReponse results = new GetQueriesReponse { Queries = result };
+            var results = new GetQueriesReponse { Queries = result };
 
             return Ok(results);
+        }
+
+
+        /// <summary>
+        /// Submits a query for <see cref="TraceEvent"/> objects
+        /// </summary>
+        /// <response code="200">Query matched Trace results</response>
+        /// <response code="400">Malformed or invalid query provided</response>
+        /// <response code="404">No query results</response>
+        [HttpPut]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<ActionResult> PutAsync(PublishQueryRequest request)
+        {
+            CancellationToken ct = new CancellationToken();
+            // TODO: Validate inputs
+            // TODO:
+            var regions = await this._regionRepo.GetRegions(request.Area);
+            await this._queryRepo.PublishAsync(regions, request.Query);
+            return Ok();
         }
     }
 }
