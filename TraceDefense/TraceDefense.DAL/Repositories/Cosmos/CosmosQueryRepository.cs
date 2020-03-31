@@ -63,23 +63,58 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Query>> GetByRegionAsync(string regionId, int precision, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IList<QueryInfo>> GetLatestAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Build query
-            string sqlQuery = String.Format("SELECT * FROM c WHERE c.regionId = @regionId AND c.timestamp > @timestamp");
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.value.regionId = @regionId AND c.timestamp > @timestamp");
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery)
                 .WithParameter("@regionId", regionId)
                 .WithParameter("@timestamp", lastTimestamp);
 
             // Get results
-            FeedIterator<Query> resultIterator = this._queryContainer
-                .GetItemQueryIterator<Query>(cosmosQueryDef);
+            FeedIterator<QueryRecord> resultIterator = this._queryContainer
+                .GetItemQueryIterator<QueryRecord>(cosmosQueryDef);
+            var queryInfo = new List<QueryInfo>();
+
+            while (resultIterator.HasMoreResults)
+            {
+                FeedResponse<QueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
+                QueryRecord obj = result.Resource.FirstOrDefault();
+                queryInfo.Add(new QueryInfo
+                {
+                    QueryId = obj.Id,
+                    Timestamp = obj.Value.Timestamp
+                });
+            }
+
+            return queryInfo;
+        }
+
+        /// <inheritdoc/>
+        public Task<long> GetLatestRegionSizeAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            // TODO: Implement
+            return Task.FromResult((long)100);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IList<Query>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
+        {
+            // Build query
+            IEnumerable<string> idsEscaped = ids.Select(i => String.Format("'{0}'", ids));
+
+            string sqlQuery = String.Format("SELECT * FROM c WHERE id IN ({0})", String.Join(",", idsEscaped));
+            QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
+
+            // Get results
+            FeedIterator<QueryRecord> resultIterator = this._queryContainer
+                .GetItemQueryIterator<QueryRecord>(cosmosQueryDef);
             var queries = new List<Query>();
 
             while (resultIterator.HasMoreResults)
             {
-                FeedResponse<Query> result = await resultIterator.ReadNextAsync(cancellationToken);
-                queries.AddRange(result);
+                FeedResponse<QueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
+                queries.AddRange(result.Select(r => r.Value));
             }
 
             return queries;

@@ -27,22 +27,28 @@ namespace TraceDefense.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Query>> GetByRegionAsync(string regionId, int precision, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IList<Query>> GetByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
         {
-            return await this._queryRepo.GetByRegionAsync(regionId, precision, lastTimestamp, cancellationToken);
+            return await this._queryRepo.GetRangeAsync(ids, cancellationToken);
         }
 
         /// <inheritdoc/>
-        public Task<long> GetQueryResultSize(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IList<QueryInfo>> GetLatestInfoAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            // TODO: Implement properly
-            return Task.FromResult((long) 100);
+            return await this._queryRepo.GetLatestAsync(regionId, lastTimestamp, cancellationToken);
         }
 
         /// <inheritdoc/>
-        public async Task PublishAsync(Query query, CancellationToken cancellationToken = default)
+        public async Task<long> GetLatestRegionSizeAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            await this._queryRepo.InsertAsync(query, cancellationToken);
+            return await this._queryRepo.GetLatestRegionSizeAsync(regionId, lastTimestamp, cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> PublishAsync(Query query, CancellationToken cancellationToken = default)
+        {
+            // Push to upstream data repository
+            return await this._queryRepo.InsertAsync(query, cancellationToken);
         }
     }
 }

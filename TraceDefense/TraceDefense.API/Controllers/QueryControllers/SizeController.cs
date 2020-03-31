@@ -8,14 +8,14 @@ using TraceDefense.API.Models.Protos;
 using TraceDefense.DAL.Services;
 using TraceDefense.Entities.Interactions;
 
-namespace TraceDefense.API.Controllers
+namespace TraceDefense.API.Controllers.QueryControllers
 {
     /// <summary>
     /// Handles <see cref="Query"/> size requests
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/Query/[controller]")]
     [ApiController]
-    public class PollController : ControllerBase
+    public class SizeController : ControllerBase
     {
         /// <summary>
         /// <see cref="Query"/> service layer
@@ -23,10 +23,10 @@ namespace TraceDefense.API.Controllers
         private IQueryService _queryService;
 
         /// <summary>
-        /// Creates a new <see cref="PollController"/> instance
+        /// Creates a new <see cref="SizeController"/> instance
         /// </summary>
-        /// <param name="queryService"></param>
-        public PollController(IQueryService queryService)
+        /// <param name="queryService"><see cref="Query"/> service layer</param>
+        public SizeController(IQueryService queryService)
         {
             // Assign local values
             this._queryService = queryService;
@@ -40,7 +40,7 @@ namespace TraceDefense.API.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Poll?regionId=39%2c-74&amp;lastTimestamp=0
+        ///     GET /Query/Size?regionId=39%2c-74&amp;lastTimestamp=0
         ///     
         /// </remarks>
         /// <response code="200">Successful request with results</response>
@@ -51,7 +51,7 @@ namespace TraceDefense.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(QuerySizeResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> GetAsync(string regionId, long lastTimestamp)
+        public async Task<ActionResult<QuerySizeResponse>> GetAsync(string regionId, long lastTimestamp)
         {
             CancellationToken ct = new CancellationToken();
 
@@ -66,7 +66,7 @@ namespace TraceDefense.API.Controllers
             }
 
             // Get results
-            long result = await this._queryService.GetQueryResultSize(regionId, lastTimestamp, ct);
+            long result = await this._queryService.GetLatestRegionSizeAsync(regionId, lastTimestamp, ct);
 
             if(result > 0)
             {

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TraceDefense.API.Models.Protos;
 using TraceDefense.API.Models.Trace;
 using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Services;
@@ -35,7 +36,7 @@ namespace TraceDefense.API.Controllers
         }
 
         /// <summary>
-        /// Get queries for given query ids
+        /// Get <see cref="Query"/> objects which match provided unique identifiers
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -46,39 +47,31 @@ namespace TraceDefense.API.Controllers
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <response code="404">No results found for request parameters</response>
+        /// <param name="request"><see cref="QueryRequest"/> parameters</param>
         /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(QueryGetResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IList<Query>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryGetResponse>> GetAsync(string regionId, int precision, long lastTimestamp)
+        public async Task<ActionResult<IList<Query>>> PostAsync([FromBody] QueryRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
-            if(String.IsNullOrEmpty(regionId))
-            {
-                return BadRequest();
-            }
-            if(precision < 0)
-            {
-                return BadRequest();
-            }
-            if(lastTimestamp < 0)
+            if(request == null)
             {
                 return BadRequest();
             }
 
             // Get results
-            IList<Query> result = await this._queryService.GetByRegionAsync(regionId, precision, lastTimestamp, ct);
+            IEnumerable<string> requestedIds = request.RequestedQueries
+                .Select(r => r.QueryId);
+            IList<Query> result = await this._queryService
+                .GetByIdsAsync(requestedIds, ct);
 
             if(result.Count > 0)
             {
-                return Ok(new QueryGetResponse
-                {
-                    Queries = result,
-                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-                });
+                return Ok(result);
             }
             else
             {
@@ -92,7 +85,7 @@ namespace TraceDefense.API.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /PublishQueryRequest
+        ///     PUT /Query
         ///     {
         ///        "Query": { "tbd": "if you visited Trader Joe's on 3rd Ave 03/26/2020 between 18.00 and 19.00, call me" },
         ///        "Area": { 
