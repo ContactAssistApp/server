@@ -8,7 +8,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using TraceDefense.DAL.Repositories.Cosmos.Records;
 using TraceDefense.Entities.Geospatial;
-using TraceDefense.Entities.Schemas;
+using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
 {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using TraceDefense.API.Models.Trace;
 using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Services;
-using TraceDefense.Entities.Schemas;
+using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.API.Controllers.Trace
 {
@@ -23,7 +23,6 @@ namespace TraceDefense.API.Controllers.Trace
         /// <see cref="Query"/> service layer
         /// </summary>
         private IQueryService _queryService;
-
 
         /// <summary>
         /// Creates a new <see cref="QueryController"/> instance

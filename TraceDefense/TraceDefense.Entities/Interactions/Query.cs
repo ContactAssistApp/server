@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 using Newtonsoft.Json;
 
-namespace TraceDefense.Entities.Schemas
+namespace TraceDefense.Entities.Interactions
 {
     /// <summary>
     /// Base unit of trace data

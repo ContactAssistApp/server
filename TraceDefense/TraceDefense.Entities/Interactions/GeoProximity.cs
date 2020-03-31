@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace TraceDefense.Entities.Schemas
+namespace TraceDefense.Entities.Interactions
 {
     /// <summary>
     /// Geographic proximity match definition

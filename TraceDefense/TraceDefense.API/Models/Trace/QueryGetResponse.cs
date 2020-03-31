@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using Newtonsoft.Json;
-using TraceDefense.Entities.Schemas;
+using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.API.Models.Trace
 {

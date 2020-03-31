@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using TraceDefense.Entities.Geospatial;
-using TraceDefense.Entities.Schemas;
+using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.DAL.Repositories
 {

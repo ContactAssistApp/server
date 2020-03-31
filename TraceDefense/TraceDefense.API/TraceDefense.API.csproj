@@ -32,4 +32,8 @@
     <ProjectReference Include="..\TraceDefense.Entities\TraceDefense.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappings\" />
+  </ItemGroup>
+
 </Project>
