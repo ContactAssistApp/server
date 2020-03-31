@@ -26,7 +26,7 @@ namespace TraceDefense.DAL.Repositories
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="Query"/> for region, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Data size, in bytes</returns>
-        Task<int> GetLatestRegionSizeAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default);
+        Task<long> GetLatestRegionSizeAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Pulls a collection of <see cref="Query"/> objects by unique identifiers
         /// </summary>
