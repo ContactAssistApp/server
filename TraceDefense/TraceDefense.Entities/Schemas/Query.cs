@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-using TraceDefense.Entities.Geospatial;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
-namespace TraceDefense.Entities
+namespace TraceDefense.Entities.Schemas
 {
+    /// <summary>
+    /// Base unit of trace data
+    /// </summary>
     public class Query
     {
         /// <summary>

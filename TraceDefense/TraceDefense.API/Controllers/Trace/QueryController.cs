@@ -5,13 +5,10 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.API.Models;
 using TraceDefense.API.Models.Trace;
 using TraceDefense.DAL.Providers;
-using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Services;
-using TraceDefense.Entities;
-using TraceDefense.Entities.Geospatial;
+using TraceDefense.Entities.Schemas;
 
 namespace TraceDefense.API.Controllers.Trace
 {
