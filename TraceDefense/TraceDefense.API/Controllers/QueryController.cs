@@ -10,12 +10,12 @@ using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Services;
 using TraceDefense.Entities.Interactions;
 
-namespace TraceDefense.API.Controllers.Trace
+namespace TraceDefense.API.Controllers
 {
     /// <summary>
-    /// Handles trace query submissions
+    /// Handles <see cref="Query"/> CRUD operations
     /// </summary>
-    [Route("api/Trace/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class QueryController : ControllerBase
     {
@@ -39,7 +39,9 @@ namespace TraceDefense.API.Controllers.Trace
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///     GET /Trace/Query?regionId=39%2c-74&amp;lastTimestamp=0
+        /// 
+        ///     GET /Query?regionId=39%2c-74&amp;lastTimestamp=0
+        ///     
         /// </remarks>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
@@ -49,12 +51,16 @@ namespace TraceDefense.API.Controllers.Trace
         [Produces("application/json")]
         [ProducesResponseType(typeof(QueryGetResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryGetResponse>> GetAsync(string regionId, long lastTimestamp)
+        public async Task<ActionResult<QueryGetResponse>> GetAsync(string regionId, int precision, long lastTimestamp)
         {
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
             if(String.IsNullOrEmpty(regionId))
+            {
+                return BadRequest();
+            }
+            if(precision < 0)
             {
                 return BadRequest();
             }
@@ -64,7 +70,7 @@ namespace TraceDefense.API.Controllers.Trace
             }
 
             // Get results
-            IList<Query> result = await this._queryService.GetByRegionAsync(regionId, lastTimestamp, ct);
+            IList<Query> result = await this._queryService.GetByRegionAsync(regionId, precision, lastTimestamp, ct);
 
             if(result.Count > 0)
             {
@@ -107,9 +113,8 @@ namespace TraceDefense.API.Controllers.Trace
         {
             CancellationToken ct = new CancellationToken();
             // TODO: Validate inputs
-
             var regions = RegionProvider.GetRegions(request.Area);
-            await this._queryService.PublishAsync(regions, request.Query, ct);
+            await this._queryService.PublishAsync(request.Query, ct);
             return Ok();
         }
     }

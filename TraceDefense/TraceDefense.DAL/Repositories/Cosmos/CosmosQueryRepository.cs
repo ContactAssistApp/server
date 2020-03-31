@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
-using TraceDefense.Entities.Geospatial;
+using TraceDefense.DAL.Repositories.Cosmos.Records;
 using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
@@ -33,7 +34,36 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Query>> GetQueriesAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<Query> GetAsync(string queryId, CancellationToken cancellationToken = default)
+        {
+            // Build query
+            string sqlQuery = "SELECT * FROM c WHERE id = @id";
+            QueryDefinition queryDef = new QueryDefinition(sqlQuery)
+                .WithParameter("@id", queryId);
+
+            // Get results
+            FeedIterator<QueryRecord> iterator = this._queryContainer
+                .GetItemQueryIterator<QueryRecord>(queryDef);
+            QueryRecord instance = null;
+
+            while(iterator.HasMoreResults)
+            {
+                FeedResponse<QueryRecord> result = await iterator.ReadNextAsync(cancellationToken);
+                instance = result.Resource.FirstOrDefault();
+            }
+
+            if(instance != null)
+            {
+                return instance.Value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<IList<Query>> GetByRegionAsync(string regionId, int precision, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Build query
             string sqlQuery = String.Format("SELECT * FROM c WHERE c.regionId = @regionId AND c.timestamp > @timestamp");
@@ -56,21 +86,22 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task PublishAsync(IList<RegionRef> regions, Query query, CancellationToken cancellationToken = default)
+        public async Task<string> InsertAsync(Query query, CancellationToken cancellationToken = default)
         {
-            Query baseRecord = query;
             query.Id = Guid.NewGuid().ToString();
             query.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            foreach (var r in regions)
-            {
-                // Tag query with appropriate RegionID
-                Query newRecord = baseRecord;
-                query.RegionId = r.Id;
-                // Create Query in database
-                ItemResponse<Query> response = await this._queryContainer
-                    .CreateItemAsync<Query>(newRecord, new PartitionKey(newRecord.RegionId), cancellationToken: cancellationToken);
-            }
+            // Create new QueryRecord
+            QueryRecord toStore = new QueryRecord(query);
+
+            // Update region
+
+            // Create Query in database
+            ItemResponse<Query> response = await this._queryContainer
+                .CreateItemAsync<Query>(query, new PartitionKey(query.RegionId), cancellationToken: cancellationToken);
+
+            // Return unique identifier of new resource
+            return response.Resource.Id;
         }
     }
 }

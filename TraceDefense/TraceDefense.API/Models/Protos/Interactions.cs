@@ -25,34 +25,42 @@ namespace TraceDefense.API.Models.Protos {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CjFUcmFjZURlZmVuc2UuQVBJL01vZGVscy9Qcm90b3MvSW50ZXJhY3Rpb25z",
-            "LnByb3RvEgZDb3JvbmEiZwoQUXVlcnlMaXN0UmVxdWVzdBIpCg9jb2Fyc2Vf",
-            "bG9jYXRpb24YASABKAsyEC5Db3JvbmEuTG9jYXRpb24SKAoPbGFzdF9xdWVy",
-            "eV90aW1lGAIgASgLMg8uQ29yb25hLlVUQ1RpbWUiOQoRUXVlcnlMaXN0UmVz",
-            "cG9uc2USJAoJcXVlcnlpbmZvGAEgAygLMhEuQ29yb25hLlF1ZXJ5SW5mbyI8",
-            "CgxRdWVyeVJlcXVlc3QSLAoRcmVxdWVzdGVkX3F1ZXJpZXMYASADKAsyES5D",
-            "b3JvbmEuUXVlcnlJbmZvIl8KDlByb3hpbWl0eVF1ZXJ5EisKDWdlb19wcm94",
-            "aW1pdHkYASADKAsyFC5Db3JvbmEuR2VvUHJveGltaXR5EiAKB2lkX2xpc3QY",
-            "AiADKAsyDy5Db3JvbmEuSURNYXRjaCJHCglRdWVyeUluZm8SEAoIcXVlcnlf",
-            "aWQYASABKAkSKAoPcXVlcnlfdGltZXN0YW1wGAIgASgLMg8uQ29yb25hLlVU",
-            "Q1RpbWUiLAoHSURNYXRjaBIUCgx1c2VyX21lc3NhZ2UYASABKAkSCwoDaWRz",
-            "GAIgAygJIo8BCgxHZW9Qcm94aW1pdHkSFAoMdXNlcl9tZXNzYWdlGAEgASgJ",
-            "EicKCWxvY2F0aW9ucxgCIAMoCzIULkNvcm9uYS5Mb2NhdGlvblRpbWUSHwoX",
-            "cHJveGltaXR5X3JhZGl1c19tZXRlcnMYAyABKAISHwoXZHVyYXRpb25fdG9s",
-            "ZXJhbmNlX3NlY3MYBCABKAUiUQoMTG9jYXRpb25UaW1lEiIKCGxvY2F0aW9u",
-            "GAEgASgLMhAuQ29yb25hLkxvY2F0aW9uEh0KBHRpbWUYAiABKAsyDy5Db3Jv",
-            "bmEuVVRDVGltZSJ2CgdVVENUaW1lEgwKBHllYXIYASABKAUSDQoFbW9udGgY",
-            "AiABKAUSCwoDZGF5GAMgASgFEgwKBGhvdXIYBCABKAUSDgoGbWludXRlGAUg",
-            "ASgFEg4KBnNlY29uZBgJIAEoBRITCgttaWxsaXNlY29uZBgKIAEoBSJHCghM",
-            "b2NhdGlvbhIRCglsYXR0aXR1ZGUYASABKAISEQoJbG9uZ2l0dWRlGAIgASgC",
-            "EhUKDXJhZGl1c19tZXRlcnMYAyABKAJCIaoCHlRyYWNlRGVmZW5zZS5BUEku",
-            "TW9kZWxzLlByb3Rvc2IGcHJvdG8z"));
+            "LnByb3RvEgZDb3JvbmEiXAoQUXVlcnlTaXplUmVxdWVzdBIeCgZyZWdpb24Y",
+            "ASACKAsyDi5Db3JvbmEuUmVnaW9uEigKD2xhc3RfcXVlcnlfdGltZRgCIAIo",
+            "CzIPLkNvcm9uYS5VVENUaW1lIjMKEVF1ZXJ5U2l6ZVJlc3BvbnNlEh4KFnNp",
+            "emVfb2ZfcXVlcnlfcmVzcG9uc2UYASACKAMiXAoQUXVlcnlMaXN0UmVxdWVz",
+            "dBIeCgZyZWdpb24YASACKAsyDi5Db3JvbmEuUmVnaW9uEigKD2xhc3RfcXVl",
+            "cnlfdGltZRgCIAIoCzIPLkNvcm9uYS5VVENUaW1lIjkKEVF1ZXJ5TGlzdFJl",
+            "c3BvbnNlEiQKCXF1ZXJ5aW5mbxgBIAMoCzIRLkNvcm9uYS5RdWVyeUluZm8i",
+            "PAoMUXVlcnlSZXF1ZXN0EiwKEXJlcXVlc3RlZF9xdWVyaWVzGAEgAygLMhEu",
+            "Q29yb25hLlF1ZXJ5SW5mbyJ7Cg5Qcm94aW1pdHlRdWVyeRIaCg9tZXNzYWdl",
+            "X3ZlcnNpb24YASACKAU6ATESKwoNZ2VvX3Byb3hpbWl0eRgCIAMoCzIULkNv",
+            "cm9uYS5HZW9Qcm94aW1pdHkSIAoHaWRfbGlzdBgDIAMoCzIPLkNvcm9uYS5J",
+            "RE1hdGNoIkEKBlJlZ2lvbhIRCglsYXR0aXR1ZGUYASACKAESEQoJbG9uZ2l0",
+            "dWRlGAIgAigBEhEKCXByZWNpc2lvbhgDIAIoBSJHCglRdWVyeUluZm8SEAoI",
+            "cXVlcnlfaWQYASACKAkSKAoPcXVlcnlfdGltZXN0YW1wGAIgAigLMg8uQ29y",
+            "b25hLlVUQ1RpbWUiLAoHSURNYXRjaBIUCgx1c2VyX21lc3NhZ2UYASACKAkS",
+            "CwoDaWRzGAIgAygJIo8BCgxHZW9Qcm94aW1pdHkSFAoMdXNlcl9tZXNzYWdl",
+            "GAEgAigJEicKCWxvY2F0aW9ucxgCIAMoCzIULkNvcm9uYS5Mb2NhdGlvblRp",
+            "bWUSHwoXcHJveGltaXR5X3JhZGl1c19tZXRlcnMYAyACKAISHwoXZHVyYXRp",
+            "b25fdG9sZXJhbmNlX3NlY3MYBCACKAUiUQoMTG9jYXRpb25UaW1lEiIKCGxv",
+            "Y2F0aW9uGAEgAigLMhAuQ29yb25hLkxvY2F0aW9uEh0KBHRpbWUYAiACKAsy",
+            "Dy5Db3JvbmEuVVRDVGltZSJ2CgdVVENUaW1lEgwKBHllYXIYASACKAUSDQoF",
+            "bW9udGgYAiACKAUSCwoDZGF5GAMgAigFEgwKBGhvdXIYBCACKAUSDgoGbWlu",
+            "dXRlGAUgAigFEg4KBnNlY29uZBgJIAIoBRITCgttaWxsaXNlY29uZBgKIAIo",
+            "BSJHCghMb2NhdGlvbhIRCglsYXR0aXR1ZGUYASACKAISEQoJbG9uZ2l0dWRl",
+            "GAIgAigCEhUKDXJhZGl1c19tZXRlcnMYAyACKAJCIaoCHlRyYWNlRGVmZW5z",
+            "ZS5BUEkuTW9kZWxzLlByb3Rvcw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QueryListRequest), global::TraceDefense.API.Models.Protos.QueryListRequest.Parser, new[]{ "CoarseLocation", "LastQueryTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QuerySizeRequest), global::TraceDefense.API.Models.Protos.QuerySizeRequest.Parser, new[]{ "Region", "LastQueryTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QuerySizeResponse), global::TraceDefense.API.Models.Protos.QuerySizeResponse.Parser, new[]{ "SizeOfQueryResponse" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QueryListRequest), global::TraceDefense.API.Models.Protos.QueryListRequest.Parser, new[]{ "Region", "LastQueryTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QueryListResponse), global::TraceDefense.API.Models.Protos.QueryListResponse.Parser, new[]{ "Queryinfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QueryRequest), global::TraceDefense.API.Models.Protos.QueryRequest.Parser, new[]{ "RequestedQueries" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.ProximityQuery), global::TraceDefense.API.Models.Protos.ProximityQuery.Parser, new[]{ "GeoProximity", "IdList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.ProximityQuery), global::TraceDefense.API.Models.Protos.ProximityQuery.Parser, new[]{ "MessageVersion", "GeoProximity", "IdList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.Region), global::TraceDefense.API.Models.Protos.Region.Parser, new[]{ "Lattitude", "Longitude", "Precision" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.QueryInfo), global::TraceDefense.API.Models.Protos.QueryInfo.Parser, new[]{ "QueryId", "QueryTimestamp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.IDMatch), global::TraceDefense.API.Models.Protos.IDMatch.Parser, new[]{ "UserMessage", "Ids" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TraceDefense.API.Models.Protos.GeoProximity), global::TraceDefense.API.Models.Protos.GeoProximity.Parser, new[]{ "UserMessage", "Locations", "ProximityRadiusMeters", "DurationToleranceSecs" }, null, null, null, null),
@@ -66,13 +74,13 @@ namespace TraceDefense.API.Models.Protos {
   }
   #region Messages
   /// <summary>
-  /// Phone -> Server get_queries(coarse_location, last_query_time)
+  /// Phone -> Server; Request to get size of Query
   /// </summary>
-  public sealed partial class QueryListRequest : pb::IMessage<QueryListRequest> {
-    private static readonly pb::MessageParser<QueryListRequest> _parser = new pb::MessageParser<QueryListRequest>(() => new QueryListRequest());
+  public sealed partial class QuerySizeRequest : pb::IMessage<QuerySizeRequest> {
+    private static readonly pb::MessageParser<QuerySizeRequest> _parser = new pb::MessageParser<QuerySizeRequest>(() => new QuerySizeRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<QueryListRequest> Parser { get { return _parser; } }
+    public static pb::MessageParser<QuerySizeRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -85,33 +93,43 @@ namespace TraceDefense.API.Models.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public QueryListRequest() {
+    public QuerySizeRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public QueryListRequest(QueryListRequest other) : this() {
-      coarseLocation_ = other.coarseLocation_ != null ? other.coarseLocation_.Clone() : null;
-      lastQueryTime_ = other.lastQueryTime_ != null ? other.lastQueryTime_.Clone() : null;
+    public QuerySizeRequest(QuerySizeRequest other) : this() {
+      region_ = other.HasRegion ? other.region_.Clone() : null;
+      lastQueryTime_ = other.HasLastQueryTime ? other.lastQueryTime_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public QueryListRequest Clone() {
-      return new QueryListRequest(this);
+    public QuerySizeRequest Clone() {
+      return new QuerySizeRequest(this);
     }
 
-    /// <summary>Field number for the "coarse_location" field.</summary>
-    public const int CoarseLocationFieldNumber = 1;
-    private global::TraceDefense.API.Models.Protos.Location coarseLocation_;
+    /// <summary>Field number for the "region" field.</summary>
+    public const int RegionFieldNumber = 1;
+    private global::TraceDefense.API.Models.Protos.Region region_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::TraceDefense.API.Models.Protos.Location CoarseLocation {
-      get { return coarseLocation_; }
+    public global::TraceDefense.API.Models.Protos.Region Region {
+      get { return region_; }
       set {
-        coarseLocation_ = value;
+        region_ = value;
       }
+    }
+    /// <summary>Gets whether the region field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasRegion {
+      get { return region_ != null; }
+    }
+    /// <summary>Clears the value of the region field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearRegion() {
+      region_ = null;
     }
 
     /// <summary>Field number for the "last_query_time" field.</summary>
@@ -124,21 +142,31 @@ namespace TraceDefense.API.Models.Protos {
         lastQueryTime_ = value;
       }
     }
-
+    /// <summary>Gets whether the last_query_time field is set</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as QueryListRequest);
+    public bool HasLastQueryTime {
+      get { return lastQueryTime_ != null; }
+    }
+    /// <summary>Clears the value of the last_query_time field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLastQueryTime() {
+      lastQueryTime_ = null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(QueryListRequest other) {
+    public override bool Equals(object other) {
+      return Equals(other as QuerySizeRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(QuerySizeRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(CoarseLocation, other.CoarseLocation)) return false;
+      if (!object.Equals(Region, other.Region)) return false;
       if (!object.Equals(LastQueryTime, other.LastQueryTime)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -146,8 +174,8 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (coarseLocation_ != null) hash ^= CoarseLocation.GetHashCode();
-      if (lastQueryTime_ != null) hash ^= LastQueryTime.GetHashCode();
+      if (HasRegion) hash ^= Region.GetHashCode();
+      if (HasLastQueryTime) hash ^= LastQueryTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -161,11 +189,11 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (coarseLocation_ != null) {
+      if (HasRegion) {
         output.WriteRawTag(10);
-        output.WriteMessage(CoarseLocation);
+        output.WriteMessage(Region);
       }
-      if (lastQueryTime_ != null) {
+      if (HasLastQueryTime) {
         output.WriteRawTag(18);
         output.WriteMessage(LastQueryTime);
       }
@@ -177,10 +205,10 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (coarseLocation_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CoarseLocation);
+      if (HasRegion) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Region);
       }
-      if (lastQueryTime_ != null) {
+      if (HasLastQueryTime) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastQueryTime);
       }
       if (_unknownFields != null) {
@@ -190,18 +218,18 @@ namespace TraceDefense.API.Models.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(QueryListRequest other) {
+    public void MergeFrom(QuerySizeRequest other) {
       if (other == null) {
         return;
       }
-      if (other.coarseLocation_ != null) {
-        if (coarseLocation_ == null) {
-          CoarseLocation = new global::TraceDefense.API.Models.Protos.Location();
+      if (other.HasRegion) {
+        if (!HasRegion) {
+          Region = new global::TraceDefense.API.Models.Protos.Region();
         }
-        CoarseLocation.MergeFrom(other.CoarseLocation);
+        Region.MergeFrom(other.Region);
       }
-      if (other.lastQueryTime_ != null) {
-        if (lastQueryTime_ == null) {
+      if (other.HasLastQueryTime) {
+        if (!HasLastQueryTime) {
           LastQueryTime = new global::TraceDefense.API.Models.Protos.UTCTime();
         }
         LastQueryTime.MergeFrom(other.LastQueryTime);
@@ -218,14 +246,14 @@ namespace TraceDefense.API.Models.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            if (coarseLocation_ == null) {
-              CoarseLocation = new global::TraceDefense.API.Models.Protos.Location();
+            if (!HasRegion) {
+              Region = new global::TraceDefense.API.Models.Protos.Region();
             }
-            input.ReadMessage(CoarseLocation);
+            input.ReadMessage(Region);
             break;
           }
           case 18: {
-            if (lastQueryTime_ == null) {
+            if (!HasLastQueryTime) {
               LastQueryTime = new global::TraceDefense.API.Models.Protos.UTCTime();
             }
             input.ReadMessage(LastQueryTime);
@@ -238,7 +266,346 @@ namespace TraceDefense.API.Models.Protos {
   }
 
   /// <summary>
-  /// Server -> Phone list of queries for coarse_location
+  /// Server -> Phone; Provide size of query in bytes of the response
+  /// </summary>
+  public sealed partial class QuerySizeResponse : pb::IMessage<QuerySizeResponse> {
+    private static readonly pb::MessageParser<QuerySizeResponse> _parser = new pb::MessageParser<QuerySizeResponse>(() => new QuerySizeResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<QuerySizeResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public QuerySizeResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public QuerySizeResponse(QuerySizeResponse other) : this() {
+      _hasBits0 = other._hasBits0;
+      sizeOfQueryResponse_ = other.sizeOfQueryResponse_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public QuerySizeResponse Clone() {
+      return new QuerySizeResponse(this);
+    }
+
+    /// <summary>Field number for the "size_of_query_response" field.</summary>
+    public const int SizeOfQueryResponseFieldNumber = 1;
+    private readonly static long SizeOfQueryResponseDefaultValue = 0L;
+
+    private long sizeOfQueryResponse_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long SizeOfQueryResponse {
+      get { if ((_hasBits0 & 1) != 0) { return sizeOfQueryResponse_; } else { return SizeOfQueryResponseDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        sizeOfQueryResponse_ = value;
+      }
+    }
+    /// <summary>Gets whether the "size_of_query_response" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasSizeOfQueryResponse {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "size_of_query_response" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearSizeOfQueryResponse() {
+      _hasBits0 &= ~1;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as QuerySizeResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(QuerySizeResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (SizeOfQueryResponse != other.SizeOfQueryResponse) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (HasSizeOfQueryResponse) hash ^= SizeOfQueryResponse.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (HasSizeOfQueryResponse) {
+        output.WriteRawTag(8);
+        output.WriteInt64(SizeOfQueryResponse);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (HasSizeOfQueryResponse) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(SizeOfQueryResponse);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(QuerySizeResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.HasSizeOfQueryResponse) {
+        SizeOfQueryResponse = other.SizeOfQueryResponse;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            SizeOfQueryResponse = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Phone -> Server get_queries(coarse_region, last_query_time)
+  /// </summary>
+  public sealed partial class QueryListRequest : pb::IMessage<QueryListRequest> {
+    private static readonly pb::MessageParser<QueryListRequest> _parser = new pb::MessageParser<QueryListRequest>(() => new QueryListRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<QueryListRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public QueryListRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public QueryListRequest(QueryListRequest other) : this() {
+      region_ = other.HasRegion ? other.region_.Clone() : null;
+      lastQueryTime_ = other.HasLastQueryTime ? other.lastQueryTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public QueryListRequest Clone() {
+      return new QueryListRequest(this);
+    }
+
+    /// <summary>Field number for the "region" field.</summary>
+    public const int RegionFieldNumber = 1;
+    private global::TraceDefense.API.Models.Protos.Region region_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::TraceDefense.API.Models.Protos.Region Region {
+      get { return region_; }
+      set {
+        region_ = value;
+      }
+    }
+    /// <summary>Gets whether the region field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasRegion {
+      get { return region_ != null; }
+    }
+    /// <summary>Clears the value of the region field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearRegion() {
+      region_ = null;
+    }
+
+    /// <summary>Field number for the "last_query_time" field.</summary>
+    public const int LastQueryTimeFieldNumber = 2;
+    private global::TraceDefense.API.Models.Protos.UTCTime lastQueryTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::TraceDefense.API.Models.Protos.UTCTime LastQueryTime {
+      get { return lastQueryTime_; }
+      set {
+        lastQueryTime_ = value;
+      }
+    }
+    /// <summary>Gets whether the last_query_time field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasLastQueryTime {
+      get { return lastQueryTime_ != null; }
+    }
+    /// <summary>Clears the value of the last_query_time field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLastQueryTime() {
+      lastQueryTime_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as QueryListRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(QueryListRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Region, other.Region)) return false;
+      if (!object.Equals(LastQueryTime, other.LastQueryTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (HasRegion) hash ^= Region.GetHashCode();
+      if (HasLastQueryTime) hash ^= LastQueryTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (HasRegion) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Region);
+      }
+      if (HasLastQueryTime) {
+        output.WriteRawTag(18);
+        output.WriteMessage(LastQueryTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (HasRegion) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Region);
+      }
+      if (HasLastQueryTime) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastQueryTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(QueryListRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.HasRegion) {
+        if (!HasRegion) {
+          Region = new global::TraceDefense.API.Models.Protos.Region();
+        }
+        Region.MergeFrom(other.Region);
+      }
+      if (other.HasLastQueryTime) {
+        if (!HasLastQueryTime) {
+          LastQueryTime = new global::TraceDefense.API.Models.Protos.UTCTime();
+        }
+        LastQueryTime.MergeFrom(other.LastQueryTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (!HasRegion) {
+              Region = new global::TraceDefense.API.Models.Protos.Region();
+            }
+            input.ReadMessage(Region);
+            break;
+          }
+          case 18: {
+            if (!HasLastQueryTime) {
+              LastQueryTime = new global::TraceDefense.API.Models.Protos.UTCTime();
+            }
+            input.ReadMessage(LastQueryTime);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Server -> Phone list of queries for coarse_region
   /// </summary>
   public sealed partial class QueryListResponse : pb::IMessage<QueryListResponse> {
     private static readonly pb::MessageParser<QueryListResponse> _parser = new pb::MessageParser<QueryListResponse>(() => new QueryListResponse());
@@ -248,7 +615,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[1]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -373,7 +740,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[2]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -493,12 +860,13 @@ namespace TraceDefense.API.Models.Protos {
   public sealed partial class ProximityQuery : pb::IMessage<ProximityQuery> {
     private static readonly pb::MessageParser<ProximityQuery> _parser = new pb::MessageParser<ProximityQuery>(() => new ProximityQuery());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pb::MessageParser<ProximityQuery> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[3]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -515,6 +883,8 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ProximityQuery(ProximityQuery other) : this() {
+      _hasBits0 = other._hasBits0;
+      messageVersion_ = other.messageVersion_;
       geoProximity_ = other.geoProximity_.Clone();
       idList_ = other.idList_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -525,10 +895,37 @@ namespace TraceDefense.API.Models.Protos {
       return new ProximityQuery(this);
     }
 
+    /// <summary>Field number for the "message_version" field.</summary>
+    public const int MessageVersionFieldNumber = 1;
+    private readonly static int MessageVersionDefaultValue = 1;
+
+    private int messageVersion_;
+    /// <summary>
+    /// This is set to some constant on the server.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int MessageVersion {
+      get { if ((_hasBits0 & 1) != 0) { return messageVersion_; } else { return MessageVersionDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        messageVersion_ = value;
+      }
+    }
+    /// <summary>Gets whether the "message_version" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasMessageVersion {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "message_version" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearMessageVersion() {
+      _hasBits0 &= ~1;
+    }
+
     /// <summary>Field number for the "geo_proximity" field.</summary>
-    public const int GeoProximityFieldNumber = 1;
+    public const int GeoProximityFieldNumber = 2;
     private static readonly pb::FieldCodec<global::TraceDefense.API.Models.Protos.GeoProximity> _repeated_geoProximity_codec
-        = pb::FieldCodec.ForMessage(10, global::TraceDefense.API.Models.Protos.GeoProximity.Parser);
+        = pb::FieldCodec.ForMessage(18, global::TraceDefense.API.Models.Protos.GeoProximity.Parser);
     private readonly pbc::RepeatedField<global::TraceDefense.API.Models.Protos.GeoProximity> geoProximity_ = new pbc::RepeatedField<global::TraceDefense.API.Models.Protos.GeoProximity>();
     /// <summary>
     /// at or around &lt;place[]> for more than &lt;duration> around &lt;time[]>
@@ -539,9 +936,9 @@ namespace TraceDefense.API.Models.Protos {
     }
 
     /// <summary>Field number for the "id_list" field.</summary>
-    public const int IdListFieldNumber = 2;
+    public const int IdListFieldNumber = 3;
     private static readonly pb::FieldCodec<global::TraceDefense.API.Models.Protos.IDMatch> _repeated_idList_codec
-        = pb::FieldCodec.ForMessage(18, global::TraceDefense.API.Models.Protos.IDMatch.Parser);
+        = pb::FieldCodec.ForMessage(26, global::TraceDefense.API.Models.Protos.IDMatch.Parser);
     private readonly pbc::RepeatedField<global::TraceDefense.API.Models.Protos.IDMatch> idList_ = new pbc::RepeatedField<global::TraceDefense.API.Models.Protos.IDMatch>();
     /// <summary>
     /// near &lt;person>; where person is identified by some kind of blue tooth beacon
@@ -564,6 +961,7 @@ namespace TraceDefense.API.Models.Protos {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (MessageVersion != other.MessageVersion) return false;
       if(!geoProximity_.Equals(other.geoProximity_)) return false;
       if(!idList_.Equals(other.idList_)) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -572,6 +970,7 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (HasMessageVersion) hash ^= MessageVersion.GetHashCode();
       hash ^= geoProximity_.GetHashCode();
       hash ^= idList_.GetHashCode();
       if (_unknownFields != null) {
@@ -587,6 +986,10 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (HasMessageVersion) {
+        output.WriteRawTag(8);
+        output.WriteInt32(MessageVersion);
+      }
       geoProximity_.WriteTo(output, _repeated_geoProximity_codec);
       idList_.WriteTo(output, _repeated_idList_codec);
       if (_unknownFields != null) {
@@ -597,6 +1000,9 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (HasMessageVersion) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MessageVersion);
+      }
       size += geoProximity_.CalculateSize(_repeated_geoProximity_codec);
       size += idList_.CalculateSize(_repeated_idList_codec);
       if (_unknownFields != null) {
@@ -609,6 +1015,9 @@ namespace TraceDefense.API.Models.Protos {
     public void MergeFrom(ProximityQuery other) {
       if (other == null) {
         return;
+      }
+      if (other.HasMessageVersion) {
+        MessageVersion = other.MessageVersion;
       }
       geoProximity_.Add(other.geoProximity_);
       idList_.Add(other.idList_);
@@ -623,12 +1032,248 @@ namespace TraceDefense.API.Models.Protos {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            geoProximity_.AddEntriesFrom(input, _repeated_geoProximity_codec);
+          case 8: {
+            MessageVersion = input.ReadInt32();
             break;
           }
           case 18: {
+            geoProximity_.AddEntriesFrom(input, _repeated_geoProximity_codec);
+            break;
+          }
+          case 26: {
             idList_.AddEntriesFrom(input, _repeated_idList_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Represents a geographic region quantized by precision of lat/long
+  /// </summary>
+  public sealed partial class Region : pb::IMessage<Region> {
+    private static readonly pb::MessageParser<Region> _parser = new pb::MessageParser<Region>(() => new Region());
+    private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Region> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Region() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Region(Region other) : this() {
+      _hasBits0 = other._hasBits0;
+      lattitude_ = other.lattitude_;
+      longitude_ = other.longitude_;
+      precision_ = other.precision_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Region Clone() {
+      return new Region(this);
+    }
+
+    /// <summary>Field number for the "lattitude" field.</summary>
+    public const int LattitudeFieldNumber = 1;
+    private readonly static double LattitudeDefaultValue = 0D;
+
+    private double lattitude_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public double Lattitude {
+      get { if ((_hasBits0 & 1) != 0) { return lattitude_; } else { return LattitudeDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        lattitude_ = value;
+      }
+    }
+    /// <summary>Gets whether the "lattitude" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasLattitude {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "lattitude" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLattitude() {
+      _hasBits0 &= ~1;
+    }
+
+    /// <summary>Field number for the "longitude" field.</summary>
+    public const int LongitudeFieldNumber = 2;
+    private readonly static double LongitudeDefaultValue = 0D;
+
+    private double longitude_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public double Longitude {
+      get { if ((_hasBits0 & 2) != 0) { return longitude_; } else { return LongitudeDefaultValue; } }
+      set {
+        _hasBits0 |= 2;
+        longitude_ = value;
+      }
+    }
+    /// <summary>Gets whether the "longitude" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasLongitude {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "longitude" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLongitude() {
+      _hasBits0 &= ~2;
+    }
+
+    /// <summary>Field number for the "precision" field.</summary>
+    public const int PrecisionFieldNumber = 3;
+    private readonly static int PrecisionDefaultValue = 0;
+
+    private int precision_;
+    /// <summary>
+    /// Mantissa mask.  Number of bits of Mantissa that should be preserved
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Precision {
+      get { if ((_hasBits0 & 4) != 0) { return precision_; } else { return PrecisionDefaultValue; } }
+      set {
+        _hasBits0 |= 4;
+        precision_ = value;
+      }
+    }
+    /// <summary>Gets whether the "precision" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasPrecision {
+      get { return (_hasBits0 & 4) != 0; }
+    }
+    /// <summary>Clears the value of the "precision" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearPrecision() {
+      _hasBits0 &= ~4;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Region);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Region other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Lattitude, other.Lattitude)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Longitude, other.Longitude)) return false;
+      if (Precision != other.Precision) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (HasLattitude) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Lattitude);
+      if (HasLongitude) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Longitude);
+      if (HasPrecision) hash ^= Precision.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (HasLattitude) {
+        output.WriteRawTag(9);
+        output.WriteDouble(Lattitude);
+      }
+      if (HasLongitude) {
+        output.WriteRawTag(17);
+        output.WriteDouble(Longitude);
+      }
+      if (HasPrecision) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Precision);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (HasLattitude) {
+        size += 1 + 8;
+      }
+      if (HasLongitude) {
+        size += 1 + 8;
+      }
+      if (HasPrecision) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Precision);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Region other) {
+      if (other == null) {
+        return;
+      }
+      if (other.HasLattitude) {
+        Lattitude = other.Lattitude;
+      }
+      if (other.HasLongitude) {
+        Longitude = other.Longitude;
+      }
+      if (other.HasPrecision) {
+        Precision = other.Precision;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 9: {
+            Lattitude = input.ReadDouble();
+            break;
+          }
+          case 17: {
+            Longitude = input.ReadDouble();
+            break;
+          }
+          case 24: {
+            Precision = input.ReadInt32();
             break;
           }
         }
@@ -648,7 +1293,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[4]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -666,7 +1311,7 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public QueryInfo(QueryInfo other) : this() {
       queryId_ = other.queryId_;
-      queryTimestamp_ = other.queryTimestamp_ != null ? other.queryTimestamp_.Clone() : null;
+      queryTimestamp_ = other.HasQueryTimestamp ? other.queryTimestamp_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -677,13 +1322,25 @@ namespace TraceDefense.API.Models.Protos {
 
     /// <summary>Field number for the "query_id" field.</summary>
     public const int QueryIdFieldNumber = 1;
-    private string queryId_ = "";
+    private readonly static string QueryIdDefaultValue = "";
+
+    private string queryId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string QueryId {
-      get { return queryId_; }
+      get { return queryId_ ?? QueryIdDefaultValue; }
       set {
         queryId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
+    }
+    /// <summary>Gets whether the "query_id" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasQueryId {
+      get { return queryId_ != null; }
+    }
+    /// <summary>Clears the value of the "query_id" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearQueryId() {
+      queryId_ = null;
     }
 
     /// <summary>Field number for the "query_timestamp" field.</summary>
@@ -695,6 +1352,16 @@ namespace TraceDefense.API.Models.Protos {
       set {
         queryTimestamp_ = value;
       }
+    }
+    /// <summary>Gets whether the query_timestamp field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasQueryTimestamp {
+      get { return queryTimestamp_ != null; }
+    }
+    /// <summary>Clears the value of the query_timestamp field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearQueryTimestamp() {
+      queryTimestamp_ = null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -718,8 +1385,8 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (QueryId.Length != 0) hash ^= QueryId.GetHashCode();
-      if (queryTimestamp_ != null) hash ^= QueryTimestamp.GetHashCode();
+      if (HasQueryId) hash ^= QueryId.GetHashCode();
+      if (HasQueryTimestamp) hash ^= QueryTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -733,11 +1400,11 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (QueryId.Length != 0) {
+      if (HasQueryId) {
         output.WriteRawTag(10);
         output.WriteString(QueryId);
       }
-      if (queryTimestamp_ != null) {
+      if (HasQueryTimestamp) {
         output.WriteRawTag(18);
         output.WriteMessage(QueryTimestamp);
       }
@@ -749,10 +1416,10 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (QueryId.Length != 0) {
+      if (HasQueryId) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(QueryId);
       }
-      if (queryTimestamp_ != null) {
+      if (HasQueryTimestamp) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(QueryTimestamp);
       }
       if (_unknownFields != null) {
@@ -766,11 +1433,11 @@ namespace TraceDefense.API.Models.Protos {
       if (other == null) {
         return;
       }
-      if (other.QueryId.Length != 0) {
+      if (other.HasQueryId) {
         QueryId = other.QueryId;
       }
-      if (other.queryTimestamp_ != null) {
-        if (queryTimestamp_ == null) {
+      if (other.HasQueryTimestamp) {
+        if (!HasQueryTimestamp) {
           QueryTimestamp = new global::TraceDefense.API.Models.Protos.UTCTime();
         }
         QueryTimestamp.MergeFrom(other.QueryTimestamp);
@@ -791,7 +1458,7 @@ namespace TraceDefense.API.Models.Protos {
             break;
           }
           case 18: {
-            if (queryTimestamp_ == null) {
+            if (!HasQueryTimestamp) {
               QueryTimestamp = new global::TraceDefense.API.Models.Protos.UTCTime();
             }
             input.ReadMessage(QueryTimestamp);
@@ -814,7 +1481,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[5]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -843,16 +1510,28 @@ namespace TraceDefense.API.Models.Protos {
 
     /// <summary>Field number for the "user_message" field.</summary>
     public const int UserMessageFieldNumber = 1;
-    private string userMessage_ = "";
+    private readonly static string UserMessageDefaultValue = "";
+
+    private string userMessage_;
     /// <summary>
     /// Message to be displayed to the user if there is a match
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string UserMessage {
-      get { return userMessage_; }
+      get { return userMessage_ ?? UserMessageDefaultValue; }
       set {
         userMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
+    }
+    /// <summary>Gets whether the "user_message" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasUserMessage {
+      get { return userMessage_ != null; }
+    }
+    /// <summary>Clears the value of the "user_message" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearUserMessage() {
+      userMessage_ = null;
     }
 
     /// <summary>Field number for the "ids" field.</summary>
@@ -890,7 +1569,7 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (UserMessage.Length != 0) hash ^= UserMessage.GetHashCode();
+      if (HasUserMessage) hash ^= UserMessage.GetHashCode();
       hash ^= ids_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -905,7 +1584,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (UserMessage.Length != 0) {
+      if (HasUserMessage) {
         output.WriteRawTag(10);
         output.WriteString(UserMessage);
       }
@@ -918,7 +1597,7 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (UserMessage.Length != 0) {
+      if (HasUserMessage) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserMessage);
       }
       size += ids_.CalculateSize(_repeated_ids_codec);
@@ -933,7 +1612,7 @@ namespace TraceDefense.API.Models.Protos {
       if (other == null) {
         return;
       }
-      if (other.UserMessage.Length != 0) {
+      if (other.HasUserMessage) {
         UserMessage = other.UserMessage;
       }
       ids_.Add(other.ids_);
@@ -968,12 +1647,13 @@ namespace TraceDefense.API.Models.Protos {
   public sealed partial class GeoProximity : pb::IMessage<GeoProximity> {
     private static readonly pb::MessageParser<GeoProximity> _parser = new pb::MessageParser<GeoProximity>(() => new GeoProximity());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pb::MessageParser<GeoProximity> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[6]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -990,6 +1670,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GeoProximity(GeoProximity other) : this() {
+      _hasBits0 = other._hasBits0;
       userMessage_ = other.userMessage_;
       locations_ = other.locations_.Clone();
       proximityRadiusMeters_ = other.proximityRadiusMeters_;
@@ -1004,16 +1685,28 @@ namespace TraceDefense.API.Models.Protos {
 
     /// <summary>Field number for the "user_message" field.</summary>
     public const int UserMessageFieldNumber = 1;
-    private string userMessage_ = "";
+    private readonly static string UserMessageDefaultValue = "";
+
+    private string userMessage_;
     /// <summary>
     /// Message to be displayed to the user if there is a match
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string UserMessage {
-      get { return userMessage_; }
+      get { return userMessage_ ?? UserMessageDefaultValue; }
       set {
         userMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
+    }
+    /// <summary>Gets whether the "user_message" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasUserMessage {
+      get { return userMessage_ != null; }
+    }
+    /// <summary>Clears the value of the "user_message" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearUserMessage() {
+      userMessage_ = null;
     }
 
     /// <summary>Field number for the "locations" field.</summary>
@@ -1028,24 +1721,50 @@ namespace TraceDefense.API.Models.Protos {
 
     /// <summary>Field number for the "proximity_radius_meters" field.</summary>
     public const int ProximityRadiusMetersFieldNumber = 3;
+    private readonly static float ProximityRadiusMetersDefaultValue = 0F;
+
     private float proximityRadiusMeters_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float ProximityRadiusMeters {
-      get { return proximityRadiusMeters_; }
+      get { if ((_hasBits0 & 1) != 0) { return proximityRadiusMeters_; } else { return ProximityRadiusMetersDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         proximityRadiusMeters_ = value;
       }
+    }
+    /// <summary>Gets whether the "proximity_radius_meters" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasProximityRadiusMeters {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "proximity_radius_meters" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearProximityRadiusMeters() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "duration_tolerance_secs" field.</summary>
     public const int DurationToleranceSecsFieldNumber = 4;
+    private readonly static int DurationToleranceSecsDefaultValue = 0;
+
     private int durationToleranceSecs_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int DurationToleranceSecs {
-      get { return durationToleranceSecs_; }
+      get { if ((_hasBits0 & 2) != 0) { return durationToleranceSecs_; } else { return DurationToleranceSecsDefaultValue; } }
       set {
+        _hasBits0 |= 2;
         durationToleranceSecs_ = value;
       }
+    }
+    /// <summary>Gets whether the "duration_tolerance_secs" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasDurationToleranceSecs {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "duration_tolerance_secs" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearDurationToleranceSecs() {
+      _hasBits0 &= ~2;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1071,10 +1790,10 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (UserMessage.Length != 0) hash ^= UserMessage.GetHashCode();
+      if (HasUserMessage) hash ^= UserMessage.GetHashCode();
       hash ^= locations_.GetHashCode();
-      if (ProximityRadiusMeters != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(ProximityRadiusMeters);
-      if (DurationToleranceSecs != 0) hash ^= DurationToleranceSecs.GetHashCode();
+      if (HasProximityRadiusMeters) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(ProximityRadiusMeters);
+      if (HasDurationToleranceSecs) hash ^= DurationToleranceSecs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1088,16 +1807,16 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (UserMessage.Length != 0) {
+      if (HasUserMessage) {
         output.WriteRawTag(10);
         output.WriteString(UserMessage);
       }
       locations_.WriteTo(output, _repeated_locations_codec);
-      if (ProximityRadiusMeters != 0F) {
+      if (HasProximityRadiusMeters) {
         output.WriteRawTag(29);
         output.WriteFloat(ProximityRadiusMeters);
       }
-      if (DurationToleranceSecs != 0) {
+      if (HasDurationToleranceSecs) {
         output.WriteRawTag(32);
         output.WriteInt32(DurationToleranceSecs);
       }
@@ -1109,14 +1828,14 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (UserMessage.Length != 0) {
+      if (HasUserMessage) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserMessage);
       }
       size += locations_.CalculateSize(_repeated_locations_codec);
-      if (ProximityRadiusMeters != 0F) {
+      if (HasProximityRadiusMeters) {
         size += 1 + 4;
       }
-      if (DurationToleranceSecs != 0) {
+      if (HasDurationToleranceSecs) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(DurationToleranceSecs);
       }
       if (_unknownFields != null) {
@@ -1130,14 +1849,14 @@ namespace TraceDefense.API.Models.Protos {
       if (other == null) {
         return;
       }
-      if (other.UserMessage.Length != 0) {
+      if (other.HasUserMessage) {
         UserMessage = other.UserMessage;
       }
       locations_.Add(other.locations_);
-      if (other.ProximityRadiusMeters != 0F) {
+      if (other.HasProximityRadiusMeters) {
         ProximityRadiusMeters = other.ProximityRadiusMeters;
       }
-      if (other.DurationToleranceSecs != 0) {
+      if (other.HasDurationToleranceSecs) {
         DurationToleranceSecs = other.DurationToleranceSecs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1181,7 +1900,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[7]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1198,8 +1917,8 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public LocationTime(LocationTime other) : this() {
-      location_ = other.location_ != null ? other.location_.Clone() : null;
-      time_ = other.time_ != null ? other.time_.Clone() : null;
+      location_ = other.HasLocation ? other.location_.Clone() : null;
+      time_ = other.HasTime ? other.time_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1218,6 +1937,16 @@ namespace TraceDefense.API.Models.Protos {
         location_ = value;
       }
     }
+    /// <summary>Gets whether the location field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasLocation {
+      get { return location_ != null; }
+    }
+    /// <summary>Clears the value of the location field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLocation() {
+      location_ = null;
+    }
 
     /// <summary>Field number for the "time" field.</summary>
     public const int TimeFieldNumber = 2;
@@ -1228,6 +1957,16 @@ namespace TraceDefense.API.Models.Protos {
       set {
         time_ = value;
       }
+    }
+    /// <summary>Gets whether the time field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasTime {
+      get { return time_ != null; }
+    }
+    /// <summary>Clears the value of the time field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearTime() {
+      time_ = null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1251,8 +1990,8 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (location_ != null) hash ^= Location.GetHashCode();
-      if (time_ != null) hash ^= Time.GetHashCode();
+      if (HasLocation) hash ^= Location.GetHashCode();
+      if (HasTime) hash ^= Time.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1266,11 +2005,11 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (location_ != null) {
+      if (HasLocation) {
         output.WriteRawTag(10);
         output.WriteMessage(Location);
       }
-      if (time_ != null) {
+      if (HasTime) {
         output.WriteRawTag(18);
         output.WriteMessage(Time);
       }
@@ -1282,10 +2021,10 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (location_ != null) {
+      if (HasLocation) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Location);
       }
-      if (time_ != null) {
+      if (HasTime) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Time);
       }
       if (_unknownFields != null) {
@@ -1299,14 +2038,14 @@ namespace TraceDefense.API.Models.Protos {
       if (other == null) {
         return;
       }
-      if (other.location_ != null) {
-        if (location_ == null) {
+      if (other.HasLocation) {
+        if (!HasLocation) {
           Location = new global::TraceDefense.API.Models.Protos.Location();
         }
         Location.MergeFrom(other.Location);
       }
-      if (other.time_ != null) {
-        if (time_ == null) {
+      if (other.HasTime) {
+        if (!HasTime) {
           Time = new global::TraceDefense.API.Models.Protos.UTCTime();
         }
         Time.MergeFrom(other.Time);
@@ -1323,14 +2062,14 @@ namespace TraceDefense.API.Models.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            if (location_ == null) {
+            if (!HasLocation) {
               Location = new global::TraceDefense.API.Models.Protos.Location();
             }
             input.ReadMessage(Location);
             break;
           }
           case 18: {
-            if (time_ == null) {
+            if (!HasTime) {
               Time = new global::TraceDefense.API.Models.Protos.UTCTime();
             }
             input.ReadMessage(Time);
@@ -1345,12 +2084,13 @@ namespace TraceDefense.API.Models.Protos {
   public sealed partial class UTCTime : pb::IMessage<UTCTime> {
     private static readonly pb::MessageParser<UTCTime> _parser = new pb::MessageParser<UTCTime>(() => new UTCTime());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pb::MessageParser<UTCTime> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[8]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1367,6 +2107,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public UTCTime(UTCTime other) : this() {
+      _hasBits0 = other._hasBits0;
       year_ = other.year_;
       month_ = other.month_;
       day_ = other.day_;
@@ -1384,79 +2125,170 @@ namespace TraceDefense.API.Models.Protos {
 
     /// <summary>Field number for the "year" field.</summary>
     public const int YearFieldNumber = 1;
+    private readonly static int YearDefaultValue = 0;
+
     private int year_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Year {
-      get { return year_; }
+      get { if ((_hasBits0 & 1) != 0) { return year_; } else { return YearDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         year_ = value;
       }
+    }
+    /// <summary>Gets whether the "year" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasYear {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "year" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearYear() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "month" field.</summary>
     public const int MonthFieldNumber = 2;
+    private readonly static int MonthDefaultValue = 0;
+
     private int month_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Month {
-      get { return month_; }
+      get { if ((_hasBits0 & 2) != 0) { return month_; } else { return MonthDefaultValue; } }
       set {
+        _hasBits0 |= 2;
         month_ = value;
       }
+    }
+    /// <summary>Gets whether the "month" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasMonth {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "month" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearMonth() {
+      _hasBits0 &= ~2;
     }
 
     /// <summary>Field number for the "day" field.</summary>
     public const int DayFieldNumber = 3;
+    private readonly static int DayDefaultValue = 0;
+
     private int day_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Day {
-      get { return day_; }
+      get { if ((_hasBits0 & 4) != 0) { return day_; } else { return DayDefaultValue; } }
       set {
+        _hasBits0 |= 4;
         day_ = value;
       }
+    }
+    /// <summary>Gets whether the "day" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasDay {
+      get { return (_hasBits0 & 4) != 0; }
+    }
+    /// <summary>Clears the value of the "day" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearDay() {
+      _hasBits0 &= ~4;
     }
 
     /// <summary>Field number for the "hour" field.</summary>
     public const int HourFieldNumber = 4;
+    private readonly static int HourDefaultValue = 0;
+
     private int hour_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Hour {
-      get { return hour_; }
+      get { if ((_hasBits0 & 8) != 0) { return hour_; } else { return HourDefaultValue; } }
       set {
+        _hasBits0 |= 8;
         hour_ = value;
       }
+    }
+    /// <summary>Gets whether the "hour" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasHour {
+      get { return (_hasBits0 & 8) != 0; }
+    }
+    /// <summary>Clears the value of the "hour" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearHour() {
+      _hasBits0 &= ~8;
     }
 
     /// <summary>Field number for the "minute" field.</summary>
     public const int MinuteFieldNumber = 5;
+    private readonly static int MinuteDefaultValue = 0;
+
     private int minute_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Minute {
-      get { return minute_; }
+      get { if ((_hasBits0 & 16) != 0) { return minute_; } else { return MinuteDefaultValue; } }
       set {
+        _hasBits0 |= 16;
         minute_ = value;
       }
+    }
+    /// <summary>Gets whether the "minute" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasMinute {
+      get { return (_hasBits0 & 16) != 0; }
+    }
+    /// <summary>Clears the value of the "minute" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearMinute() {
+      _hasBits0 &= ~16;
     }
 
     /// <summary>Field number for the "second" field.</summary>
     public const int SecondFieldNumber = 9;
+    private readonly static int SecondDefaultValue = 0;
+
     private int second_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Second {
-      get { return second_; }
+      get { if ((_hasBits0 & 32) != 0) { return second_; } else { return SecondDefaultValue; } }
       set {
+        _hasBits0 |= 32;
         second_ = value;
       }
+    }
+    /// <summary>Gets whether the "second" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasSecond {
+      get { return (_hasBits0 & 32) != 0; }
+    }
+    /// <summary>Clears the value of the "second" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearSecond() {
+      _hasBits0 &= ~32;
     }
 
     /// <summary>Field number for the "millisecond" field.</summary>
     public const int MillisecondFieldNumber = 10;
+    private readonly static int MillisecondDefaultValue = 0;
+
     private int millisecond_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Millisecond {
-      get { return millisecond_; }
+      get { if ((_hasBits0 & 64) != 0) { return millisecond_; } else { return MillisecondDefaultValue; } }
       set {
+        _hasBits0 |= 64;
         millisecond_ = value;
       }
+    }
+    /// <summary>Gets whether the "millisecond" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasMillisecond {
+      get { return (_hasBits0 & 64) != 0; }
+    }
+    /// <summary>Clears the value of the "millisecond" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearMillisecond() {
+      _hasBits0 &= ~64;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1485,13 +2317,13 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Year != 0) hash ^= Year.GetHashCode();
-      if (Month != 0) hash ^= Month.GetHashCode();
-      if (Day != 0) hash ^= Day.GetHashCode();
-      if (Hour != 0) hash ^= Hour.GetHashCode();
-      if (Minute != 0) hash ^= Minute.GetHashCode();
-      if (Second != 0) hash ^= Second.GetHashCode();
-      if (Millisecond != 0) hash ^= Millisecond.GetHashCode();
+      if (HasYear) hash ^= Year.GetHashCode();
+      if (HasMonth) hash ^= Month.GetHashCode();
+      if (HasDay) hash ^= Day.GetHashCode();
+      if (HasHour) hash ^= Hour.GetHashCode();
+      if (HasMinute) hash ^= Minute.GetHashCode();
+      if (HasSecond) hash ^= Second.GetHashCode();
+      if (HasMillisecond) hash ^= Millisecond.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1505,31 +2337,31 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Year != 0) {
+      if (HasYear) {
         output.WriteRawTag(8);
         output.WriteInt32(Year);
       }
-      if (Month != 0) {
+      if (HasMonth) {
         output.WriteRawTag(16);
         output.WriteInt32(Month);
       }
-      if (Day != 0) {
+      if (HasDay) {
         output.WriteRawTag(24);
         output.WriteInt32(Day);
       }
-      if (Hour != 0) {
+      if (HasHour) {
         output.WriteRawTag(32);
         output.WriteInt32(Hour);
       }
-      if (Minute != 0) {
+      if (HasMinute) {
         output.WriteRawTag(40);
         output.WriteInt32(Minute);
       }
-      if (Second != 0) {
+      if (HasSecond) {
         output.WriteRawTag(72);
         output.WriteInt32(Second);
       }
-      if (Millisecond != 0) {
+      if (HasMillisecond) {
         output.WriteRawTag(80);
         output.WriteInt32(Millisecond);
       }
@@ -1541,25 +2373,25 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Year != 0) {
+      if (HasYear) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Year);
       }
-      if (Month != 0) {
+      if (HasMonth) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Month);
       }
-      if (Day != 0) {
+      if (HasDay) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Day);
       }
-      if (Hour != 0) {
+      if (HasHour) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Hour);
       }
-      if (Minute != 0) {
+      if (HasMinute) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Minute);
       }
-      if (Second != 0) {
+      if (HasSecond) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Second);
       }
-      if (Millisecond != 0) {
+      if (HasMillisecond) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Millisecond);
       }
       if (_unknownFields != null) {
@@ -1573,25 +2405,25 @@ namespace TraceDefense.API.Models.Protos {
       if (other == null) {
         return;
       }
-      if (other.Year != 0) {
+      if (other.HasYear) {
         Year = other.Year;
       }
-      if (other.Month != 0) {
+      if (other.HasMonth) {
         Month = other.Month;
       }
-      if (other.Day != 0) {
+      if (other.HasDay) {
         Day = other.Day;
       }
-      if (other.Hour != 0) {
+      if (other.HasHour) {
         Hour = other.Hour;
       }
-      if (other.Minute != 0) {
+      if (other.HasMinute) {
         Minute = other.Minute;
       }
-      if (other.Second != 0) {
+      if (other.HasSecond) {
         Second = other.Second;
       }
-      if (other.Millisecond != 0) {
+      if (other.HasMillisecond) {
         Millisecond = other.Millisecond;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1642,12 +2474,13 @@ namespace TraceDefense.API.Models.Protos {
   public sealed partial class Location : pb::IMessage<Location> {
     private static readonly pb::MessageParser<Location> _parser = new pb::MessageParser<Location>(() => new Location());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pb::MessageParser<Location> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[9]; }
+      get { return global::TraceDefense.API.Models.Protos.InteractionsReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1664,6 +2497,7 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Location(Location other) : this() {
+      _hasBits0 = other._hasBits0;
       lattitude_ = other.lattitude_;
       longitude_ = other.longitude_;
       radiusMeters_ = other.radiusMeters_;
@@ -1677,35 +2511,74 @@ namespace TraceDefense.API.Models.Protos {
 
     /// <summary>Field number for the "lattitude" field.</summary>
     public const int LattitudeFieldNumber = 1;
+    private readonly static float LattitudeDefaultValue = 0F;
+
     private float lattitude_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float Lattitude {
-      get { return lattitude_; }
+      get { if ((_hasBits0 & 1) != 0) { return lattitude_; } else { return LattitudeDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         lattitude_ = value;
       }
+    }
+    /// <summary>Gets whether the "lattitude" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasLattitude {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "lattitude" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLattitude() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "longitude" field.</summary>
     public const int LongitudeFieldNumber = 2;
+    private readonly static float LongitudeDefaultValue = 0F;
+
     private float longitude_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float Longitude {
-      get { return longitude_; }
+      get { if ((_hasBits0 & 2) != 0) { return longitude_; } else { return LongitudeDefaultValue; } }
       set {
+        _hasBits0 |= 2;
         longitude_ = value;
       }
+    }
+    /// <summary>Gets whether the "longitude" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasLongitude {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "longitude" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearLongitude() {
+      _hasBits0 &= ~2;
     }
 
     /// <summary>Field number for the "radius_meters" field.</summary>
     public const int RadiusMetersFieldNumber = 3;
+    private readonly static float RadiusMetersDefaultValue = 0F;
+
     private float radiusMeters_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float RadiusMeters {
-      get { return radiusMeters_; }
+      get { if ((_hasBits0 & 4) != 0) { return radiusMeters_; } else { return RadiusMetersDefaultValue; } }
       set {
+        _hasBits0 |= 4;
         radiusMeters_ = value;
       }
+    }
+    /// <summary>Gets whether the "radius_meters" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool HasRadiusMeters {
+      get { return (_hasBits0 & 4) != 0; }
+    }
+    /// <summary>Clears the value of the "radius_meters" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearRadiusMeters() {
+      _hasBits0 &= ~4;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1730,9 +2603,9 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Lattitude != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Lattitude);
-      if (Longitude != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Longitude);
-      if (RadiusMeters != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RadiusMeters);
+      if (HasLattitude) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Lattitude);
+      if (HasLongitude) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Longitude);
+      if (HasRadiusMeters) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RadiusMeters);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1746,15 +2619,15 @@ namespace TraceDefense.API.Models.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Lattitude != 0F) {
+      if (HasLattitude) {
         output.WriteRawTag(13);
         output.WriteFloat(Lattitude);
       }
-      if (Longitude != 0F) {
+      if (HasLongitude) {
         output.WriteRawTag(21);
         output.WriteFloat(Longitude);
       }
-      if (RadiusMeters != 0F) {
+      if (HasRadiusMeters) {
         output.WriteRawTag(29);
         output.WriteFloat(RadiusMeters);
       }
@@ -1766,13 +2639,13 @@ namespace TraceDefense.API.Models.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Lattitude != 0F) {
+      if (HasLattitude) {
         size += 1 + 4;
       }
-      if (Longitude != 0F) {
+      if (HasLongitude) {
         size += 1 + 4;
       }
-      if (RadiusMeters != 0F) {
+      if (HasRadiusMeters) {
         size += 1 + 4;
       }
       if (_unknownFields != null) {
@@ -1786,13 +2659,13 @@ namespace TraceDefense.API.Models.Protos {
       if (other == null) {
         return;
       }
-      if (other.Lattitude != 0F) {
+      if (other.HasLattitude) {
         Lattitude = other.Lattitude;
       }
-      if (other.Longitude != 0F) {
+      if (other.HasLongitude) {
         Longitude = other.Longitude;
       }
-      if (other.RadiusMeters != 0F) {
+      if (other.HasRadiusMeters) {
         RadiusMeters = other.RadiusMeters;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);

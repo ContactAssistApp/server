@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 using TraceDefense.DAL.Repositories;
-using TraceDefense.Entities.Geospatial;
 using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.DAL.Services
@@ -29,15 +27,22 @@ namespace TraceDefense.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Query>> GetByRegionAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IList<Query>> GetByRegionAsync(string regionId, int precision, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            return await this._queryRepo.GetQueriesAsync(regionId, lastTimestamp, cancellationToken);
+            return await this._queryRepo.GetByRegionAsync(regionId, precision, lastTimestamp, cancellationToken);
         }
 
         /// <inheritdoc/>
-        public async Task PublishAsync(IList<RegionRef> regions, Query query, CancellationToken cancellationToken = default)
+        public Task<long> GetQueryResultSize(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            await this._queryRepo.PublishAsync(regions, query, cancellationToken);
+            // TODO: Implement properly
+            return Task.FromResult((long) 100);
+        }
+
+        /// <inheritdoc/>
+        public async Task PublishAsync(Query query, CancellationToken cancellationToken = default)
+        {
+            await this._queryRepo.InsertAsync(query, cancellationToken);
         }
     }
 }
