@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using Newtonsoft.Json;
+using TraceDefense.Entities.Geospatial;
 
 namespace TraceDefense.Entities.Interactions
 {
@@ -27,5 +28,16 @@ namespace TraceDefense.Entities.Interactions
         /// </summary>
         [JsonProperty("geo_proximity")]
         public IList<GeoProximityMatch> GeoProximities { get; set; }
+        /// <summary>
+        /// Unique <see cref="RegionRef"/> identifier
+        /// </summary>
+        [JsonProperty("regionId")]
+        public string RegionId { get; set; }
+        /// <summary>
+        /// Timestamp of record addition to database, in ms since UNIX epoch
+        /// </summary>
+        [JsonProperty("timestamp", Required = Required.Always)]
+        [Required]
+        public long Timestamp { get; set; }
     }
 }

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceDefense.Entities", "Tr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceDefense.DAL", "TraceDefense.DAL\TraceDefense.DAL.csproj", "{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceDefense.API.Test", "TraceDefense.API.Test\TraceDefense.API.Test.csproj", "{62932357-AFB9-4E0E-B985-405596C63E5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62932357-AFB9-4E0E-B985-405596C63E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62932357-AFB9-4E0E-B985-405596C63E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62932357-AFB9-4E0E-B985-405596C63E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62932357-AFB9-4E0E-B985-405596C63E5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

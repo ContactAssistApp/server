@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
-using TraceDefense.DAL.Repositories.Cosmos.Records;
 using TraceDefense.Entities.Geospatial;
 using TraceDefense.Entities.Interactions;
 
@@ -44,14 +42,14 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 .WithParameter("@timestamp", lastTimestamp);
 
             // Get results
-            FeedIterator<QueryRecord> resultIterator = this._queryContainer
-                .GetItemQueryIterator<QueryRecord>(cosmosQueryDef);
+            FeedIterator<Query> resultIterator = this._queryContainer
+                .GetItemQueryIterator<Query>(cosmosQueryDef);
             var queries = new List<Query>();
 
             while (resultIterator.HasMoreResults)
             {
-                FeedResponse<QueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
-                queries.AddRange(result.Select(r => new Query { TBD = r.Query }));
+                FeedResponse<Query> result = await resultIterator.ReadNextAsync(cancellationToken);
+                queries.AddRange(result);
             }
 
             return queries;
@@ -60,16 +58,18 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task PublishAsync(IList<RegionRef> regions, Query query, CancellationToken cancellationToken = default)
         {
-            var queryId = Guid.NewGuid().ToString();
-
-            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            Query baseRecord = query;
+            query.Id = Guid.NewGuid().ToString();
+            query.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             foreach (var r in regions)
             {
-                var record = new QueryRecord { Id = queryId, Query = query.TBD, RegionId = r.Id, Timestamp = timestamp };
+                // Tag query with appropriate RegionID
+                Query newRecord = baseRecord;
+                query.RegionId = r.Id;
                 // Create Query in database
-                ItemResponse<QueryRecord> response = await this._queryContainer
-                    .CreateItemAsync<QueryRecord>(record, new PartitionKey(record.RegionId), cancellationToken: cancellationToken);
+                ItemResponse<Query> response = await this._queryContainer
+                    .CreateItemAsync<Query>(newRecord, new PartitionKey(newRecord.RegionId), cancellationToken: cancellationToken);
             }
         }
     }

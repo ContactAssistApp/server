@@ -2,13 +2,14 @@
 using System.IO;
 using System.Reflection;
 
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using TraceDefense.DAL.Providers;
+using TraceDefense.API.Mappings;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
 using TraceDefense.DAL.Services;
@@ -42,6 +43,9 @@ namespace TraceDefense.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Enable AutoMapper
+            services.AddAutoMapper(typeof(MappingProfiles));
 
             // Get configuration for data repository
             services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.Entities.Geospatial
 {
@@ -13,7 +14,6 @@ namespace TraceDefense.Entities.Geospatial
         /// </summary>
         [JsonProperty("first", Required = Required.Always)]
         public Location First { get; set; }
-
 
         /// <summary>
         /// Second corner of search region

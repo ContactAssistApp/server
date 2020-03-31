@@ -1,5 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
-using TraceDefense.Entities;
+using TraceDefense.Entities.Interactions;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
 {
@@ -16,6 +16,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// Name of <see cref="Container"/> used to store <see cref="Query"/> objects
         /// </summary>
         public string QueryContainerName { get; set; }
+
         /// <summary>
         /// Creates a new <see cref="CosmosCovidSafeSchemaOptions"/> instance
         /// </summary>
