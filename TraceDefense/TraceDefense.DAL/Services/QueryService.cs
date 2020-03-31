@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using TraceDefense.DAL.Repositories;
-using TraceDefense.Entities;
 using TraceDefense.Entities.Geospatial;
+using TraceDefense.Entities.Schemas;
 
 namespace TraceDefense.DAL.Services
 {

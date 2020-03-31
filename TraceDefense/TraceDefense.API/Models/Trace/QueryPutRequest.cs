@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-using TraceDefense.Entities;
 using TraceDefense.Entities.Geospatial;
+using TraceDefense.Entities.Schemas;
 
 namespace TraceDefense.API.Models.Trace
 {
