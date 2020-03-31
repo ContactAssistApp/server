@@ -1,0 +1,71 @@
+﻿syntax = "proto3";
+
+package Corona;
+option csharp_namespace = "TraceDefense.API.Models.Protos";
+
+// Phone -> Server get_queries(coarse_location, last_query_time)
+message QueryListRequest {
+  Location coarse_location = 1;
+  UTCTime last_query_time = 2;
+}
+
+// Server -> Phone list of queries for coarse_location
+message QueryListResponse { repeated QueryInfo queryinfo = 1; }
+
+// Phone -> Server download_queries(new_query_ids)
+// Request to download the details of given query ids
+message QueryRequest { repeated QueryInfo requested_queries = 1; }
+
+// Server -> Phone (list of queries corresponding to touch points where
+// infection can occour)
+message ProximityQuery {
+  // at or around <place[]> for more than <duration> around <time[]>
+  repeated GeoProximity geo_proximity = 1;
+  // near <person>; where person is identified by some kind of blue tooth beacon
+  repeated IDMatch id_list = 2;
+}
+
+// Metadata about each query
+message QueryInfo {
+  string query_id = 1;
+  UTCTime query_timestamp = 2;
+}
+
+// List of blue tooth beacons
+message IDMatch {
+  // Message to be displayed to the user if there is a match
+  string user_message = 1;
+  // Anonymized blue tooth beacons (or other exact match identifiers if
+  // available)
+  repeated string ids = 2;
+}
+
+// List of locations
+message GeoProximity {
+  // Message to be displayed to the user if there is a match
+  string user_message = 1;
+  repeated LocationTime locations = 2;
+  float proximity_radius_meters = 3;
+  int32 duration_tolerance_secs = 4;
+}
+
+message LocationTime {
+  Location location = 1;
+  UTCTime time = 2;
+}
+
+message UTCTime {
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+  int32 hour = 4;
+  int32 minute = 5;
+  int32 second = 9;
+  int32 millisecond = 10;
+}
+
+message Location {
+  float lattitude = 1;
+  float longitude = 2;
+  float radius_meters = 3;
+}
