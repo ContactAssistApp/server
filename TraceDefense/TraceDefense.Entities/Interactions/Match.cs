@@ -3,15 +3,15 @@
 namespace TraceDefense.Entities.Interactions
 {
     /// <summary>
-    /// Geographic proximity match definition
+    /// Base identifier match definition
     /// </summary>
     [JsonObject]
-    public class GeoProximity
+    public abstract class Match
     {
         /// <summary>
-        /// Message displayed to user on match
+        /// Message displayed to user on confirmed match
         /// </summary>
-        [JsonProperty("userMessage")]
+        [JsonProperty("user_message")]
         public string UserMessage { get; set; }
     }
 }
