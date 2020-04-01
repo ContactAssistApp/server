@@ -26,7 +26,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Object value
         /// </summary>
-        [JsonProperty("value", Required = Required.Always)]
+        [JsonProperty("Value", Required = Required.Always)]
         [Required]
         public T Value { get; set; }
         /// <summary>

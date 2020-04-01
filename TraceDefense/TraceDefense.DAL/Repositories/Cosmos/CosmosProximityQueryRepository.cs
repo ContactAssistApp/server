@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Spatial;
 using Microsoft.Extensions.Options;
 using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories.Cosmos.Records;
@@ -38,9 +39,9 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         public async Task<ProximityQuery> GetAsync(string queryId, CancellationToken cancellationToken = default)
         {
             // Build query
-            string sqlQuery = "SELECT * FROM c WHERE id = @id";
+            string sqlQuery = "SELECT TOP 1 * FROM c WHERE c.queryId = @queryId";
             QueryDefinition queryDef = new QueryDefinition(sqlQuery)
-                .WithParameter("@id", queryId);
+                .WithParameter("@queryId", queryId);
 
             // Get results
             FeedIterator<ProximityQueryRecord> iterator = this._queryContainer
@@ -67,7 +68,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         public async Task<IEnumerable<QueryInfo>> GetLatestAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Build query
-            string sqlQuery = String.Format("SELECT * FROM c WHERE c.value.regionId = @regionId AND c.timestamp > @timestamp");
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.regionId = @regionId AND c.timestamp > @timestamp");
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery)
                 .WithParameter("@regionId", regionId)
                 .WithParameter("@timestamp", lastTimestamp);
@@ -104,7 +105,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             // Build query
             IEnumerable<string> idsEscaped = ids.Select(i => String.Format("'{0}'", ids));
 
-            string sqlQuery = String.Format("SELECT * FROM c WHERE id IN ({0})", String.Join(",", idsEscaped));
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.queryId IN ({0})", String.Join(",", idsEscaped));
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
@@ -124,19 +125,65 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task<string> InsertAsync(ProximityQuery query, CancellationToken cancellationToken = default)
         {
-            // Create new QueryRecord
-            ProximityQueryRecord toStore = new ProximityQueryRecord(query, Guid.NewGuid().ToString());
-            toStore.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            // Create common properties for each new record
+            string queryId = Guid.NewGuid().ToString();
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            // Determine partition
-            string regionId = RegionIdProvider.FromGeoProximity(query.GeoProximity.ToList());
+            // Use region identifiers as partition markers
+            Dictionary<string, ProximityQueryRecord> newRecords = new Dictionary<string, ProximityQueryRecord>();
 
-            // Create Query in database
-            ItemResponse<ProximityQueryRecord> response = await this._queryContainer
-                .CreateItemAsync<ProximityQueryRecord>(toStore, new PartitionKey(toStore.RegionId), cancellationToken: cancellationToken);
+            foreach(GeoProximity proximity in query.GeoProximity)
+            {
+                // Get region identifiers
+                foreach(LocationTime loc in proximity.Locations)
+                {
+                    string regionId = RegionIdProvider.FromLocationTime(loc);
 
-            // Return unique identifier of new resource
-            return response.Resource.Id;
+                    if(newRecords.ContainsKey(regionId))
+                    {
+                        // Add location as reference
+                        newRecords[regionId].Regions.Add(
+                            new Point(
+                                loc.Location.Longitude,
+                                loc.Location.Longitude
+                            )
+                        );
+                    }
+                    else
+                    {
+                        // Create new region reference
+                        ProximityQueryRecord record = new ProximityQueryRecord(query)
+                        {
+                            QueryId = queryId,
+                            Regions = new List<Point>(),
+                            RegionId = regionId,
+                            Timestamp = timestamp,
+                            Version = query.MessageVersion
+                        };
+                        record.Regions.Add(
+                            new Point(
+                                loc.Location.Longitude,
+                                loc.Location.Lattitude
+                            )
+                        );
+                        newRecords[regionId] = record;
+                    }
+                }
+            }
+
+            // Start transaction
+            foreach(ProximityQueryRecord rec in newRecords.Values)
+            {
+                ItemResponse<ProximityQueryRecord> response = await this._queryContainer
+                    .CreateItemAsync<ProximityQueryRecord>(
+                        rec,
+                        new PartitionKey(rec.RegionId),
+                        cancellationToken: cancellationToken
+                    );
+            }
+
+            // Return new QueryId
+            return queryId;
         }
     }
 }

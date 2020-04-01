@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+using Microsoft.Azure.Cosmos.Spatial;
 using Newtonsoft.Json;
 using TraceDefense.Entities.Protos;
 
@@ -11,14 +13,24 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
     public class ProximityQueryRecord : CosmosRecord<ProximityQuery>
     {
         /// <summary>
-        /// Region identifier
+        /// Unique <see cref="ProximityQuery"/> identifier
         /// </summary>
-        /// <remarks>
-        /// Used as partition field
-        /// </remarks>
+        [JsonProperty("queryId", Required = Required.Always)]
+        [Required]
+        public string QueryId { get; set; }
+        /// <summary>
+        /// Region identifier for each location in this <see cref="ProximityQuery"/>
+        /// </summary>
         [JsonProperty("regionId", Required = Required.Always)]
         [Required]
         public string RegionId { get; set; }
+        /// <summary>
+        /// Collection of <see cref="Point"/> objects corresponding to regions 
+        /// covered by this <see cref="ProximityQueryRecord"/>
+        /// </summary>
+        [JsonProperty("Regions", Required = Required.Always)]
+        [Required]
+        public IList<Point> Regions { get; set; }
 
         /// <summary>
         /// Creates a new <see cref="ProximityQueryRecord"/> instance
@@ -27,32 +39,6 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         public ProximityQueryRecord(ProximityQuery record)
         {
             // Set local values
-            this.Value = record;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="ProximityQueryRecord"/> instance
-        /// </summary>
-        /// <param name="record"><see cref="ProximityQuery"/> data</param>
-        /// <param name="id">Unique <see cref="ProximityQuery"/> identifier</param>
-        public ProximityQueryRecord(ProximityQuery record, string id)
-        {
-            // Set local values
-            this.Id = id;
-            this.Value = record;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="ProximityQueryRecord"/> instance
-        /// </summary>
-        /// <param name="record"><see cref="ProximityQuery"/> data</param>
-        /// <param name="id">Unique <see cref="ProximityQuery"/> identifier</param>
-        /// <param name="regionId">Region identifier</param>
-        public ProximityQueryRecord(ProximityQuery record, string id, string regionId)
-        {
-            // Set local values
-            this.Id = id;
-            this.RegionId = regionId;
             this.Value = record;
         }
     }

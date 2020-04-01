@@ -61,6 +61,31 @@ namespace TraceDefense.DAL.Providers
         }
 
         /// <summary>
+        /// Determines a Region ID based on <see cref="Location"/>
+        /// </summary>
+        /// <param name="location">Source <see cref="Location"/></param>
+        /// <returns>Region identifier</returns>
+        /// <remarks>
+        /// Defines GeoID based on granular coordinates (e.g. from 74.1234,-39.1234, ID is 74,-39).
+        /// </remarks>
+        public static string FromLocationTime(LocationTime location)
+        {
+            // Take first location
+            if (location != null)
+            {
+                return String.Format(
+                    "{0},{1}",
+                    (int)location.Location.Lattitude,
+                    (int)location.Location.Longitude
+                );
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(location));
+            }
+        }
+
+        /// <summary>
         /// Generates a collection of <see cref="RegionRef"/> objects based on a provided <see cref="Area"/>
         /// </summary>
         /// <param name="area">Target <see cref="Area"/></param>
