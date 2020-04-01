@@ -1,5 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
-using TraceDefense.Entities.Interactions;
+using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
 {
@@ -13,7 +13,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// </summary>
         public string DatabaseName { get; set; }
         /// <summary>
-        /// Name of <see cref="Container"/> used to store <see cref="Query"/> objects
+        /// Name of <see cref="Container"/> used to store <see cref="ProximityQuery"/> objects
         /// </summary>
         public string QueryContainerName { get; set; }
 

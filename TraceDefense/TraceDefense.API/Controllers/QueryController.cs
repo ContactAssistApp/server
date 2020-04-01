@@ -5,55 +5,59 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.API.Models.Protos;
 using TraceDefense.API.Models.Trace;
-using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Services;
-using TraceDefense.Entities.Interactions;
+using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.API.Controllers
 {
     /// <summary>
-    /// Handles <see cref="Query"/> CRUD operations
+    /// Handles <see cref="ProximityQuery"/> CRUD operations
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class QueryController : ControllerBase
     {
         /// <summary>
-        /// <see cref="Query"/> service layer
+        /// <see cref="ProximityQuery"/> service layer
         /// </summary>
-        private IQueryService _queryService;
+        private IProximityQueryService _queryService;
 
         /// <summary>
         /// Creates a new <see cref="QueryController"/> instance
         /// </summary>
-        /// <param name="queryService"><see cref="Query"/> service layer</param>
-        public QueryController(IQueryService queryService)
+        /// <param name="queryService"><see cref="ProximityQuery"/> service layer</param>
+        public QueryController(IProximityQueryService queryService)
         {
             // Assign local values
             this._queryService = queryService;
         }
 
         /// <summary>
-        /// Get <see cref="Query"/> objects which match provided unique identifiers
+        /// Get <see cref="ProximityQuery"/> objects matching the provided identifiers
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Query?regionId=39%2c-74&amp;lastTimestamp=0
+        ///     POST /Query
+        ///     {
+        ///         "RequestedQueries": [{
+        ///             "QueryId": "00000000-0000-0000-0000-000000000000",
+        ///             "QueryTimestamp": 0
+        ///         }]
+        ///     }
         ///     
         /// </remarks>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <response code="404">No results found for request parameters</response>
         /// <param name="request"><see cref="QueryRequest"/> parameters</param>
-        /// <returns>Collection of <see cref="Query"/> objects matching request parameters</returns>
-        [HttpGet]
+        /// <returns>Collection of <see cref="ProximityQuery"/> objects matching request parameters</returns>
+        [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IList<Query>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IList<ProximityQuery>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<IList<Query>>> PostAsync([FromBody] QueryRequest request)
+        public async Task<ActionResult<IList<ProximityQuery>>> PostAsync([FromBody] QueryRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
@@ -66,10 +70,10 @@ namespace TraceDefense.API.Controllers
             // Get results
             IEnumerable<string> requestedIds = request.RequestedQueries
                 .Select(r => r.QueryId);
-            IList<Query> result = await this._queryService
+            IEnumerable<ProximityQuery> result = await this._queryService
                 .GetByIdsAsync(requestedIds, ct);
 
-            if(result.Count > 0)
+            if(result.Count() > 0)
             {
                 return Ok(result);
             }
@@ -105,8 +109,6 @@ namespace TraceDefense.API.Controllers
         public async Task<ActionResult> PutAsync(QueryPutRequest request)
         {
             CancellationToken ct = new CancellationToken();
-            // TODO: Validate inputs
-            var regions = RegionProvider.GetRegions(request.Area);
             await this._queryService.PublishAsync(request.Query, ct);
             return Ok();
         }

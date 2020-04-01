@@ -6,27 +6,28 @@ using System.Threading.Tasks;
 
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
+using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories.Cosmos.Records;
-using TraceDefense.Entities.Interactions;
+using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
 {
     /// <summary>
-    /// CosmosDB implementation of <see cref="IQueryRepository"/>
+    /// CosmosDB implementation of <see cref="IProximityQueryRepository"/>
     /// </summary>
-    public class CosmosQueryRepository : CosmosRepository, IQueryRepository
+    public class CosmosProximityQueryRepository : CosmosRepository, IProximityQueryRepository
     {
         /// <summary>
-        /// <see cref="Query"/> container object
+        /// <see cref="ProximityQuery"/> container object
         /// </summary>
         private Container _queryContainer;
 
         /// <summary>
-        /// Creates a new <see cref="CosmosQueryRepository"/> instance
+        /// Creates a new <see cref="CosmosProximityQueryRepository"/> instance
         /// </summary>
         /// <param name="connectionFactory">Database connection factory instance</param>
         /// <param name="schemaOptions">Schema options object</param>
-        public CosmosQueryRepository(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaOptions) : base(connectionFactory, schemaOptions)
+        public CosmosProximityQueryRepository(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaOptions) : base(connectionFactory, schemaOptions)
         {
             // Create container reference
             this._queryContainer = this.Database
@@ -34,7 +35,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<Query> GetAsync(string queryId, CancellationToken cancellationToken = default)
+        public async Task<ProximityQuery> GetAsync(string queryId, CancellationToken cancellationToken = default)
         {
             // Build query
             string sqlQuery = "SELECT * FROM c WHERE id = @id";
@@ -42,13 +43,13 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 .WithParameter("@id", queryId);
 
             // Get results
-            FeedIterator<QueryRecord> iterator = this._queryContainer
-                .GetItemQueryIterator<QueryRecord>(queryDef);
-            QueryRecord instance = null;
+            FeedIterator<ProximityQueryRecord> iterator = this._queryContainer
+                .GetItemQueryIterator<ProximityQueryRecord>(queryDef);
+            ProximityQueryRecord instance = null;
 
             while(iterator.HasMoreResults)
             {
-                FeedResponse<QueryRecord> result = await iterator.ReadNextAsync(cancellationToken);
+                FeedResponse<ProximityQueryRecord> result = await iterator.ReadNextAsync(cancellationToken);
                 instance = result.Resource.FirstOrDefault();
             }
 
@@ -63,7 +64,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IList<QueryInfo>> GetLatestAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<QueryInfo>> GetLatestAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Build query
             string sqlQuery = String.Format("SELECT * FROM c WHERE c.value.regionId = @regionId AND c.timestamp > @timestamp");
@@ -72,18 +73,18 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 .WithParameter("@timestamp", lastTimestamp);
 
             // Get results
-            FeedIterator<QueryRecord> resultIterator = this._queryContainer
-                .GetItemQueryIterator<QueryRecord>(cosmosQueryDef);
+            FeedIterator<ProximityQueryRecord> resultIterator = this._queryContainer
+                .GetItemQueryIterator<ProximityQueryRecord>(cosmosQueryDef);
             var queryInfo = new List<QueryInfo>();
 
             while (resultIterator.HasMoreResults)
             {
-                FeedResponse<QueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
-                QueryRecord obj = result.Resource.FirstOrDefault();
+                FeedResponse<ProximityQueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
+                ProximityQueryRecord obj = result.Resource.FirstOrDefault();
                 queryInfo.Add(new QueryInfo
                 {
                     QueryId = obj.Id,
-                    Timestamp = obj.Value.Timestamp
+                    QueryTimestamp = UtcTimeHelper.ToUtcTime(obj.Timestamp)
                 });
             }
 
@@ -98,7 +99,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Query>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProximityQuery>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             // Build query
             IEnumerable<string> idsEscaped = ids.Select(i => String.Format("'{0}'", ids));
@@ -107,13 +108,13 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
 
             // Get results
-            FeedIterator<QueryRecord> resultIterator = this._queryContainer
-                .GetItemQueryIterator<QueryRecord>(cosmosQueryDef);
-            var queries = new List<Query>();
+            FeedIterator<ProximityQueryRecord> resultIterator = this._queryContainer
+                .GetItemQueryIterator<ProximityQueryRecord>(cosmosQueryDef);
+            var queries = new List<ProximityQuery>();
 
             while (resultIterator.HasMoreResults)
             {
-                FeedResponse<QueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
+                FeedResponse<ProximityQueryRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
                 queries.AddRange(result.Select(r => r.Value));
             }
 
@@ -121,19 +122,18 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<string> InsertAsync(Query query, CancellationToken cancellationToken = default)
+        public async Task<string> InsertAsync(ProximityQuery query, CancellationToken cancellationToken = default)
         {
-            query.Id = Guid.NewGuid().ToString();
-            query.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
             // Create new QueryRecord
-            QueryRecord toStore = new QueryRecord(query);
+            ProximityQueryRecord toStore = new ProximityQueryRecord(query, Guid.NewGuid().ToString());
+            toStore.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            // Update region
+            // Determine partition
+            string regionId = RegionIdProvider.FromGeoProximity(query.GeoProximity.ToList());
 
             // Create Query in database
-            ItemResponse<Query> response = await this._queryContainer
-                .CreateItemAsync<Query>(query, new PartitionKey(query.RegionId), cancellationToken: cancellationToken);
+            ItemResponse<ProximityQueryRecord> response = await this._queryContainer
+                .CreateItemAsync<ProximityQueryRecord>(toStore, new PartitionKey(toStore.RegionId), cancellationToken: cancellationToken);
 
             // Return unique identifier of new resource
             return response.Resource.Id;

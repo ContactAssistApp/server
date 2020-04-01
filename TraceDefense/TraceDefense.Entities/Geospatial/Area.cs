@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using TraceDefense.Entities.Interactions;
+using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.Entities.Geospatial
 {

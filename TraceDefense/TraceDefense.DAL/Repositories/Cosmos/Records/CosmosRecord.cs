@@ -18,6 +18,12 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         [Required]
         public string Id { get; set; }
         /// <summary>
+        /// Timestamp of record database insert, in ms since UNIX epoch
+        /// </summary>
+        [JsonProperty("timestamp", Required = Required.Always)]
+        [Required]
+        public long Timestamp { get; set; }
+        /// <summary>
         /// Object value
         /// </summary>
         [JsonProperty("value", Required = Required.Always)]

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using TraceDefense.Entities.Geospatial;
-using TraceDefense.Entities.Interactions;
+using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.API.Models.Trace
 {
@@ -19,10 +19,10 @@ namespace TraceDefense.API.Models.Trace
         [Required]
         public Area Area { get; set; }
         /// <summary>
-        /// <see cref="Query"/> content
+        /// <see cref="ProximityQuery"/> content
         /// </summary>
         [JsonProperty("query", Required = Required.Always)]
         [Required]
-        public Query Query { get; set; }
+        public ProximityQuery Query { get; set; }
     }
 }

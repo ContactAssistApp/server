@@ -4,29 +4,28 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.API.Models.Protos;
 using TraceDefense.DAL.Services;
-using TraceDefense.Entities.Interactions;
+using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.API.Controllers.QueryControllers
 {
     /// <summary>
-    /// Handles <see cref="Query"/> size requests
+    /// Handles <see cref="ProximityQuery"/> size requests
     /// </summary>
     [Route("api/Query/[controller]")]
     [ApiController]
     public class SizeController : ControllerBase
     {
         /// <summary>
-        /// <see cref="Query"/> service layer
+        /// <see cref="ProximityQuery"/> service layer
         /// </summary>
-        private IQueryService _queryService;
+        private IProximityQueryService _queryService;
 
         /// <summary>
         /// Creates a new <see cref="SizeController"/> instance
         /// </summary>
-        /// <param name="queryService"><see cref="Query"/> service layer</param>
-        public SizeController(IQueryService queryService)
+        /// <param name="queryService"><see cref="ProximityQuery"/> service layer</param>
+        public SizeController(IProximityQueryService queryService)
         {
             // Assign local values
             this._queryService = queryService;
@@ -36,7 +35,7 @@ namespace TraceDefense.API.Controllers.QueryControllers
         /// Gets the total data size for a provided Region
         /// </summary>
         /// <param name="regionId">Region identifier</param>
-        /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="Query"/>, in ms since UNIX epoch</param>
+        /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="ProximityQuery"/>, in ms since UNIX epoch</param>
         /// <remarks>
         /// Sample request:
         /// 
@@ -66,7 +65,7 @@ namespace TraceDefense.API.Controllers.QueryControllers
             }
 
             // Get results
-            long result = await this._queryService.GetLatestRegionSizeAsync(regionId, lastTimestamp, ct);
+            long result = await this._queryService.GetLatestRegionDataSizeAsync(regionId, lastTimestamp, ct);
 
             if(result > 0)
             {

@@ -1,7 +1,7 @@
 ﻿syntax = "proto2";
 
 package Corona;
-option csharp_namespace = "TraceDefense.API.Models.Protos";
+option csharp_namespace = "TraceDefense.Entities.Protos";
 
 // Phone -> Server; Request to get size of Query
 message QuerySizeRequest {

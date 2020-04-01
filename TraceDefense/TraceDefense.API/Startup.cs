@@ -2,16 +2,15 @@
 using System.IO;
 using System.Reflection;
 
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using TraceDefense.API.Mappings;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
+using TraceDefense.DAL.Repositories.Mock;
 using TraceDefense.DAL.Services;
 
 namespace TraceDefense.API
@@ -44,18 +43,16 @@ namespace TraceDefense.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Enable AutoMapper
-            services.AddAutoMapper(typeof(MappingProfiles));
-
             // Get configuration for data repository
             services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));
 
             // Configure data repository implementations
             services.AddTransient<CosmosConnectionFactory>();
-            services.AddSingleton<IQueryRepository, CosmosQueryRepository>();
+            //services.AddSingleton<IProximityQueryRepository, CosmosProximityQueryRepository>();
+            services.AddSingleton<IProximityQueryRepository, MockProximityQueryRepository>();
 
             // Configure service layer
-            services.AddSingleton<IQueryService, QueryService>();
+            services.AddSingleton<IProximityQueryService, ProximityQueryService>();
 
             // Add Swagger generator
             services.AddSwaggerGen(c =>

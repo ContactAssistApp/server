@@ -15,7 +15,7 @@ namespace TraceDefense.DAL.Repositories
         /// </summary>
         /// <param name="id">Unique object identifier</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Matching <see cref="T"/> or null</returns>
+        /// <returns>Matching object or null</returns>
         Task<T> GetAsync(TT id, CancellationToken cancellationToken = default);
         /// <summary>
         /// Store a new object in the repository
