@@ -19,7 +19,7 @@ namespace TraceDefense.DAL.Providers
         {
             if(timestampMs > 0)
             {
-                DateTimeOffset parsed = DateTimeOffset.FromUnixTimeSeconds(timestampMs);
+                DateTimeOffset parsed = DateTimeOffset.FromUnixTimeMilliseconds(timestampMs);
 
                 // Return new object
                 return new UTCTime

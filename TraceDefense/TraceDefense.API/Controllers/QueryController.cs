@@ -43,7 +43,15 @@ namespace TraceDefense.API.Controllers
         ///     {
         ///         "RequestedQueries": [{
         ///             "QueryId": "00000000-0000-0000-0000-000000000000",
-        ///             "QueryTimestamp": 0
+        ///             "QueryTimestamp": {
+        ///                 "year": 2020,
+        ///                 "month": 3,
+        ///                 "day": 31,
+        ///                 "hour": 12,
+        ///                 "minute": 23,
+        ///                 "second": 10,
+        ///                 "millisecond": 12
+        ///             }
         ///         }]
         ///     }
         ///     
@@ -91,11 +99,40 @@ namespace TraceDefense.API.Controllers
         ///
         ///     PUT /Query
         ///     {
-        ///        "Query": { "tbd": "if you visited Trader Joe's on 3rd Ave 03/26/2020 between 18.00 and 19.00, call me" },
-        ///        "Area": { 
-        ///             "first": { "lat": 39.5, "lng": -74.5 },
-        ///             "second": { "lat": 41.5, "lng": -72.5 }
-        ///        }
+        ///         "messageVersion": 1,
+        ///         "geoProximity": [
+        ///             {
+        ///                 "userMessage": "Quarantine at home if you were at Trader Joe's on 128th street.",
+        ///                 "locations": [
+        ///                     {
+        ///                         "location": {
+        ///                             "lattitude": -39.1234,
+        ///                             "longitude": 47.1231,
+        ///                             "radiusMeters": 100
+        ///                         },
+        ///                         "time": {
+        ///                             "year": 2020,
+        ///                             "month": 3,
+        ///                             "day": 31,
+        ///                             "hour": 12,
+        ///                             "minute": 30,
+        ///                             "second": 12,
+        ///                             "millisecond": 32
+        ///                         }
+        ///                     }
+        ///                 ],
+        ///                 "proximityRadiusMeters": 1000,
+        ///                 "durationToleranceSecs": 600
+        ///             }
+        ///         ],
+        ///         "idList": [
+        ///             {
+        ///                 "userMessage": "These IDs might give you a bad time!",
+        ///                 "ids": [
+        ///                     "ABCDEF1234567890"
+        ///                 ]
+        ///             }
+        ///         ]
         ///     }
         ///
         /// </remarks>
