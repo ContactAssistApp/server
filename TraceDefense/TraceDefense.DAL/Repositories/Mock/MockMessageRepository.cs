@@ -19,12 +19,22 @@ namespace TraceDefense.DAL.Repositories.Mock
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<MessageInfo>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<MatchMessage>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> InsertAsync(MatchMessage record, CancellationToken cancellationToken = default)
+        public Task InsertAsync(Region region, MatchMessage record, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

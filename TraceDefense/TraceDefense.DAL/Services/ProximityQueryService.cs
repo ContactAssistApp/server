@@ -17,20 +17,13 @@ namespace TraceDefense.DAL.Services
         /// </summary>
         private IMessageRepository _messageRepo;
 
-
-        /// <summary>
-        /// <see cref="ProximityQuery"/> data repository
-        /// </summary>
-        private IMessageInfoRepository _messageInfoRepo;
-
         /// <summary>
         /// Creates a new <see cref="ProximityQueryService"/> instance
         /// </summary>
         /// <param name="queryRepo"><see cref="ProximityQuery"/> data repository</param>
-        public ProximityQueryService(IMessageRepository messageRepo, IMessageInfoRepository messageInfoRepo)
+        public ProximityQueryService(IMessageRepository messageRepo)
         {
             this._messageRepo = messageRepo;
-            this._messageInfoRepo = messageInfoRepo;
         }
 
         /// <inheritdoc/>
@@ -42,22 +35,20 @@ namespace TraceDefense.DAL.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<MessageInfo>> GetLatestInfoAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            return await this._messageInfoRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
+            return await this._messageRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task<long> GetLatestRegionDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            return await this._messageInfoRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
+            return await this._messageRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
         {
             // Push to upstream data repository
-            string id = await this._messageRepo.InsertAsync(message, cancellationToken);
-            var messageInfo = new MessageInfo { MessageId = id, MessageTimestamp = new UTCTime() };
-            await this._messageInfoRepo.UpdateMessageInfoAsync(region, messageInfo, 1, cancellationToken);
+            await this._messageRepo.InsertAsync(region, message, cancellationToken);
         }
     }
 }

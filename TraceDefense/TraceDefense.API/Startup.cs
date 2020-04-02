@@ -51,9 +51,6 @@ namespace TraceDefense.API
             //services.AddSingleton<IProximityQueryRepository, CosmosMessageRepository>();
             services.AddSingleton<IMessageRepository, MockMessageRepository>();
 
-            //services.AddSingleton<IProximityQueryRepository, CosmosMessageInfoRepository>();
-            services.AddSingleton<IMessageInfoRepository, MockMessageInfoRepository>();
-
 
             // Configure service layer
             services.AddSingleton<IProximityQueryService, ProximityQueryService>();

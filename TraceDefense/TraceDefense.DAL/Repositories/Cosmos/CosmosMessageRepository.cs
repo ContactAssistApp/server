@@ -49,12 +49,26 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<string> InsertAsync(MatchMessage message, CancellationToken cancellationToken = default)
+        public async Task InsertAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
         {
             // Create common properties for each new record
             string messageId = Guid.NewGuid().ToString();
-
-            return messageId;
         }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<MessageInfo>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            var result = new List<MessageInfo> { new MessageInfo { MessageId = "todo: implement", MessageTimestamp = new UTCTime() } };
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            // TODO: Implement
+            return (long)100;
+        }
+
     }
 }
