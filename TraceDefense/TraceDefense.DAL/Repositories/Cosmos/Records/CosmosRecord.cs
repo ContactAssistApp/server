@@ -33,6 +33,6 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// Record schema version
         /// </summary>
         [JsonProperty("version", Required = Required.Always)]
-        public long Version { get; set; } = 1;
+        public string Version { get; set; } = "";
     }
 }

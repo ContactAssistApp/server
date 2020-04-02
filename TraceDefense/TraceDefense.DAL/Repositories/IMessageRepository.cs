@@ -26,7 +26,7 @@ namespace TraceDefense.DAL.Repositories
         /// <param name="message"<see cref="cref="MatchMessage"/>>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Unique identifier of stored object</returns>
-        Task InsertAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default);
+        Task InsertAsync(Location locmin, Location locmax, MatchMessage message, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Pulls a list of the latest <see cref="QueryInfo"/>, based on client parameters
@@ -35,7 +35,7 @@ namespace TraceDefense.DAL.Repositories
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="ProximityQuery"/> for region, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of <see cref="QueryInfo"/> objects</returns>
-        Task<IEnumerable<MessageInfo>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
+        Task<IEnumerable<MessageInfo>> GetLatestAsync(Location locmin, Location locmax, long lastTimestamp, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves the data size, in bytes, of a region's latest <see cref="ProximityQuery"/> data
@@ -44,7 +44,7 @@ namespace TraceDefense.DAL.Repositories
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="ProximityQuery"/> for region, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Data size, in bytes</returns>
-        Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
+        Task<long> GetLatestRegionSizeAsync(Location locmin, Location locmax, long lastTimestamp, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Pulls a collection of <see cref="MatchMessage"/> objects by unique identifiers

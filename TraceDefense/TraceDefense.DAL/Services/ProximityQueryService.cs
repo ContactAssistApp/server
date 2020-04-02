@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
+using TraceDefense.DAL.Providers;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.Entities.Protos;
 
@@ -35,20 +35,23 @@ namespace TraceDefense.DAL.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<MessageInfo>> GetLatestInfoAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            return await this._messageRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
+            var range = RegionHelper.ToRange(region);
+            return await this._messageRepo.GetLatestAsync(range.Item1, range.Item2, lastTimestamp, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task<long> GetLatestRegionDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            return await this._messageRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
+            var range = RegionHelper.ToRange(region);
+            return await this._messageRepo.GetLatestRegionSizeAsync(range.Item1, range.Item2, lastTimestamp, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
         {
+            var range = RegionHelper.ToRange(region);
             // Push to upstream data repository
-            await this._messageRepo.InsertAsync(region, message, cancellationToken);
+            await this._messageRepo.InsertAsync(range.Item1, range.Item2, message, cancellationToken);
         }
     }
 }
