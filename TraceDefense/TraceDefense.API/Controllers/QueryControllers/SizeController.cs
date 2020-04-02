@@ -48,28 +48,26 @@ namespace TraceDefense.API.Controllers.QueryControllers
         /// <returns>Query result size, in bytes</returns>
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(QuerySizeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageSizeResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QuerySizeResponse>> GetAsync(string regionId, long lastTimestamp)
+        public async Task<ActionResult<MessageSizeResponse>> GetAsync(double lat, double lon, int precision, long lastTimestamp)
         {
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
-            if(String.IsNullOrEmpty(regionId))
-            {
-                return BadRequest();
-            }
+            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+
             if(lastTimestamp < 0)
             {
                 return BadRequest();
             }
 
             // Get results
-            long result = await this._queryService.GetLatestRegionDataSizeAsync(regionId, lastTimestamp, ct);
+            long result = await this._queryService.GetLatestRegionDataSizeAsync(region, lastTimestamp, ct);
 
             if(result > 0)
             {
-                return Ok(new QuerySizeResponse
+                return Ok(new MessageSizeResponse
                 {
                     SizeOfQueryResponse = result
                 });

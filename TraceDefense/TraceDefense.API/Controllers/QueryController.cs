@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TraceDefense.API.Models.Trace;
 using TraceDefense.DAL.Services;
 using TraceDefense.Entities.Protos;
 
@@ -63,9 +62,9 @@ namespace TraceDefense.API.Controllers
         /// <returns>Collection of <see cref="ProximityQuery"/> objects matching request parameters</returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IList<ProximityQuery>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<IList<ProximityQuery>>> PostAsync([FromBody] QueryRequest request)
+        public async Task<ActionResult<MessageResponse>> PostAsync([FromBody] MessageRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
@@ -77,8 +76,8 @@ namespace TraceDefense.API.Controllers
 
             // Get results
             IEnumerable<string> requestedIds = request.RequestedQueries
-                .Select(r => r.QueryId);
-            IEnumerable<ProximityQuery> result = await this._queryService
+                   .Select(r => r.MessageId);
+            IEnumerable<MatchMessage> result = await this._queryService
                 .GetByIdsAsync(requestedIds, ct);
 
             if(result.Count() > 0)
@@ -143,10 +142,10 @@ namespace TraceDefense.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(QueryPutRequest request)
+        public async Task<ActionResult> PutAsync(AnnounceRequest request)
         {
             CancellationToken ct = new CancellationToken();
-            await this._queryService.PublishAsync(request.Query, ct);
+            await this._queryService.PublishAsync(request.Region, request.Message, ct);
             return Ok();
         }
     }

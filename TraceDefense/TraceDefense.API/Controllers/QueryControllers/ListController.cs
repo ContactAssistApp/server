@@ -49,31 +49,28 @@ namespace TraceDefense.API.Controllers.QueryControllers
         /// <returns>Collection of <see cref="QueryInfo"/> objects matching request parameters</returns>
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(QueryListResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<QueryListResponse>> GetAsync(string regionId, long lastTimestamp)
+        public async Task<ActionResult<MessageListResponse>> GetAsync(double lat, double lon, int precision, long lastTimestamp)
         {
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
-            if(String.IsNullOrEmpty(regionId))
-            {
-                return BadRequest();
-            }
+            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
             if(lastTimestamp < 0)
             {
                 return BadRequest();
             }
 
             // Pull queries matching parameters
-            IEnumerable<QueryInfo> results = await this._queryService
-                .GetLatestInfoAsync(regionId, lastTimestamp, ct);
+            IEnumerable<MessageInfo> results = await this._queryService
+                .GetLatestInfoAsync(region, lastTimestamp, ct);
 
             if (results != null)
             {
                 // Convert to response proto
-                QueryListResponse response = new QueryListResponse();
-                response.Queryinfo.AddRange(results);
+                MessageListResponse response = new MessageListResponse();
+                response.MessageInfo.AddRange(results);
 
                 return Ok(response);
             }

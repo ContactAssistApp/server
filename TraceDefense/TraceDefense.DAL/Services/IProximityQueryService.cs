@@ -17,7 +17,7 @@ namespace TraceDefense.DAL.Services
         /// <param name="ids">Collection of <see cref="ProximityQuery"/> identifiers</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of <see cref="ProximityQuery"/> objects</returns>
-        Task<IEnumerable<ProximityQuery>> GetByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default);
+        Task<IEnumerable<MatchMessage>> GetByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default);
         /// <summary>
         /// Retrieves the latest <see cref="QueryInfo"/> for a client
         /// </summary>
@@ -28,7 +28,7 @@ namespace TraceDefense.DAL.Services
         /// <remarks>
         /// Sister call to <see cref="GetLatestRegionDataSizeAsync(string, long, CancellationToken)"/>.
         /// </remarks>
-        Task<IEnumerable<QueryInfo>> GetLatestInfoAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default);
+        Task<IEnumerable<MessageInfo>> GetLatestInfoAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Returns the latest size of <see cref="ProximityQuery"/> data for a given region
         /// </summary>
@@ -36,13 +36,13 @@ namespace TraceDefense.DAL.Services
         /// <param name="lastTimestamp">Timestamp of latest client <see cref="ProximityQuery"/>, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
-        Task<long> GetLatestRegionDataSizeAsync(string regionId, long lastTimestamp, CancellationToken cancellationToken = default);
+        Task<long> GetLatestRegionDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
         /// Store a new <see cref="ProximityQuery"/>
         /// </summary>
         /// <param name="query"><see cref="ProximityQuery"/> to publish</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Published <see cref="ProximityQuery"/> identifier</returns>
-        Task<string> PublishAsync(ProximityQuery query, CancellationToken cancellationToken = default);
+        Task PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default);
     }
 }
