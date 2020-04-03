@@ -7,35 +7,34 @@ using Microsoft.AspNetCore.Mvc;
 using TraceDefense.DAL.Services;
 using TraceDefense.Entities.Protos;
 
-namespace TraceDefense.API.Controllers.QueryControllers
+namespace TraceDefense.API.Controllers.MessageControllers
 {
     /// <summary>
-    /// Handles <see cref="ProximityQuery"/> size requests
+    /// Handles <see cref="MatchMessage"/> size requests
     /// </summary>
-    [Route("api/Query/[controller]")]
+    [Route("api/Messages/[controller]")]
     [ApiController]
     public class SizeController : ControllerBase
     {
         /// <summary>
-        /// <see cref="ProximityQuery"/> service layer
+        /// <see cref="MatchMessage"/> service layer
         /// </summary>
-        private IProximityQueryService _queryService;
+        private IProximityQueryService _messageService;
 
         /// <summary>
         /// Creates a new <see cref="SizeController"/> instance
         /// </summary>
-        /// <param name="queryService"><see cref="ProximityQuery"/> service layer</param>
-        public SizeController(IProximityQueryService queryService)
+        /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
+        public SizeController(IProximityQueryService messageService)
         {
             // Assign local values
-            this._queryService = queryService;
+            this._messageService = messageService;
         }
 
         /// <summary>
-        /// Gets the total data size for a provided Region
+        /// Gets the total data size for a provided <see cref="Region"/> based on client 
+        /// parameters
         /// </summary>
-        /// <param name="regionId">Region identifier</param>
-        /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="ProximityQuery"/>, in ms since UNIX epoch</param>
         /// <remarks>
         /// Sample request:
         /// 
@@ -45,7 +44,11 @@ namespace TraceDefense.API.Controllers.QueryControllers
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <response code="404">No results found for request parameters</response>
-        /// <returns>Query result size, in bytes</returns>
+        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
+        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
+        /// <param name="precision">Precision of desired <see cref="Region"/></param>
+        /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="MatchMessage"/>, in ms since UNIX epoch</param>
+        /// <returns>Total size of target <see cref="MatchMessage"/> objects, in bytes</returns>
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(MessageSizeResponse), StatusCodes.Status200OK)]
@@ -63,7 +66,7 @@ namespace TraceDefense.API.Controllers.QueryControllers
             }
 
             // Get results
-            long result = await this._queryService.GetLatestRegionDataSizeAsync(region, lastTimestamp, ct);
+            long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, ct);
 
             if(result > 0)
             {

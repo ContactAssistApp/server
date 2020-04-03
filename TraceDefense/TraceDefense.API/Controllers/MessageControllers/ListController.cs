@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,45 +7,47 @@ using Microsoft.AspNetCore.Mvc;
 using TraceDefense.DAL.Services;
 using TraceDefense.Entities.Protos;
 
-namespace TraceDefense.API.Controllers.QueryControllers
+namespace TraceDefense.API.Controllers.MessageControllers
 {
     /// <summary>
-    /// Handles requests to list <see cref="ProximityQuery"/> identifiers which are new to a client
+    /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
-    [Route("api/Query/[controller]")]
+    [Route("api/Messages/[controller]")]
     [ApiController]
     public class ListController : ControllerBase
     {
         /// <summary>
-        /// <see cref="ProximityQuery"/> service layer
+        /// <see cref="MatchMessage"/> service layer
         /// </summary>
-        private IProximityQueryService _queryService;
+        private IProximityQueryService _messageService;
 
         /// <summary>
         /// Creates a new <see cref="ListController"/> instance
         /// </summary>
-        /// <param name="queryService"><see cref="ProximityQuery"/> service layer</param>
-        public ListController(IProximityQueryService queryService)
+        /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
+        public ListController(IProximityQueryService messageService)
         {
             // Assign local values
-            this._queryService = queryService;
+            this._messageService = messageService;
         }
 
         /// <summary>
-        /// Get <see cref="QueryInfo"/> for a region, starting at a provided timestamp
+        /// Get <see cref="MessageInfo"/> for a region, starting at a provided timestamp
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Query/List?regionId=39%2c-74&amp;lastTimestamp=0
+        ///     GET /Messages/List?regionId=39%2c-74&amp;lastTimestamp=0
         ///     
         /// </remarks>
-        /// <param name="regionId">Target region identifier</param>
-        /// <param name="lastTimestamp">Latest <see cref="ProximityQuery"/> timestamp on client device, in ms from UNIX epoch</param>
+        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
+        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
+        /// <param name="precision">Precision of desired <see cref="Region"/></param>
+        /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <response code="404">No results found for request parameters</response>
-        /// <returns>Collection of <see cref="QueryInfo"/> objects matching request parameters</returns>
+        /// <returns>Collection of <see cref="MessageInfo"/> objects matching request parameters</returns>
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
@@ -63,7 +64,7 @@ namespace TraceDefense.API.Controllers.QueryControllers
             }
 
             // Pull queries matching parameters
-            IEnumerable<MessageInfo> results = await this._queryService
+            IEnumerable<MessageInfo> results = await this._messageService
                 .GetLatestInfoAsync(region, lastTimestamp, ct);
 
             if (results != null)

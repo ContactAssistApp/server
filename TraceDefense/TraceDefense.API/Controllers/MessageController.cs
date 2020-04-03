@@ -11,29 +11,29 @@ using TraceDefense.Entities.Protos;
 namespace TraceDefense.API.Controllers
 {
     /// <summary>
-    /// Handles <see cref="ProximityQuery"/> CRUD operations
+    /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class QueryController : ControllerBase
+    public class MessageController : ControllerBase
     {
         /// <summary>
-        /// <see cref="ProximityQuery"/> service layer
+        /// <see cref="MatchMessage"/> service layer
         /// </summary>
-        private IProximityQueryService _queryService;
+        private IProximityQueryService _messageService;
 
         /// <summary>
-        /// Creates a new <see cref="QueryController"/> instance
+        /// Creates a new <see cref="MessageController"/> instance
         /// </summary>
-        /// <param name="queryService"><see cref="ProximityQuery"/> service layer</param>
-        public QueryController(IProximityQueryService queryService)
+        /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
+        public MessageController(IProximityQueryService messageService)
         {
             // Assign local values
-            this._queryService = queryService;
+            this._messageService = messageService;
         }
 
         /// <summary>
-        /// Get <see cref="ProximityQuery"/> objects matching the provided identifiers
+        /// Get <see cref="MatchMessage"/> objects matching the provided identifiers
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -58,8 +58,8 @@ namespace TraceDefense.API.Controllers
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <response code="404">No results found for request parameters</response>
-        /// <param name="request"><see cref="QueryRequest"/> parameters</param>
-        /// <returns>Collection of <see cref="ProximityQuery"/> objects matching request parameters</returns>
+        /// <param name="request"><see cref="MessageRequest"/> parameters</param>
+        /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status200OK)]
@@ -77,7 +77,7 @@ namespace TraceDefense.API.Controllers
             // Get results
             IEnumerable<string> requestedIds = request.RequestedQueries
                    .Select(r => r.MessageId);
-            IEnumerable<MatchMessage> result = await this._queryService
+            IEnumerable<MatchMessage> result = await this._messageService
                 .GetByIdsAsync(requestedIds, ct);
 
             if(result.Count() > 0)
@@ -91,14 +91,15 @@ namespace TraceDefense.API.Controllers
         }
 
         /// <summary>
-        /// Publish a query for distribution among devices relevant to Area
+        /// Publish a <see cref="MatchMessage"/> for distribution among devices relevant to 
+        /// <see cref="Region"/>
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /Query
+        ///     PUT /Message
         ///     {
-        ///         "messageVersion": 1,
+        ///         "messageVersion": "1.0.0",
         ///         "geoProximity": [
         ///             {
         ///                 "userMessage": "Quarantine at home if you were at Trader Joe's on 128th street.",
@@ -145,7 +146,7 @@ namespace TraceDefense.API.Controllers
         public async Task<ActionResult> PutAsync(AnnounceRequest request)
         {
             CancellationToken ct = new CancellationToken();
-            await this._queryService.PublishAsync(request.Region, request.Message, ct);
+            await this._messageService.PublishAsync(request.Region, request.Message, ct);
             return Ok();
         }
     }
