@@ -67,9 +67,24 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task<IEnumerable<MatchMessage>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
-            var messages = new List<MatchMessage> { new MatchMessage() };
+            // Build query
+            IEnumerable<string> idsEscaped = ids.Select(i => String.Format("'{0}'", ids));
 
-            return messages;
+            string sqlQuery = String.Format("SELECT * FROM c WHERE c.messageId IN ({0})", String.Join(",", idsEscaped));
+            QueryDefinition cosmosQueryDef = new QueryDefinition(sqlQuery);
+
+            // Get results
+            FeedIterator<MatchMessageRecord> resultIterator = this._queryContainer
+                .GetItemQueryIterator<MatchMessageRecord>(cosmosQueryDef);
+            var queries = new List<MatchMessage>();
+
+            while (resultIterator.HasMoreResults)
+            {
+                FeedResponse<MatchMessageRecord> result = await resultIterator.ReadNextAsync(cancellationToken);
+                queries.AddRange(result.Select(r => r.Value));
+            }
+
+            return queries;
         }
 
         /// <inheritdoc/>
