@@ -20,13 +20,13 @@ namespace TraceDefense.API.Controllers
         /// <summary>
         /// <see cref="MatchMessage"/> service layer
         /// </summary>
-        private IProximityQueryService _messageService;
+        private IMessageService _messageService;
 
         /// <summary>
         /// Creates a new <see cref="MessageController"/> instance
         /// </summary>
         /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
-        public MessageController(IProximityQueryService messageService)
+        public MessageController(IMessageService messageService)
         {
             // Assign local values
             this._messageService = messageService;

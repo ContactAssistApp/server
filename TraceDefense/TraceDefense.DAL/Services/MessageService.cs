@@ -8,20 +8,20 @@ using TraceDefense.Entities.Protos;
 namespace TraceDefense.DAL.Services
 {
     /// <summary>
-    /// <see cref="ProximityQuery"/> service implementation
+    /// <see cref="MatchMessage"/> service implementation
     /// </summary>
-    public class ProximityQueryService : IProximityQueryService
+    public class MessageService : IMessageService
     {
         /// <summary>
-        /// <see cref="ProximityQuery"/> data repository
+        /// <see cref="MatchMessage"/> data repository
         /// </summary>
         private IMessageRepository _messageRepo;
 
         /// <summary>
-        /// Creates a new <see cref="ProximityQueryService"/> instance
+        /// Creates a new <see cref="MessageService"/> instance
         /// </summary>
-        /// <param name="queryRepo"><see cref="ProximityQuery"/> data repository</param>
-        public ProximityQueryService(IMessageRepository messageRepo)
+        /// <param name="messageRepo"><see cref="MatchMessage"/> data repository</param>
+        public MessageService(IMessageRepository messageRepo)
         {
             this._messageRepo = messageRepo;
         }

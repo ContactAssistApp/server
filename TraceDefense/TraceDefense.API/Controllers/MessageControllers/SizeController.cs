@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -19,13 +18,13 @@ namespace TraceDefense.API.Controllers.MessageControllers
         /// <summary>
         /// <see cref="MatchMessage"/> service layer
         /// </summary>
-        private IProximityQueryService _messageService;
+        private IMessageService _messageService;
 
         /// <summary>
         /// Creates a new <see cref="SizeController"/> instance
         /// </summary>
         /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
-        public SizeController(IProximityQueryService messageService)
+        public SizeController(IMessageService messageService)
         {
             // Assign local values
             this._messageService = messageService;
@@ -58,14 +57,29 @@ namespace TraceDefense.API.Controllers.MessageControllers
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
-            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
 
-            if(lastTimestamp < 0)
+            // Latitudes are from -90 to 90
+            if (lat > 90 || lat < -90)
+            {
+                return BadRequest();
+            }
+            // Longitudes are from -180 to 180
+            if (lon > 180 || lon < -180)
+            {
+                return BadRequest();
+            }
+            // Precision can be max 8
+            if (precision < 0 || precision > 8)
+            {
+                return BadRequest();
+            }
+            if (lastTimestamp < 0)
             {
                 return BadRequest();
             }
 
             // Get results
+            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
             long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, ct);
 
             if(result > 0)

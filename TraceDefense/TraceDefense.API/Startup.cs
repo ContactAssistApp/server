@@ -53,7 +53,7 @@ namespace TraceDefense.API
 
 
             // Configure service layer
-            services.AddSingleton<IProximityQueryService, ProximityQueryService>();
+            services.AddSingleton<IMessageService, MessageService>();
 
             // Add Swagger generator
             services.AddSwaggerGen(c =>
