@@ -21,6 +21,13 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Creates a new <see cref="RegionProperty"/> instance
         /// </summary>
+        public RegionProperty()
+        {
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RegionProperty"/> instance
+        /// </summary>
         /// <param name="region">Source <see cref="Region"/></param>
         public RegionProperty(Region region)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Google.Protobuf;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos.Spatial;
@@ -46,7 +46,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
 
             queryable
                 .Where(r =>
-                    r.MessageId == messageId
+                    r.Id == messageId
                 )
                 .FirstOrDefault();
 
@@ -58,7 +58,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             {
                 foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
                 {
-                    results.Add(record.Value);
+                    results.Add(JsonParser.Default.Parse<MatchMessage>(record.Value));
                 }
             }
 
@@ -91,7 +91,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 {
                     results.Add(new MessageInfo
                     {
-                        MessageId = record.MessageId,
+                        MessageId = record.Id,
                         MessageTimestamp = UtcTimeHelper.ToUtcTime(record.Timestamp)
                     });
                 }
@@ -140,7 +140,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
 
             queryable
                 .Where(r =>
-                    ids.Contains(r.MessageId)
+                    ids.Contains(r.Id)
                 );
 
             // Execute query
@@ -151,7 +151,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             {
                 foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
                 {
-                    results.Add(record.Value);
+                    results.Add(JsonParser.Default.Parse<MatchMessage>(record.Value));
                 }
             }
 
@@ -161,18 +161,28 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task<string> InsertAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
         {
+            if(region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+            if(message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             // Get allowed region boundary
             RegionBoundary boundary = RegionBoundary.FromRegion(region);
 
             // Create record object
-            var record = new MatchMessageRecord(message)
+            var record = new MatchMessageRecord()
             {
+                Id = Guid.NewGuid().ToString(),
                 RegionBoundary = new RegionBoundaryProperty(boundary),
-                MessageId = Guid.NewGuid().ToString(),
                 Region = new RegionProperty(region),
                 RegionId = RegionHelper.GetRegionIdentifier(region),
                 Size = PayloadSizeHelper.GetSize(message),
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                Value = JsonFormatter.Default.Format(message),
                 Version = message.MatchProtocolVersion
             };
 
@@ -183,7 +193,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                     cancellationToken: cancellationToken
                 );
 
-            return response.Resource.MessageId;
+            return response.Resource.Id;
         }
     }
 }

@@ -14,8 +14,10 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Unique <see cref="CosmosRecord{T}"/> identifier
         /// </summary>
-        [JsonProperty("id", Required = Required.Always)]
-        [Required]
+        /// <remarks>
+        /// Do NOT set this to 'Required'. Let CosmosDB auto-generate this.
+        /// </remarks>
+        [JsonProperty("id")]
         public string Id { get; set; }
         /// <summary>
         /// Timestamp of record database insert, in ms since UNIX epoch

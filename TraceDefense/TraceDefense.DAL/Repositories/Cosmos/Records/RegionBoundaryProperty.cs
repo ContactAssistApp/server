@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 using Microsoft.Azure.Cosmos.Spatial;
 using Newtonsoft.Json;
@@ -29,11 +30,25 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Creates a new <see cref="RegionBoundaryProperty"/> instance
         /// </summary>
+        public RegionBoundaryProperty()
+        {
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RegionBoundaryProperty"/> instance
+        /// </summary>
         /// <param name="boundary">Source <see cref="RegionBoundary"/></param>
         public RegionBoundaryProperty(RegionBoundary boundary)
         {
-            this.Max = new Point(boundary.Max.Longitude, boundary.Max.Lattitude);
-            this.Min = new Point(boundary.Min.Longitude, boundary.Min.Lattitude);
+            if(boundary != null)
+            {
+                this.Max = new Point(boundary.Max.Longitude, boundary.Max.Lattitude);
+                this.Min = new Point(boundary.Min.Longitude, boundary.Min.Lattitude);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(boundary));
+            }
         }
     }
 }

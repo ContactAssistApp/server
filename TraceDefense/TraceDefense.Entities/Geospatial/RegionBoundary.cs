@@ -26,6 +26,11 @@ namespace TraceDefense.Entities.Geospatial
         /// </remarks>
         public static RegionBoundary FromRegion(Region region)
         {
+            if(region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+
             double delta = Math.Pow(0.1, region.Precision);
             return new RegionBoundary
             {

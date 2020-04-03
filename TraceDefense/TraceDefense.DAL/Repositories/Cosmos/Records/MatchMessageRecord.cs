@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using Google.Protobuf;
+using Google.Protobuf.Reflection;
 using Newtonsoft.Json;
 using TraceDefense.Entities.Protos;
 
@@ -8,20 +9,14 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
     /// <summary>
     /// <see cref="MatchMessage"/> implementation of <see cref="CosmosRecord{T}"/>
     /// </summary>
-    public class MatchMessageRecord : CosmosRecord<MatchMessage>
+    public class MatchMessageRecord : CosmosRecord<string>
     {
         /// <summary>
         /// Boundary allowed by <see cref="MatchMessage"/> region
         /// </summary>
-        [JsonProperty("Boundary", Required = Required.Always)]
+        [JsonProperty("RegionBoundary", Required = Required.Always)]
         [Required]
         public RegionBoundaryProperty RegionBoundary { get; set; }
-        /// <summary>
-        /// Unique <see cref="MatchMessage"/> identifier
-        /// </summary>
-        [JsonProperty("messageId", Required = Required.Always)]
-        [Required]
-        public string MessageId { get; set; }
         /// <summary>
         /// <see cref="Region"/> applicable to the <see cref="MatchMessage"/>
         /// </summary>
@@ -47,11 +42,8 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Creates a new <see cref="MatchMessageRecord"/> instance
         /// </summary>
-        /// <param name="message"><see cref="MatchMessage"/> data</param>
-        public MatchMessageRecord(MatchMessage message)
+        public MatchMessageRecord()
         {
-            // Set local values
-            this.Value = message;
         }
     }
 }
