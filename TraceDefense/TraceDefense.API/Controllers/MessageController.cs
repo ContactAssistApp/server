@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Google.Protobuf;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraceDefense.DAL.Services;
@@ -147,6 +147,69 @@ namespace TraceDefense.API.Controllers
         {
             CancellationToken ct = new CancellationToken();
             await this._messageService.PublishAsync(request.Region, request.Message, ct);
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetAsync()
+        {
+            CancellationToken ct = new CancellationToken();
+
+            // Seed a message
+            MatchMessage message = new MatchMessage();
+            AreaMatch areaMatch = new AreaMatch
+            {
+                DurationToleranceSecs = 600,
+                ProximityRadiusMeters = 1000,
+                UserMessage = new CryptoMessage
+                {
+                    MessageData = ByteString.CopyFromUtf8("Quarantine in place if you visited Trader Joe's here."),
+                    PublicKey = ByteString.CopyFromUtf8("thisisapublickey"),
+                    SignedMessage = ByteString.CopyFromUtf8("signedmessage")
+                }
+            };
+            areaMatch.Areas.Add(new Area
+            {
+                BeginTime = new UTCTime
+                {
+                    Year = 2020,
+                    Month = 3,
+                    Day = 31,
+                    Hour = 12,
+                    Minute = 31,
+                    Second = 12
+                },
+                EndTime = new UTCTime
+                {
+                    Year = 2020,
+                    Month = 3,
+                    Day = 31,
+                    Hour = 13,
+                    Minute = 18,
+                    Second = 54
+                },
+                Location = new Location
+                {
+                    Lattitude = 74.123456f,
+                    Longitude = -39.123456f
+                },
+                RadiusMeters = 250
+            });
+
+            message.AreaMatch.Add(areaMatch);
+
+            AnnounceRequest sample = new AnnounceRequest
+            {
+                Message = message,
+                Region = new Region
+                {
+                    LattitudePrefix = 74.12345,
+                    LongitudePrefix = -39.12345
+                }
+            };
+
+            await this._messageService.PublishAsync(sample.Region, sample.Message, ct);
+
             return Ok();
         }
     }

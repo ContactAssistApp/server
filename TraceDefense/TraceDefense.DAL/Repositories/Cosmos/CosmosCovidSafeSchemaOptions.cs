@@ -13,7 +13,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// </summary>
         public string DatabaseName { get; set; }
         /// <summary>
-        /// Name of <see cref="Container"/> used to store <see cref="ProximityQuery"/> objects
+        /// Name of <see cref="Container"/> used to store <see cref="MatchMessage"/> objects
         /// </summary>
         public string QueryContainerName { get; set; }
 

@@ -173,7 +173,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 RegionId = RegionHelper.GetRegionIdentifier(region),
                 Size = PayloadSizeHelper.GetSize(message),
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Version = message.MatchProtocolVersion,
+                Version = message.MatchProtocolVersion
             };
 
             ItemResponse<MatchMessageRecord> response = await this._queryContainer
