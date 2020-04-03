@@ -101,8 +101,8 @@ namespace TraceDefense.API.Controllers
         ///     PUT /Message
         ///     {
         ///         "matchCriteria": {
-        ///             "matchProtocolVersion": "1.0.0",
-        ///             "areaMatch": [
+        ///             "boolExpression": "(Currently unused)",
+        ///             "areaMatches": [
         ///                 {
         ///                     "userMessage": {
         ///                         "messageData": [{bytestring content}],
@@ -136,12 +136,10 @@ namespace TraceDefense.API.Controllers
         ///                                 "millisecond": 122
         ///                             }
         ///                         }
-        ///                     ],
-        ///                     "proximityRadiusMeters": 1000,
-        ///                     "durationToleranceSecs": 600
+        ///                     ]
         ///                 }
         ///             ],
-        ///             "bluetoothMatch": [],
+        ///             "bluetoothMatches": [],
         ///         },
         ///         "region": {
         ///             "lattitudePrefix": 74.12,

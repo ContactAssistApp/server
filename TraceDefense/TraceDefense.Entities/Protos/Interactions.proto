@@ -92,9 +92,9 @@ message BlueToothSeed{
 // Cryptographically signed message
 // to be displayed to the user
 message CryptoMessage {
-  bytes message_data = 1;
-  bytes signed_message = 2;
-  bytes public_key = 3;
+  string message_data = 1;
+  string signed_message = 2;
+  string public_key = 3;
 }
 
 // List of locations
