@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 using TraceDefense.Entities.Protos;
 
-namespace TraceDefense.DAL.Providers
+namespace TraceDefense.DAL.Helpers
 {
     /// <summary>
     /// Helper class which casts UNIX epoch (ms) to <see cref="UTCTime"/>

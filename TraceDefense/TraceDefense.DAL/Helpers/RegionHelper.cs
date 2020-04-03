@@ -1,7 +1,7 @@
 ﻿using System;
 using TraceDefense.Entities.Protos;
 
-namespace TraceDefense.DAL.Providers
+namespace TraceDefense.DAL.Helpers
 {
     public static class RegionHelper
     {
