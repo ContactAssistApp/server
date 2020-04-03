@@ -1,16 +1,4 @@
-﻿syntax = "proto2";
-
-// The following few lines are used to define a constant in a proto file
-// We need to version query messages so that we can distinguish a
-// a semantically different message although it might follow Protobuf compatibility rules
-// This combined with (required,default field and proto2) is needed.
-// Begin const query_protocol_version
-// // import "google/protobuf/descriptor.proto";
-// // extend google.protobuf.FileOptions {
-// //   optional string query_protocol_version = 76121;  // just a random number over 1000
-// // }
-// // option (query_protocol_version) = "1.0.0";
-// End const
+syntax = "proto3";
 
 package Corona;
 
@@ -18,20 +6,20 @@ option csharp_namespace = "TraceDefense.Entities.Protos";
 
 // Phone -> Server; Request to get size of messages queued for a region since last query time
 message MessageSizeRequest {
-  required Region region = 1;
-  required UTCTime last_query_time = 2;
+  Region region = 1;
+  UTCTime last_query_time = 2;
 }
 
 // Server -> Phone; Provide size of query in bytes of the response
 message MessageSizeResponse {
-  required int64 size_of_query_response = 1;
+  int64 size_of_query_response = 1;
 }
 
 // Phone -> Server;
 // Get list of messages queued for a region since last query time
 message MessageListRequest {
-  required Region region = 1;
-  required UTCTime last_query_time = 2;
+  Region region = 1;
+  UTCTime last_query_time = 2;
 }
 
 // Server -> Phone; list of messages for region
@@ -44,88 +32,96 @@ message MessageRequest { repeated MessageInfo requested_queries = 1; }
 // Server -> Phone (list of messages corresponding to touch points where
 // infection can occour)
 message MatchMessage {
-  // This is set to a different constant when match becomes semantically different.
-  required string match_protocol_version = 1 [default = "1.0.0"];
+  // Not used at the moment.  Will eventually express a boolean relationship between
+  // elements in the area_match and bluetooth_match collections
+  string bool_expression = 1;
   // at or around <place[]> for more than <duration> around <time[]>
-  repeated AreaMatch area_match = 2;
+  repeated AreaMatch area_matches = 2;
   // near <person>; where person is identified by some kind of blue tooth beacon
-  repeated BluetoothMatch bluetooth_match = 3;
+  repeated BluetoothMatch bluetooth_matches = 3;
 }
 
-// Server -> Phone; messages bodies
-message MessageResponse {
-    repeated MatchMessage messages = 1;
-}
 // Phone -> Server;
+// Add a new message for the specified region with some match criteria
+message AnnounceRequest {
+  MatchMessage match_criteria = 1;
+  Region region = 2;
+}
+
+// Server -> Phone
+// Response to announce request.
+message AnnounceResponse {
+  Status status = 1;
+}
+
+// Contains status that details success (0) or failure (>0)
+// and has message that details the failure.
+message Status {
+  int32 status_code = 1;
+  string status_message = 2;
+}
 
 // Represents a geographic region quantized by precision of lat/long
 message Region {
-  required double lattitude_prefix = 1;
-  required double longitude_prefix = 2;
+  double lattitude_prefix = 1;
+  double longitude_prefix = 2;
   // Mantissa mask.  Number of bits of Mantissa that should be preserved
-  required int32 precision = 3;
+  int32 precision = 3;
 }
 
 // Metadata about each query
 message MessageInfo {
-  required string message_id = 1;
-  required UTCTime message_timestamp = 2;
+  string message_id = 1;
+  UTCTime message_timestamp = 2;
 }
 
 // List of blue tooth beacons
 message BluetoothMatch {
   // bluetooth_query Message to be displayed to the user if there is a match
-  required CryptoMessage user_message = 1;
+  CryptoMessage user_message = 1;
   // Anonymized blue tooth beacons (or other exact match identifiers if
   // available)
-  repeated BlueToothSeeds seeds = 2;
+  repeated BlueToothSeed seeds = 2;
 }
 
-message BlueToothSeeds{
-  required string seed = 1;
-  required UTCTime sequence_start_time = 2;
+message BlueToothSeed{
+  string seed = 1;
+  UTCTime sequence_start_time = 2;
 }
 
 // Cryptographically signed message
 // to be displayed to the user
 message CryptoMessage {
-  required string message_data = 1;
-  required string signed_message = 2;
-  required string public_key = 3;
+  bytes message_data = 1;
+  bytes signed_message = 2;
+  bytes public_key = 3;
 }
 
 // List of locations
 message AreaMatch {
   // Message to be displayed to the user if there is a match
-  required CryptoMessage user_message = 1;
+  CryptoMessage user_message = 1;
   repeated Area areas = 2;
-  required float proximity_radius_meters = 3;
-  required int32 duration_tolerance_secs = 4;
 }
 
 message Area {
-  required Location location = 1;
-  required float radius_meters = 2;
-  required UTCTime begin_time = 3;
-  required UTCTime end_time = 4;
+  Location location = 1;
+  float radius_meters = 2;
+  UTCTime begin_time = 3;
+  UTCTime end_time = 4;
 }
 
 message UTCTime {
-  required int32 year = 1;
-  required int32 month = 2;
-  required int32 day = 3;
-  required int32 hour = 4;
-  required int32 minute = 5;
-  required int32 second = 9;
-  required int32 millisecond = 10;
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+  int32 hour = 4;
+  int32 minute = 5;
+  int32 second = 9;
+  int32 millisecond = 10;
 }
 
 message Location {
-  required float lattitude = 1;
-  required float longitude = 2;
-}
-
-message AnnounceRequest {
-    required MatchMessage message = 1;
-    required Region region = 2;
+  double lattitude = 1;
+  double longitude = 2;
 }

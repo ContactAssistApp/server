@@ -44,6 +44,6 @@ namespace TraceDefense.DAL.Services
         /// <param name="message"><see cref="MatchMessage"/> content</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Published <see cref="MatchMessage"/> identifier</returns>
-        Task PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default);
+        Task<string> PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,9 +63,9 @@ namespace TraceDefense.API.Controllers
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<MessageResponse>> PostAsync([FromBody] MessageRequest request)
+        public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request)
         {
             CancellationToken ct = new CancellationToken();
 
@@ -99,7 +100,7 @@ namespace TraceDefense.API.Controllers
         ///
         ///     PUT /Message
         ///     {
-        ///         "message": {
+        ///         "matchCriteria": {
         ///             "matchProtocolVersion": "1.0.0",
         ///             "areaMatch": [
         ///                 {
@@ -153,6 +154,7 @@ namespace TraceDefense.API.Controllers
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
         /// <response code="404">No query results</response>
+        /// <returns><see cref="AnnounceResponse"/></returns>
         [HttpPut]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -160,7 +162,14 @@ namespace TraceDefense.API.Controllers
         public async Task<ActionResult> PutAsync(AnnounceRequest request)
         {
             CancellationToken ct = new CancellationToken();
-            await this._messageService.PublishAsync(request.Region, request.Message, ct);
+
+            // Validate inputs
+            if(request == null)
+            {
+                return BadRequest();
+            }
+
+            await this._messageService.PublishAsync(request.Region, request.MatchCriteria, ct);
             return Ok();
         }
     }

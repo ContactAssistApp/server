@@ -73,7 +73,7 @@ namespace TraceDefense.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
         {
             if(region == null)
             {
@@ -85,7 +85,7 @@ namespace TraceDefense.DAL.Services
             }
 
             // Push to upstream data repository
-            await this._messageRepo.InsertAsync(region, message, cancellationToken);
+            return await this._messageRepo.InsertAsync(region, message, cancellationToken);
         }
     }
 }
