@@ -99,47 +99,54 @@ namespace TraceDefense.API.Controllers
         ///
         ///     PUT /Message
         ///     {
-        ///         "matchProtocolVersion": "1.0.0",
-        ///         "areaMatch": [
-        ///             {
-        ///                 "userMessage": {
-        ///                     "messageData": [{bytestring content}],
-        ///                     "signedMessage": [{bytestring content}],
-        ///                     "publicKey": [{bytestring content}]
-        ///                 }
-        ///                 "areas": [
-        ///                     {
-        ///                         "location": {
-        ///                             "lattitude": -39.1234,
-        ///                             "longitude": 47.1231,
-        ///                             "radiusMeters": 100
-        ///                         },
-        ///                         "radiusMeters": 250.0,
-        ///                         "beginTime": {
-        ///                             "year": 2020,
-        ///                             "month": 3,
-        ///                             "day": 31,
-        ///                             "hour": 12,
-        ///                             "minute": 30,
-        ///                             "second": 12,
-        ///                             "millisecond": 32
-        ///                         },
-        ///                         "endTime": {
-        ///                             "year": 2020,
-        ///                             "month": 3,
-        ///                             "day": 31,
-        ///                             "hour": 1,
-        ///                             "minute": 49,
-        ///                             "second": 28,
-        ///                             "millisecond": 122
-        ///                         }
+        ///         "message": {
+        ///             "matchProtocolVersion": "1.0.0",
+        ///             "areaMatch": [
+        ///                 {
+        ///                     "userMessage": {
+        ///                         "messageData": [{bytestring content}],
+        ///                         "signedMessage": [{bytestring content}],
+        ///                         "publicKey": [{bytestring content}]
         ///                     }
-        ///                 ],
-        ///                 "proximityRadiusMeters": 1000,
-        ///                 "durationToleranceSecs": 600
-        ///             }
-        ///         ],
-        ///         "bluetoothMatch": []
+        ///                     "areas": [
+        ///                         {
+        ///                             "location": {
+        ///                                 "lattitude": -39.1234,
+        ///                                 "longitude": 47.1231,
+        ///                                 "radiusMeters": 100
+        ///                             },
+        ///                             "radiusMeters": 250.0,
+        ///                             "beginTime": {
+        ///                                 "year": 2020,
+        ///                                 "month": 3,
+        ///                                 "day": 31,
+        ///                                 "hour": 12,
+        ///                                 "minute": 30,
+        ///                                 "second": 12,
+        ///                                 "millisecond": 32
+        ///                             },
+        ///                             "endTime": {
+        ///                                 "year": 2020,
+        ///                                 "month": 3,
+        ///                                 "day": 31,
+        ///                                 "hour": 1,
+        ///                                 "minute": 49,
+        ///                                 "second": 28,
+        ///                                 "millisecond": 122
+        ///                             }
+        ///                         }
+        ///                     ],
+        ///                     "proximityRadiusMeters": 1000,
+        ///                     "durationToleranceSecs": 600
+        ///                 }
+        ///             ],
+        ///             "bluetoothMatch": [],
+        ///         },
+        ///         "region": {
+        ///             "lattitudePrefix": 74.12,
+        ///             "longitudePrefix": -39.12,
+        ///             "precision": 2
+        ///         }
         ///     }
         ///
         /// </remarks>
