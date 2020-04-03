@@ -34,7 +34,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         {
             // Create container reference
             this._queryContainer = this.Database
-                .GetContainer(this.SchemaOptions.QueryContainerName);
+                .GetContainer(this.SchemaOptions.MessageContainerName);
         }
 
         /// <inheritdoc/>

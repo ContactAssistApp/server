@@ -15,7 +15,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
         /// <summary>
         /// Name of <see cref="Container"/> used to store <see cref="MatchMessage"/> objects
         /// </summary>
-        public string QueryContainerName { get; set; }
+        public string MessageContainerName { get; set; }
 
         /// <summary>
         /// Creates a new <see cref="CosmosCovidSafeSchemaOptions"/> instance
