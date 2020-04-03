@@ -46,8 +46,8 @@ namespace TraceDefense.Entities.Protos {
             "TWVzc2FnZRIlCgVzZWVkcxgCIAMoCzIWLkNvcm9uYS5CbHVlVG9vdGhTZWVk",
             "cyJMCg5CbHVlVG9vdGhTZWVkcxIMCgRzZWVkGAEgAigJEiwKE3NlcXVlbmNl",
             "X3N0YXJ0X3RpbWUYAiACKAsyDy5Db3JvbmEuVVRDVGltZSJRCg1DcnlwdG9N",
-            "ZXNzYWdlEhQKDG1lc3NhZ2VfZGF0YRgBIAIoDBIWCg5zaWduZWRfbWVzc2Fn",
-            "ZRgCIAIoDBISCgpwdWJsaWNfa2V5GAMgAigMIpcBCglBcmVhTWF0Y2gSKwoM",
+            "ZXNzYWdlEhQKDG1lc3NhZ2VfZGF0YRgBIAIoCRIWCg5zaWduZWRfbWVzc2Fn",
+            "ZRgCIAIoCRISCgpwdWJsaWNfa2V5GAMgAigJIpcBCglBcmVhTWF0Y2gSKwoM",
             "dXNlcl9tZXNzYWdlGAEgAigLMhUuQ29yb25hLkNyeXB0b01lc3NhZ2USGwoF",
             "YXJlYXMYAiADKAsyDC5Db3JvbmEuQXJlYRIfChdwcm94aW1pdHlfcmFkaXVz",
             "X21ldGVycxgDIAIoAhIfChdkdXJhdGlvbl90b2xlcmFuY2Vfc2VjcxgEIAIo",
@@ -2020,11 +2020,11 @@ namespace TraceDefense.Entities.Protos {
 
     /// <summary>Field number for the "message_data" field.</summary>
     public const int MessageDataFieldNumber = 1;
-    private readonly static pb::ByteString MessageDataDefaultValue = pb::ByteString.Empty;
+    private readonly static string MessageDataDefaultValue = "";
 
-    private pb::ByteString messageData_;
+    private string messageData_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pb::ByteString MessageData {
+    public string MessageData {
       get { return messageData_ ?? MessageDataDefaultValue; }
       set {
         messageData_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -2043,11 +2043,11 @@ namespace TraceDefense.Entities.Protos {
 
     /// <summary>Field number for the "signed_message" field.</summary>
     public const int SignedMessageFieldNumber = 2;
-    private readonly static pb::ByteString SignedMessageDefaultValue = pb::ByteString.Empty;
+    private readonly static string SignedMessageDefaultValue = "";
 
-    private pb::ByteString signedMessage_;
+    private string signedMessage_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pb::ByteString SignedMessage {
+    public string SignedMessage {
       get { return signedMessage_ ?? SignedMessageDefaultValue; }
       set {
         signedMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -2066,11 +2066,11 @@ namespace TraceDefense.Entities.Protos {
 
     /// <summary>Field number for the "public_key" field.</summary>
     public const int PublicKeyFieldNumber = 3;
-    private readonly static pb::ByteString PublicKeyDefaultValue = pb::ByteString.Empty;
+    private readonly static string PublicKeyDefaultValue = "";
 
-    private pb::ByteString publicKey_;
+    private string publicKey_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pb::ByteString PublicKey {
+    public string PublicKey {
       get { return publicKey_ ?? PublicKeyDefaultValue; }
       set {
         publicKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -2127,15 +2127,15 @@ namespace TraceDefense.Entities.Protos {
     public void WriteTo(pb::CodedOutputStream output) {
       if (HasMessageData) {
         output.WriteRawTag(10);
-        output.WriteBytes(MessageData);
+        output.WriteString(MessageData);
       }
       if (HasSignedMessage) {
         output.WriteRawTag(18);
-        output.WriteBytes(SignedMessage);
+        output.WriteString(SignedMessage);
       }
       if (HasPublicKey) {
         output.WriteRawTag(26);
-        output.WriteBytes(PublicKey);
+        output.WriteString(PublicKey);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -2146,13 +2146,13 @@ namespace TraceDefense.Entities.Protos {
     public int CalculateSize() {
       int size = 0;
       if (HasMessageData) {
-        size += 1 + pb::CodedOutputStream.ComputeBytesSize(MessageData);
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MessageData);
       }
       if (HasSignedMessage) {
-        size += 1 + pb::CodedOutputStream.ComputeBytesSize(SignedMessage);
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SignedMessage);
       }
       if (HasPublicKey) {
-        size += 1 + pb::CodedOutputStream.ComputeBytesSize(PublicKey);
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PublicKey);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2186,15 +2186,15 @@ namespace TraceDefense.Entities.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            MessageData = input.ReadBytes();
+            MessageData = input.ReadString();
             break;
           }
           case 18: {
-            SignedMessage = input.ReadBytes();
+            SignedMessage = input.ReadString();
             break;
           }
           case 26: {
-            PublicKey = input.ReadBytes();
+            PublicKey = input.ReadString();
             break;
           }
         }

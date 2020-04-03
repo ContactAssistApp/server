@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraceDefense.DAL.Services;
@@ -38,18 +38,18 @@ namespace TraceDefense.API.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /Query
+        ///     POST /Message
         ///     {
         ///         "RequestedQueries": [{
-        ///             "QueryId": "00000000-0000-0000-0000-000000000000",
-        ///             "QueryTimestamp": {
+        ///             "MessageId": "f8bc5992-22b9-491b-a94f-59484c91b705",
+        ///             "MessageTimestamp": {
         ///                 "year": 2020,
-        ///                 "month": 3,
-        ///                 "day": 31,
-        ///                 "hour": 12,
-        ///                 "minute": 23,
-        ///                 "second": 10,
-        ///                 "millisecond": 12
+        ///                 "month": 4,
+        ///                 "day": 3,
+        ///                 "hour": 4,
+        ///                 "minute": 5,
+        ///                 "second": 23,
+        ///                 "millisecond": 298
         ///             }
         ///         }]
         ///     }
@@ -69,7 +69,7 @@ namespace TraceDefense.API.Controllers
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
-            if(request == null)
+            if(request == null || request.RequestedQueries.Count == 0)
             {
                 return BadRequest();
             }
@@ -99,18 +99,23 @@ namespace TraceDefense.API.Controllers
         ///
         ///     PUT /Message
         ///     {
-        ///         "messageVersion": "1.0.0",
-        ///         "geoProximity": [
+        ///         "matchProtocolVersion": "1.0.0",
+        ///         "areaMatch": [
         ///             {
-        ///                 "userMessage": "Quarantine at home if you were at Trader Joe's on 128th street.",
-        ///                 "locations": [
+        ///                 "userMessage": {
+        ///                     "messageData": [{bytestring content}],
+        ///                     "signedMessage": [{bytestring content}],
+        ///                     "publicKey": [{bytestring content}]
+        ///                 }
+        ///                 "areas": [
         ///                     {
         ///                         "location": {
         ///                             "lattitude": -39.1234,
         ///                             "longitude": 47.1231,
         ///                             "radiusMeters": 100
         ///                         },
-        ///                         "time": {
+        ///                         "radiusMeters": 250.0,
+        ///                         "beginTime": {
         ///                             "year": 2020,
         ///                             "month": 3,
         ///                             "day": 31,
@@ -118,6 +123,15 @@ namespace TraceDefense.API.Controllers
         ///                             "minute": 30,
         ///                             "second": 12,
         ///                             "millisecond": 32
+        ///                         },
+        ///                         "endTime": {
+        ///                             "year": 2020,
+        ///                             "month": 3,
+        ///                             "day": 31,
+        ///                             "hour": 1,
+        ///                             "minute": 49,
+        ///                             "second": 28,
+        ///                             "millisecond": 122
         ///                         }
         ///                     }
         ///                 ],
@@ -125,14 +139,7 @@ namespace TraceDefense.API.Controllers
         ///                 "durationToleranceSecs": 600
         ///             }
         ///         ],
-        ///         "idList": [
-        ///             {
-        ///                 "userMessage": "These IDs might give you a bad time!",
-        ///                 "ids": [
-        ///                     "ABCDEF1234567890"
-        ///                 ]
-        ///             }
-        ///         ]
+        ///         "bluetoothMatch": []
         ///     }
         ///
         /// </remarks>
@@ -163,9 +170,9 @@ namespace TraceDefense.API.Controllers
                 ProximityRadiusMeters = 1000,
                 UserMessage = new CryptoMessage
                 {
-                    MessageData = ByteString.CopyFromUtf8("Quarantine in place if you visited Trader Joe's here."),
-                    PublicKey = ByteString.CopyFromUtf8("thisisapublickey"),
-                    SignedMessage = ByteString.CopyFromUtf8("signedmessage")
+                    MessageData = "Quarantine in place if you visited Trader Joe's here.",
+                    PublicKey = "thisisapublickey",
+                    SignedMessage = "signedmessage"
                 }
             };
             areaMatch.Areas.Add(new Area

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf;
+
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos.Spatial;
@@ -58,7 +58,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             {
                 foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
                 {
-                    results.Add(JsonParser.Default.Parse<MatchMessage>(record.Value));
+                    results.Add(record.Value);
                 }
             }
 
@@ -151,7 +151,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             {
                 foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
                 {
-                    results.Add(JsonParser.Default.Parse<MatchMessage>(record.Value));
+                    results.Add(record.Value);
                 }
             }
 
@@ -174,7 +174,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             RegionBoundary boundary = RegionBoundary.FromRegion(region);
 
             // Create record object
-            var record = new MatchMessageRecord()
+            var record = new MatchMessageRecord(message)
             {
                 Id = Guid.NewGuid().ToString(),
                 RegionBoundary = new RegionBoundaryProperty(boundary),
@@ -182,7 +182,6 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 RegionId = RegionHelper.GetRegionIdentifier(region),
                 Size = PayloadSizeHelper.GetSize(message),
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Value = JsonFormatter.Default.Format(message),
                 Version = message.MatchProtocolVersion
             };
 
