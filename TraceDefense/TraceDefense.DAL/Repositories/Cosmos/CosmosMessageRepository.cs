@@ -100,7 +100,8 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 Timestamp = timestamp,
                 Version = message.MatchProtocolVersion,
                 LocMin = new Point(locmin.Longitude, locmin.Lattitude),
-                LocMax = new Point(locmax.Longitude, locmax.Lattitude)
+                LocMax = new Point(locmax.Longitude, locmax.Lattitude),
+                Size = PayloadSizeHelper.GetSize(message)
             };
 
             ItemResponse<MatchMessageRecord> response = await this._queryContainer

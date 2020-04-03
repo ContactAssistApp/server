@@ -34,6 +34,13 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         public Point LocMax { get; set; }
 
         /// <summary>
+        /// Size of the record <see cref="MatchMessage"/>
+        /// </summary>
+        [JsonProperty("size", Required = Required.Always)]
+        [Required]
+        public long Size { get; set; }
+
+        /// <summary>
         /// Creates a new <see cref="MatchMessageRecord"/> instance
         /// </summary>
         /// <param name="record"><see cref="ProximityQuery"/> data</param>
