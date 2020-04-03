@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-using Microsoft.Azure.Cosmos.Spatial;
 using Newtonsoft.Json;
 using TraceDefense.Entities.Protos;
 
@@ -13,28 +11,34 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
     public class MatchMessageRecord : CosmosRecord<MatchMessage>
     {
         /// <summary>
-        /// Unique <see cref="ProximityQuery"/> identifier
+        /// Boundary allowed by <see cref="MatchMessage"/> region
+        /// </summary>
+        [JsonProperty("Boundary", Required = Required.Always)]
+        [Required]
+        public RegionBoundaryProperty RegionBoundary { get; set; }
+        /// <summary>
+        /// Unique <see cref="MatchMessage"/> identifier
         /// </summary>
         [JsonProperty("messageId", Required = Required.Always)]
         [Required]
         public string MessageId { get; set; }
-
         /// <summary>
-        /// Region identifier for each location in this <see cref="MatchMessage"/>
+        /// <see cref="Region"/> applicable to the <see cref="MatchMessage"/>
         /// </summary>
-        [JsonProperty("locmin", Required = Required.Always)]
+        [JsonProperty("Region", Required = Required.Always)]
         [Required]
-        public Point LocMin { get; set; }
-
+        public RegionProperty Region { get; set; }
         /// <summary>
-        /// Region identifier for each location in this <see cref="MatchMessage"/>
+        /// Unique <see cref="Region"/> identifier
         /// </summary>
-        [JsonProperty("locmax", Required = Required.Always)]
+        /// <remarks>
+        /// Used as partition key
+        /// </remarks>
+        [JsonProperty("regionId", Required = Required.Always)]
         [Required]
-        public Point LocMax { get; set; }
-
+        public string RegionId { get; set; }
         /// <summary>
-        /// Size of the record <see cref="MatchMessage"/>
+        /// Size of the record <see cref="MatchMessage"/>, in bytes
         /// </summary>
         [JsonProperty("size", Required = Required.Always)]
         [Required]
@@ -43,7 +47,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Creates a new <see cref="MatchMessageRecord"/> instance
         /// </summary>
-        /// <param name="record"><see cref="ProximityQuery"/> data</param>
+        /// <param name="message"><see cref="MatchMessage"/> data</param>
         public MatchMessageRecord(MatchMessage message)
         {
             // Set local values

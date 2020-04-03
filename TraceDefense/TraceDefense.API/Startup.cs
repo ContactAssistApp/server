@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
-using TraceDefense.DAL.Repositories.Mock;
 using TraceDefense.DAL.Services;
 
 namespace TraceDefense.API
@@ -48,9 +47,8 @@ namespace TraceDefense.API
 
             // Configure data repository implementations
             services.AddTransient<CosmosConnectionFactory>();
-            //services.AddSingleton<IProximityQueryRepository, CosmosMessageRepository>();
-            services.AddSingleton<IMessageRepository, MockMessageRepository>();
-
+            services.AddSingleton<IMatchMessageRepository, CosmosMatchMessageRepository>();
+            //services.AddSingleton<IMatchMessageRepository, MockMessageRepository>();
 
             // Configure service layer
             services.AddSingleton<IMessageService, MessageService>();

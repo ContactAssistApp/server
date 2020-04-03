@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
-using TraceDefense.DAL.Providers;
 
 namespace TraceDefense.DAL.Repositories.Cosmos
 {

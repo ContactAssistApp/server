@@ -1,40 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using TraceDefense.DAL.Providers;
 using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.DAL.Repositories.Mock
 {
     /// <summary>
-    /// Mock implemnentation of <see cref="IProximityQueryRepository"/>
+    /// Mock implemnentation of <see cref="IMatchMessageRepository"/>
     /// </summary>
-    public class MockMessageRepository : IMessageRepository
+    public class MockMessageRepository : IMatchMessageRepository
     {
+        /// <inheritdoc/>
         public Task<MatchMessage> GetAsync(string id, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<MessageInfo>> GetLatestAsync(Location locmin, Location locmax, long lastTimestamp, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public Task<IEnumerable<MessageInfo>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<long> GetLatestRegionSizeAsync(Location locmin, Location locmax, long lastTimestamp, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public Task<IEnumerable<MatchMessage>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task InsertAsync(Location locmin, Location locmax, MatchMessage record, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public Task<string> InsertAsync(Region region, MatchMessage message, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

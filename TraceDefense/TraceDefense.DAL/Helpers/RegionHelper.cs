@@ -1,19 +1,22 @@
 ﻿using System;
+
 using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.DAL.Helpers
 {
+    /// <summary>
+    /// Helper functions for working with <see cref="Region"/> objects
+    /// </summary>
     public static class RegionHelper
     {
-        //TODO: normal implementation. Rough sketch right now
-        public static Tuple<Location, Location> ToRange(Region region)
+        /// <summary>
+        /// Returns a unique identifier for a provided <see cref="Region"/>
+        /// </summary>
+        /// <param name="region">Source <see cref="Region"/></param>
+        /// <returns><see cref="Region"/> identifier</returns>
+        public static string GetRegionIdentifier(Region region)
         {
-            double delta = Math.Pow(0.1, region.Precision);
-            return new Tuple<Location, Location>
-            (
-                new Location { Lattitude = (float)(region.LattitudePrefix - delta), Longitude = (float)(region.LattitudePrefix - delta) },
-                new Location { Lattitude = (float)(region.LattitudePrefix + delta), Longitude = (float)(region.LattitudePrefix + delta) }
-            );
+            return String.Format("{0},{1}", region.LattitudePrefix, region.LongitudePrefix);
         }
     }
 }
