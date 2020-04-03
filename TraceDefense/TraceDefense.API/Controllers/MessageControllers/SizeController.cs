@@ -37,7 +37,7 @@ namespace TraceDefense.API.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Query/Size?regionId=39%2c-74&amp;lastTimestamp=0
+        ///     GET /Messages/Size?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0
         ///     
         /// </remarks>
         /// <response code="200">Successful request with results</response>

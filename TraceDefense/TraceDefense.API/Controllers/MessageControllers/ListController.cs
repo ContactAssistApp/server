@@ -37,7 +37,7 @@ namespace TraceDefense.API.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Messages/List?regionId=39%2c-74&amp;lastTimestamp=0
+        ///     GET /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0
         ///     
         /// </remarks>
         /// <param name="lat">Latitude of desired <see cref="Region"/></param>
