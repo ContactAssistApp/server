@@ -47,6 +47,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             queryable
                 .Where(r =>
                     r.Id == messageId
+                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 )
                 .FirstOrDefault();
 
@@ -79,6 +80,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 .Where(r =>
                     r.Timestamp > lastTimestamp
                     && r.Region.Location.Within(regionPoint)
+                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 );
 
             // Execute query
@@ -114,6 +116,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 .Where(r =>
                     r.Timestamp > lastTimestamp
                     && r.Region.Location.Within(regionPoint)
+                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 );
 
             // Execute query
@@ -141,6 +144,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
             queryable
                 .Where(r =>
                     ids.Contains(r.Id)
+                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 );
 
             // Execute query
@@ -182,7 +186,7 @@ namespace TraceDefense.DAL.Repositories.Cosmos
                 RegionId = RegionHelper.GetRegionIdentifier(region),
                 Size = PayloadSizeHelper.GetSize(message),
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Version = "1.0.2" // TODO: Better versioning scheme
+                Version = MatchMessageRecord.CURRENT_RECORD_VERSION
             };
 
             ItemResponse<MatchMessageRecord> response = await this._queryContainer

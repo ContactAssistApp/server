@@ -37,6 +37,11 @@ namespace TraceDefense.DAL.Repositories.Cosmos.Records
         [JsonProperty("size", Required = Required.Always)]
         [Required]
         public long Size { get; set; }
+        /// <summary>
+        /// Current version of record schema
+        /// </summary>
+        [JsonIgnore]
+        public const string CURRENT_RECORD_VERSION = "1.0.2";
 
         /// <summary>
         /// Creates a new <see cref="MatchMessageRecord"/> instance

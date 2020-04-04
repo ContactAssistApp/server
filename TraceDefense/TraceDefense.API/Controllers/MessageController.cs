@@ -103,11 +103,7 @@ namespace TraceDefense.API.Controllers
         ///             "boolExpression": "(Currently unused)",
         ///             "areaMatches": [
         ///                 {
-        ///                     "userMessage": {
-        ///                         "messageData": [{bytestring content}],
-        ///                         "signedMessage": [{bytestring content}],
-        ///                         "publicKey": [{bytestring content}]
-        ///                     }
+        ///                     "userMessage": "User message content.",
         ///                     "areas": [
         ///                         {
         ///                             "location": {
