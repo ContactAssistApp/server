@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 package Corona;
-
 option csharp_namespace = "TraceDefense.Entities.Protos";
 
 // Phone -> Server; Request to get size of messages queued for a region since last query time
@@ -78,7 +77,7 @@ message MessageInfo {
 // List of blue tooth beacons
 message BluetoothMatch {
   // bluetooth_query Message to be displayed to the user if there is a match
-  CryptoMessage user_message = 1;
+  string user_message = 1;
   // Anonymized blue tooth beacons (or other exact match identifiers if
   // available)
   repeated BlueToothSeed seeds = 2;
@@ -89,18 +88,10 @@ message BlueToothSeed{
   UTCTime sequence_start_time = 2;
 }
 
-// Cryptographically signed message
-// to be displayed to the user
-message CryptoMessage {
-  string message_data = 1;
-  string signed_message = 2;
-  string public_key = 3;
-}
-
 // List of locations
 message AreaMatch {
   // Message to be displayed to the user if there is a match
-  CryptoMessage user_message = 1;
+  string user_message = 1;
   repeated Area areas = 2;
 }
 

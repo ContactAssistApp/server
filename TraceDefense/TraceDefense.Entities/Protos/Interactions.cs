@@ -176,7 +176,8 @@ namespace TraceDefense.Entities.Protos
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"user_message")]
-        public CryptoMessage UserMessage { get; set; }
+        [global::System.ComponentModel.DefaultValue("")]
+        public string UserMessage { get; set; } = "";
 
         [global::ProtoBuf.ProtoMember(2, Name = @"seeds")]
         public global::System.Collections.Generic.List<BlueToothSeed> Seeds { get; } = new global::System.Collections.Generic.List<BlueToothSeed>();
@@ -200,27 +201,6 @@ namespace TraceDefense.Entities.Protos
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class CryptoMessage : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"message_data")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string MessageData { get; set; } = "";
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"signed_message")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string SignedMessage { get; set; } = "";
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"public_key")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string PublicKey { get; set; } = "";
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
     public partial class AreaMatch : global::ProtoBuf.IExtensible
     {
         private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -228,7 +208,8 @@ namespace TraceDefense.Entities.Protos
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"user_message")]
-        public CryptoMessage UserMessage { get; set; }
+        [global::System.ComponentModel.DefaultValue("")]
+        public string UserMessage { get; set; } = "";
 
         [global::ProtoBuf.ProtoMember(2, Name = @"areas")]
         public global::System.Collections.Generic.List<Area> Areas { get; } = new global::System.Collections.Generic.List<Area>();
