@@ -48,8 +48,8 @@ namespace TraceDefense.API
                     {
                         // Use default ProtobufFormatterOptions
                         ProtobufFormatterOptions formatterOptions = new ProtobufFormatterOptions();
-                        option.InputFormatters.Insert(0, new ProtobufInputFormatter(formatterOptions));
-                        option.OutputFormatters.Insert(0, new ProtobufOutputFormatter(formatterOptions));
+                        option.InputFormatters.Insert(1, new ProtobufInputFormatter(formatterOptions));
+                        option.OutputFormatters.Insert(1, new ProtobufOutputFormatter(formatterOptions));
                         option.FormatterMappings.SetMediaTypeMappingForFormat(
                             "protobuf", 
                             MediaTypeHeaderValue.Parse("application/x-protobuf")
