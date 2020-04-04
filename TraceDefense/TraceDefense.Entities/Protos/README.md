@@ -1,5 +1,5 @@
 ﻿## ATTENTION!
 
-Ensure you add the following switch when compiling a new proto:
+Use protobuf-net for proto compilation, which has better support for .NET.
 
-`--csharp_opt=serializable`
+https://github.com/protobuf-net/protobuf-net

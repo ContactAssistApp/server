@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
-using Google.Protobuf;
+using ProtoBuf;
 using TraceDefense.Entities.Protos;
 
 namespace TraceDefense.DAL.Helpers
@@ -22,11 +21,8 @@ namespace TraceDefense.DAL.Helpers
             if(message != null)
             {
                 // Serialize object into a byte array and return its size
-                BinaryFormatter bf = new BinaryFormatter();
                 MemoryStream stream = new MemoryStream();
-                // Cast message to JSON
-                string serializedMessage = JsonFormatter.Default.Format(message);
-                bf.Serialize(stream, serializedMessage);
+                Serializer.Serialize(stream, message);
                 return stream.ToArray().Length;
             }
             else

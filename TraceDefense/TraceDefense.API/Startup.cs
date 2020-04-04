@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
 using TraceDefense.DAL.Services;
+using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace TraceDefense.API
 {
@@ -40,7 +41,17 @@ namespace TraceDefense.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services
+                .AddMvc(
+                    option =>
+                    {
+                        // Use default ProtobufFormatterOptions
+                        ProtobufFormatterOptions formatterOptions = new ProtobufFormatterOptions();
+                        option.InputFormatters.Insert(0, new ProtobufInputFormatter(formatterOptions));
+                        option.OutputFormatters.Insert(0, new ProtobufOutputFormatter(formatterOptions));
+                    }
+                )
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Get configuration for data repository
             services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));

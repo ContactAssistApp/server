@@ -86,7 +86,7 @@ namespace TraceDefense.API.Controllers.MessageControllers
             {
                 // Convert to response proto
                 MessageListResponse response = new MessageListResponse();
-                response.MessageInfo.AddRange(results);
+                response.MessageInfoes.AddRange(results);
 
                 return Ok(response);
             }
