@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
@@ -49,7 +50,11 @@ namespace TraceDefense.API
                         ProtobufFormatterOptions formatterOptions = new ProtobufFormatterOptions();
                         option.InputFormatters.Insert(0, new ProtobufInputFormatter(formatterOptions));
                         option.OutputFormatters.Insert(0, new ProtobufOutputFormatter(formatterOptions));
-                    }
+                        option.FormatterMappings.SetMediaTypeMappingForFormat(
+                            "protobuf", 
+                            MediaTypeHeaderValue.Parse("application/x-protobuf")
+                        );
+        }
                 )
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

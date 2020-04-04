@@ -49,7 +49,6 @@ namespace TraceDefense.API.Controllers.MessageControllers
         /// <response code="404">No results found for request parameters</response>
         /// <returns>Collection of <see cref="MessageInfo"/> objects matching request parameters</returns>
         [HttpGet]
-        [Produces("application/json")]
         [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<MessageListResponse>> GetAsync(double lat, double lon, int precision, long lastTimestamp)
@@ -86,7 +85,7 @@ namespace TraceDefense.API.Controllers.MessageControllers
             {
                 // Convert to response proto
                 MessageListResponse response = new MessageListResponse();
-                response.MessageInfoes.AddRange(results);
+                response.MessageInfo.AddRange(results);
 
                 return Ok(response);
             }

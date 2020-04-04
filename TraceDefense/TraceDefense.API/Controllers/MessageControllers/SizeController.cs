@@ -49,7 +49,6 @@ namespace TraceDefense.API.Controllers.MessageControllers
         /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="MatchMessage"/>, in ms since UNIX epoch</param>
         /// <returns>Total size of target <see cref="MatchMessage"/> objects, in bytes</returns>
         [HttpGet]
-        [Produces("application/json")]
         [ProducesResponseType(typeof(MessageSizeResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<MessageSizeResponse>> GetAsync(double lat, double lon, int precision, long lastTimestamp)

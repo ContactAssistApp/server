@@ -56,7 +56,7 @@ namespace TraceDefense.Entities.Protos
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"message_info")]
-        public global::System.Collections.Generic.List<MessageInfo> MessageInfoes { get; } = new global::System.Collections.Generic.List<MessageInfo>();
+        public global::System.Collections.Generic.List<MessageInfo> MessageInfo { get; } = new global::System.Collections.Generic.List<MessageInfo>();
 
     }
 
