@@ -65,5 +65,20 @@ namespace CovidSafe.DAL.Helpers
 
 			return BitConverter.Int64BitsToDouble(result);
 		}
+
+		/// <summary>
+		/// For given number and precision parameter, returns range [xmin, xmax] containing the number,
+		/// where xmin < xmax, xmin and xmax are to numbers next to each other on the grid aligned with given precision
+		/// </summary>
+		/// <param name="d">Any double number</param>
+		/// <param name="precision">Precision parameter, any integer</param>
+		/// <returns>Tuple<double, double> - (xmin, xmax)</returns>
+		public static Tuple<double, double> GetRange(double d, int precision)
+        {
+			double rounded = Round(d, precision);
+			double step = GetStep(precision);
+
+			return rounded < 0 ? Tuple.Create(rounded - step, rounded) : Tuple.Create(rounded, rounded + step);
+        }
 	}
 }

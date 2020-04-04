@@ -23,7 +23,7 @@ namespace CovidSafe.Test
         [TestMethod]
         public void SomeTest()
         {
-            TestRegion(40.73, -73.93, 1, Tuple.Create(40.0, -74.0), Tuple.Create(41.0, -73.0));
+            TestRegion(40.73, -73.93, 0, Tuple.Create(40.0, -74.0), Tuple.Create(41.0, -73.0));
         }
     }
 }

@@ -43,11 +43,13 @@ namespace CovidSafe.DAL.Helpers
                 throw new ArgumentNullException(nameof(region));
             }
 
-            double delta = Math.Pow(0.1, region.Precision);
+            Tuple<double, double> latRange = PrecisionHelper.GetRange(region.LattitudePrefix, region.Precision);
+            Tuple<double, double> lonRange = PrecisionHelper.GetRange(region.LongitudePrefix, region.Precision);
+
             return new RegionBoundary
             {
-                Min = new Location { Lattitude = (float)(region.LattitudePrefix - delta), Longitude = (float)(region.LattitudePrefix - delta) },
-                Max = new Location { Lattitude = (float)(region.LattitudePrefix + delta), Longitude = (float)(region.LattitudePrefix + delta) }
+                Min = new Location { Lattitude = latRange.Item1, Longitude = lonRange.Item1 },
+                Max = new Location { Lattitude = latRange.Item2, Longitude = lonRange.Item2 }
             };
         }
     }
