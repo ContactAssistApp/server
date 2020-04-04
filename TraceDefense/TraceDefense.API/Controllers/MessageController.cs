@@ -134,7 +134,21 @@ namespace TraceDefense.API.Controllers
         ///                     ]
         ///                 }
         ///             ],
-        ///             "bluetoothMatches": [],
+        ///             "bluetoothMatches": [{
+        ///                 "userMessages": "User message content.",
+        ///                 "seeds": [{
+        ///                     "seed": "seed string",
+        ///                     "sequenceStartTime": {
+        ///                         "year": 2020,
+        ///                         "month": 4,
+        ///                         "day": 4,
+        ///                         "hour": 9,
+        ///                         "minute": 47,
+        ///                         "second": 2,
+        ///                         "millisecond": 209
+        ///                     }
+        ///                 }]
+        ///             }],
         ///         },
         ///         "region": {
         ///             "lattitudePrefix": 74.12,
