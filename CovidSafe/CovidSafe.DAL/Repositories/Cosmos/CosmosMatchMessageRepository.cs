@@ -175,7 +175,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             }
 
             // Get allowed region boundary
-            RegionBoundary boundary = RegionBoundary.FromRegion(region);
+            RegionBoundary boundary = RegionHelper.GetRegionBoundary(region);
 
             // Create record object
             var record = new MatchMessageRecord(message)
