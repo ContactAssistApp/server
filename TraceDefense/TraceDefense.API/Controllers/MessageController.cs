@@ -62,7 +62,6 @@ namespace TraceDefense.API.Controllers
         /// <param name="request"><see cref="MessageRequest"/> parameters</param>
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
         [HttpPost]
-        [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request)
@@ -154,7 +153,6 @@ namespace TraceDefense.API.Controllers
         /// <response code="404">No query results</response>
         /// <returns><see cref="AnnounceResponse"/></returns>
         [HttpPut]
-        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(AnnounceRequest request)

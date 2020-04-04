@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using TraceDefense.DAL.Repositories;
 using TraceDefense.DAL.Repositories.Cosmos;
 using TraceDefense.DAL.Services;
+using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace TraceDefense.API
 {
@@ -40,7 +42,21 @@ namespace TraceDefense.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services
+                .AddMvc(
+                    option =>
+                    {
+                        // Use default ProtobufFormatterOptions
+                        ProtobufFormatterOptions formatterOptions = new ProtobufFormatterOptions();
+                        option.InputFormatters.Insert(1, new ProtobufInputFormatter(formatterOptions));
+                        option.OutputFormatters.Insert(1, new ProtobufOutputFormatter(formatterOptions));
+                        option.FormatterMappings.SetMediaTypeMappingForFormat(
+                            "protobuf", 
+                            MediaTypeHeaderValue.Parse("application/x-protobuf")
+                        );
+        }
+                )
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Get configuration for data repository
             services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));
