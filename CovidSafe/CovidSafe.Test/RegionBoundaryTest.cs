@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
@@ -21,7 +24,7 @@ namespace CovidSafe.Test
         }
 
         [TestMethod]
-        public void NewYorkTest()
+        public void NewYorkRegionTest()
         {
             TestRegion(40.73, -73.93, 0, Tuple.Create(40.0, -74.0), Tuple.Create(41.0, -73.0));
             TestRegion(40.73, -73.93, 1, Tuple.Create(40.5, -74.0), Tuple.Create(41.0, -73.5));
@@ -33,5 +36,38 @@ namespace CovidSafe.Test
             TestRegion(40.73, -73.93, -3, Tuple.Create(40.0, -80.0), Tuple.Create(48.0, -72.0));
             TestRegion(40.73, -73.93, -4, Tuple.Create(32.0, -80.0), Tuple.Create(48.0, -64.0));
         }
+
+        void TestConnectedRegions(Region region, int overlap, int precision, IList<Tuple<double, double>> expected)
+        {
+            List<Region> regions = RegionHelper.GetConnectedRegions(region, precision, overlap).ToList();
+
+            Assert.AreEqual(regions.Count, expected.Count);
+
+            for (int i = 0; i < regions.Count; ++i)
+            {
+                Assert.AreEqual(expected[i].Item1, regions[i].LattitudePrefix);
+                Assert.AreEqual(expected[i].Item2, regions[i].LongitudePrefix);
+                Assert.AreEqual(precision, regions[i].Precision);
+            }
+        }
+
+        [TestMethod]
+        public void NewYorkConnectedRegionsTest()
+        {
+            var region = new Region { LattitudePrefix = 40.73, LongitudePrefix = -73.93, Precision = 0 };
+            TestConnectedRegions(region, 1, 0, new List<Tuple<double, double>>
+            {
+                Tuple.Create(39.0, -75.0),
+                Tuple.Create(39.0, -74.0),
+                Tuple.Create(39.0, -73.0),
+                Tuple.Create(40.0, -75.0),
+                Tuple.Create(40.0, -74.0),
+                Tuple.Create(40.0, -73.0),
+                Tuple.Create(41.0, -75.0),
+                Tuple.Create(41.0, -74.0),
+                Tuple.Create(41.0, -73.0),
+            });
+        }
+
     }
 }

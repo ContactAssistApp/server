@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 
@@ -33,9 +34,6 @@ namespace CovidSafe.DAL.Helpers
         /// Creates a new <see cref="RegionBoundary"/> from a provided <see cref="Region"/>
         /// </summary>
         /// <param name="region">Source <see cref="Region"/></param>
-        /// <remarks>
-        /// TODO: Create actual logic for this.
-        /// </remarks>
         public static RegionBoundary GetRegionBoundary(Region region)
         {
             if (region == null)
@@ -51,6 +49,32 @@ namespace CovidSafe.DAL.Helpers
                 Min = new Location { Lattitude = latRange.Item1, Longitude = lonRange.Item1 },
                 Max = new Location { Lattitude = latRange.Item2, Longitude = lonRange.Item2 }
             };
+        }
+
+        /// <summary>
+        /// Enumerates all reions of given precision connected with given <see cref="Region"/>/>
+        /// Being connected means either intersects with the region extended by overlap amount of precision-aligned grids
+        /// </summary>
+        /// <param name="region">Source <see cref="Region"/></param>
+        /// <param name="precision">Precision parameter. Any integer value.</param>
+        /// <param name="overlap">Size of region extension (in precision-aligned steps)</param>
+        /// <returns>IEnumerable<<see cref="Region"/>> - all connected regions</returns>
+        public static IEnumerable<Region> GetConnectedRegions(Region region, int precision, int overlap)
+        {
+            double step = PrecisionHelper.GetStep(precision);
+            RegionBoundary rb = GetRegionBoundary(region);
+            for (double lat = rb.Min.Lattitude - overlap * step; lat < rb.Max.Lattitude + overlap * step; lat += step)
+            {
+                for (double lon = rb.Min.Longitude - overlap * step; lon < rb.Max.Longitude + overlap * step; lon += step)
+                {
+                    yield return new Region
+                    {
+                        LattitudePrefix = lat,
+                        LongitudePrefix = lon,
+                        Precision = precision
+                    };
+                }
+            }
         }
     }
 }
