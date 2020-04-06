@@ -94,6 +94,7 @@ namespace CovidSafe.API.Controllers
         public Task<OkResult> HeadAsync()
         {
             return Task.FromResult(Ok());
+
         }
     }
 }

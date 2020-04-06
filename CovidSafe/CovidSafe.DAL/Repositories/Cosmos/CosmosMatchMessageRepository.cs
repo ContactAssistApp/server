@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,16 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         private Container _queryContainer;
 
         /// <summary>
+        /// Precision of regions that are used for keys.
+        /// </summary>
+        private int RegionPrecision = 4;
+
+        /// <summary>
+        /// Search extension size
+        /// </summary>
+        private int RegionsExtension = 1;
+
+        /// <summary>
         /// Creates a new <see cref="CosmosMatchMessageRepository"/> instance
         /// </summary>
         /// <param name="connectionFactory">Database connection factory instance</param>
@@ -44,15 +55,13 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var queryable = this._queryContainer
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
-            queryable
+            // Execute query
+            var iterator = queryable
                 .Where(r =>
                     r.Id == messageId
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                )
-                .FirstOrDefault();
+                ).ToFeedIterator();
 
-            // Execute query
-            var iterator = queryable.ToFeedIterator();
             List<MatchMessage> results = new List<MatchMessage>();
 
             while (iterator.HasMoreResults)
@@ -76,15 +85,18 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var queryable = this._queryContainer
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
-            queryable
-                .Where(r =>
-                    r.Timestamp > lastTimestamp
-                    && r.Region.Location.Within(regionPoint)
-                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                );
+            ISet<string> regionIds = new HashSet<string>(
+                RegionHelper.GetConnectedRegions(region, this.RegionsExtension, this.RegionPrecision).Select(
+                    r => RegionHelper.GetRegionIdentifier(r)));
 
             // Execute query
-            var iterator = queryable.ToFeedIterator();
+            var iterator = queryable
+                .Where(r =>
+                    r.Timestamp > lastTimestamp
+                    && regionIds.Contains(r.RegionId)
+                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
+                ).ToFeedIterator();
+
             List<MessageInfo> results = new List<MessageInfo>();
 
             while(iterator.HasMoreResults)
@@ -112,15 +124,18 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var queryable = this._queryContainer
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
-            queryable
-                .Where(r =>
-                    r.Timestamp > lastTimestamp
-                    && r.Region.Location.Within(regionPoint)
-                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                );
+            ISet<string> regionIds = new HashSet<string>(
+                RegionHelper.GetConnectedRegions(region, this.RegionsExtension, this.RegionPrecision).Select(
+                    r => RegionHelper.GetRegionIdentifier(r)));
 
             // Execute query
-            var iterator = queryable.ToFeedIterator();
+            var iterator = queryable
+                .Where(r =>
+                    r.Timestamp > lastTimestamp
+                    && regionIds.Contains(r.RegionId)
+                    && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
+                ).ToFeedIterator();
+
             long size = 0;
 
             while (iterator.HasMoreResults)
@@ -141,14 +156,13 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var queryable = this._queryContainer
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
-            queryable
+            // Execute query
+            var iterator = queryable
                 .Where(r =>
                     ids.Contains(r.Id)
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                );
+                ).ToFeedIterator();
 
-            // Execute query
-            var iterator = queryable.ToFeedIterator();
             List<MatchMessage> results = new List<MatchMessage>();
 
             while (iterator.HasMoreResults)
@@ -173,11 +187,16 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             {
                 throw new ArgumentNullException(nameof(message));
             }
+            if(region.Precision != this.RegionPrecision)
+            {
+                throw new InvalidDataException($"Precision {region.Precision} is not supported right now. Please use {this.RegionPrecision}.");
+            }
+
+            region = RegionHelper.AdjustToPrecision(region);
 
             // Get allowed region boundary
-            RegionBoundary boundary = RegionBoundary.FromRegion(region);
+            RegionBoundary boundary = RegionHelper.GetRegionBoundary(region);
 
-            // Create record object
             var record = new MatchMessageRecord(message)
             {
                 Id = Guid.NewGuid().ToString(),
