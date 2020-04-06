@@ -51,7 +51,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///             }]
         ///         }],
         ///         "region": {
-        ///             "latitudePrefix": 74.12,
+        ///             "lattitudePrefix": 74.12,
         ///             "longitudePrefix": -39.12,
         ///             "precision": 2
         ///         }
