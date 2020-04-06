@@ -56,7 +56,7 @@ namespace CovidSafe.Entities.Protos
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"message_info")]
-        public global::System.Collections.Generic.List<MessageInfo> MessageInfo { get; } = new global::System.Collections.Generic.List<MessageInfo>();
+        public global::System.Collections.Generic.List<MessageInfo> MessageInfoes { get; } = new global::System.Collections.Generic.List<MessageInfo>();
 
     }
 
@@ -92,29 +92,33 @@ namespace CovidSafe.Entities.Protos
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class AnnounceRequest : global::ProtoBuf.IExtensible
+    public partial class AreaMatch : global::ProtoBuf.IExtensible
     {
         private global::ProtoBuf.IExtension __pbn__extensionData;
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-        [global::ProtoBuf.ProtoMember(1, Name = @"match_criteria")]
-        public MatchMessage MatchCriteria { get; set; }
+        [global::ProtoBuf.ProtoMember(1, Name = @"user_message")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string UserMessage { get; set; } = "";
 
-        [global::ProtoBuf.ProtoMember(2, Name = @"region")]
-        public Region Region { get; set; }
+        [global::ProtoBuf.ProtoMember(2, Name = @"areas")]
+        public global::System.Collections.Generic.List<Area> Areas { get; } = new global::System.Collections.Generic.List<Area>();
 
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class AnnounceResponse : global::ProtoBuf.IExtensible
+    public partial class SelfReportRequest : global::ProtoBuf.IExtensible
     {
         private global::ProtoBuf.IExtension __pbn__extensionData;
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-        [global::ProtoBuf.ProtoMember(1, Name = @"status")]
-        public Status Status { get; set; }
+        [global::ProtoBuf.ProtoMember(1, Name = @"seeds")]
+        public global::System.Collections.Generic.List<BlueToothSeed> Seeds { get; } = new global::System.Collections.Generic.List<BlueToothSeed>();
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"region")]
+        public Region Region { get; set; }
 
     }
 
@@ -200,22 +204,6 @@ namespace CovidSafe.Entities.Protos
 
         [global::ProtoBuf.ProtoMember(3, Name = @"sequence_end_time")]
         public long SequenceEndTime { get; set; }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class AreaMatch : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"user_message")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string UserMessage { get; set; } = "";
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"areas")]
-        public global::System.Collections.Generic.List<Area> Areas { get; } = new global::System.Collections.Generic.List<Area>();
 
     }
 

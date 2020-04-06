@@ -87,5 +87,46 @@ namespace CovidSafe.DAL.Services
             // Push to upstream data repository
             return await this._messageRepo.InsertAsync(region, message, cancellationToken);
         }
+
+        /// <inheritdoc/>
+        public async Task<string> PublishAsync(Region region, AreaMatch areas, CancellationToken cancellationToken = default)
+        {
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+            if (areas == null)
+            {
+                throw new ArgumentNullException(nameof(areas));
+            }
+
+            // Build MatchMessage from submitted content
+            MatchMessage message = new MatchMessage();
+            message.AreaMatches.Add(areas);
+
+            return await this._messageRepo.InsertAsync(region, message, cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> PublishAsync(Region region, IEnumerable<BlueToothSeed> seeds, CancellationToken cancellationToken = default)
+        {
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+            if (seeds == null || seeds.Count() == 0)
+            {
+                throw new ArgumentNullException(nameof(seeds));
+            }
+
+            // Build MatchMessage from submitted content
+            MatchMessage message = new MatchMessage();
+            BluetoothMatch matches = new BluetoothMatch();
+            matches.Seeds.AddRange(seeds);
+            message.BluetoothMatches.Add(matches);
+
+            // Store in data repository
+            return await this._messageRepo.InsertAsync(region, message, cancellationToken);
+        }
     }
 }
