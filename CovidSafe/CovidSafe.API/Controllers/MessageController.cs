@@ -41,8 +41,8 @@ namespace CovidSafe.API.Controllers
         ///     POST /Message
         ///     {
         ///         "RequestedQueries": [{
-        ///             "MessageId": "f8bc5992-22b9-491b-a94f-59484c91b705",
-        ///             "MessageTimestamp": 1586192613829
+        ///             "MessageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
+        ///             "MessageTimestamp": 1586199635012
         ///         }]
         ///     }
         ///     
