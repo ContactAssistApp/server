@@ -42,15 +42,7 @@ namespace CovidSafe.API.Controllers
         ///     {
         ///         "RequestedQueries": [{
         ///             "MessageId": "f8bc5992-22b9-491b-a94f-59484c91b705",
-        ///             "MessageTimestamp": {
-        ///                 "year": 2020,
-        ///                 "month": 4,
-        ///                 "day": 3,
-        ///                 "hour": 4,
-        ///                 "minute": 5,
-        ///                 "second": 23,
-        ///                 "millisecond": 298
-        ///             }
+        ///             "MessageTimestamp": 1586192613829
         ///         }]
         ///     }
         ///     
@@ -111,24 +103,8 @@ namespace CovidSafe.API.Controllers
         ///                                 "radiusMeters": 100
         ///                             },
         ///                             "radiusMeters": 250.0,
-        ///                             "beginTime": {
-        ///                                 "year": 2020,
-        ///                                 "month": 3,
-        ///                                 "day": 31,
-        ///                                 "hour": 12,
-        ///                                 "minute": 30,
-        ///                                 "second": 12,
-        ///                                 "millisecond": 32
-        ///                             },
-        ///                             "endTime": {
-        ///                                 "year": 2020,
-        ///                                 "month": 3,
-        ///                                 "day": 31,
-        ///                                 "hour": 1,
-        ///                                 "minute": 49,
-        ///                                 "second": 28,
-        ///                                 "millisecond": 122
-        ///                             }
+        ///                             "beginTime": 1586192613829,
+        ///                             "endTime": 1586193987253
         ///                         }
         ///                     ]
         ///                 }
@@ -137,15 +113,7 @@ namespace CovidSafe.API.Controllers
         ///                 "userMessages": "User message content.",
         ///                 "seeds": [{
         ///                     "seed": "seed string",
-        ///                     "sequenceStartTime": {
-        ///                         "year": 2020,
-        ///                         "month": 4,
-        ///                         "day": 4,
-        ///                         "hour": 9,
-        ///                         "minute": 47,
-        ///                         "second": 2,
-        ///                         "millisecond": 209
-        ///                     }
+        ///                     "sequenceStartTime": 1586192613829
         ///                 }]
         ///             }],
         ///         },
