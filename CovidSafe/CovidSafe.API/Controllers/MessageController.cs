@@ -53,6 +53,8 @@ namespace CovidSafe.API.Controllers
         /// <param name="request"><see cref="MessageRequest"/> parameters</param>
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
         [HttpPost]
+        [Consumes("application/x-protobuf", "application/json")]
+        [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request)
@@ -94,7 +96,6 @@ namespace CovidSafe.API.Controllers
         public Task<OkResult> HeadAsync()
         {
             return Task.FromResult(Ok());
-
         }
     }
 }

@@ -55,6 +55,8 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
         [HttpPut]
+        [Consumes("application/x-protobuf", "application/json")]
+        [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(SelfReportRequest request)
