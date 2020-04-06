@@ -74,11 +74,11 @@ namespace CovidSafe.DAL.Helpers
 		/// <param name="precision">Precision parameter, any integer</param>
 		/// <returns>Tuple<double, double> - (xmin, xmax)</returns>
 		public static Tuple<double, double> GetRange(double d, int precision)
-        {
+		{
 			double rounded = Round(d, precision);
 			double step = GetStep(precision);
 
 			return rounded < 0 ? Tuple.Create(rounded - step, rounded) : Tuple.Create(rounded, rounded + step);
-        }
+		}
 	}
 }
