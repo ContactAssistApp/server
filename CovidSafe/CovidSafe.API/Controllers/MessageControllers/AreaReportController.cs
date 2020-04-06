@@ -57,6 +57,8 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <response code="400">Malformed or invalid query provided</response>
         /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
         [HttpPut]
+        [Consumes("application/x-protobuf", "application/json")]
+        [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(AreaMatch request)
