@@ -6,7 +6,7 @@ option csharp_namespace = "CovidSafe.Entities.Protos";
 // Phone -> Server; Request to get size of messages queued for a region since last query time
 message MessageSizeRequest {
   Region region = 1;
-  UTCTime last_query_time = 2;
+  int64 last_query_time = 2;
 }
 
 // Server -> Phone; Provide size of query in bytes of the response
@@ -18,7 +18,7 @@ message MessageSizeResponse {
 // Get list of messages queued for a region since last query time
 message MessageListRequest {
   Region region = 1;
-  UTCTime last_query_time = 2;
+  int64 last_query_time = 2;
 }
 
 // Server -> Phone; list of messages for region
@@ -71,7 +71,7 @@ message Region {
 // Metadata about each query
 message MessageInfo {
   string message_id = 1;
-  UTCTime message_timestamp = 2;
+  int64 message_timestamp = 2;
 }
 
 // List of blue tooth beacons
@@ -85,7 +85,8 @@ message BluetoothMatch {
 
 message BlueToothSeed{
   string seed = 1;
-  UTCTime sequence_start_time = 2;
+  int64 sequence_start_time = 2;
+  int64 sequence_end_time = 3;
 }
 
 // List of locations
@@ -98,18 +99,8 @@ message AreaMatch {
 message Area {
   Location location = 1;
   float radius_meters = 2;
-  UTCTime begin_time = 3;
-  UTCTime end_time = 4;
-}
-
-message UTCTime {
-  int32 year = 1;
-  int32 month = 2;
-  int32 day = 3;
-  int32 hour = 4;
-  int32 minute = 5;
-  int32 second = 9;
-  int32 millisecond = 10;
+  int64 begin_time = 3;
+  int64 end_time = 4;
 }
 
 message Location {
