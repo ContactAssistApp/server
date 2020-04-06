@@ -66,6 +66,12 @@ namespace CovidSafe.API.Controllers.MessageControllers
             {
                 return BadRequest();
             }
+            //TODO: add proper region validation
+            //TODO: remove precision limitation
+            if (request.Region.Precision != 4)
+            {
+                return BadRequest("Only precision 4 is supported for insertion temporarily");
+            }
 
             await this._messageService.PublishAsync(request.Seeds, request.Region, ct);
 
