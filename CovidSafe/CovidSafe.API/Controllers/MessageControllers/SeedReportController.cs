@@ -45,7 +45,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///             "sequenceEndTime": 1586048400
         ///         }],
         ///         "region": {
-        ///             "latitudePrefix": 74.12,
+        ///             "lattitudePrefix": 74.12,
         ///             "longitudePrefix": -39.12,
         ///             "precision": 2
         ///         }
