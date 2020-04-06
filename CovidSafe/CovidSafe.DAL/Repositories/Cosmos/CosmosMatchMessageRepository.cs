@@ -106,7 +106,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                     results.Add(new MessageInfo
                     {
                         MessageId = record.Id,
-                        MessageTimestamp = UtcTimeHelper.ToUtcTime(record.Timestamp)
+                        MessageTimestamp = record.Timestamp
                     });
                 }
             }

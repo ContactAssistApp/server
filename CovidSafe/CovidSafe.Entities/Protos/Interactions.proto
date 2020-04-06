@@ -6,7 +6,7 @@ option csharp_namespace = "CovidSafe.Entities.Protos";
 // Phone -> Server; Request to get size of messages queued for a region since last query time
 message MessageSizeRequest {
   Region region = 1;
-  UTCTime last_query_time = 2;
+  int64 last_query_time = 2;
 }
 
 // Server -> Phone; Provide size of query in bytes of the response
@@ -18,7 +18,7 @@ message MessageSizeResponse {
 // Get list of messages queued for a region since last query time
 message MessageListRequest {
   Region region = 1;
-  UTCTime last_query_time = 2;
+  int64 last_query_time = 2;
 }
 
 // Server -> Phone; list of messages for region
@@ -40,19 +40,30 @@ message MatchMessage {
   repeated BluetoothMatch bluetooth_matches = 3;
 }
 
+// Phone <-> Server;
+// 2 known uses
+// 1) Register a new announcement of area of interest
+// 2) Part of MatchMessage which aggregates AreaMatches and BluetoothMatches
+message AreaMatch {
+  // Message to be displayed to the user if there is a match
+  string user_message = 1;
+  // Areas of interest
+  repeated Area areas = 2;
+}
+
 // Phone -> Server;
-// Add a new message for the specified region with some match criteria
-message AnnounceRequest {
-  MatchMessage match_criteria = 1;
+// Message to self-register a phone as infected
+message SelfReportRequest {
+  // Anonymized blue tooth beacons (or other exact match identifiers if
+  // available)
+  repeated BlueToothSeed seeds = 1;
+  // Coarse region that this request applies to specified
+  // to maximum allowed privacy preserving precision
   Region region = 2;
 }
 
 // Server -> Phone
-// Response to announce request.
-message AnnounceResponse {
-  Status status = 1;
-}
-
+// Generic response to requests that don't have any other response.
 // Contains status that details success (0) or failure (>0)
 // and has message that details the failure.
 message Status {
@@ -71,7 +82,7 @@ message Region {
 // Metadata about each query
 message MessageInfo {
   string message_id = 1;
-  UTCTime message_timestamp = 2;
+  int64 message_timestamp = 2;
 }
 
 // List of blue tooth beacons
@@ -85,31 +96,15 @@ message BluetoothMatch {
 
 message BlueToothSeed{
   string seed = 1;
-  UTCTime sequence_start_time = 2;
-}
-
-// List of locations
-message AreaMatch {
-  // Message to be displayed to the user if there is a match
-  string user_message = 1;
-  repeated Area areas = 2;
+  int64 sequence_start_time = 2;
+  int64 sequence_end_time = 3;
 }
 
 message Area {
   Location location = 1;
   float radius_meters = 2;
-  UTCTime begin_time = 3;
-  UTCTime end_time = 4;
-}
-
-message UTCTime {
-  int32 year = 1;
-  int32 month = 2;
-  int32 day = 3;
-  int32 hour = 4;
-  int32 minute = 5;
-  int32 second = 9;
-  int32 millisecond = 10;
+  int64 begin_time = 3;
+  int64 end_time = 4;
 }
 
 message Location {

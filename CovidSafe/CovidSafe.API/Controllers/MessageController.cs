@@ -41,16 +41,8 @@ namespace CovidSafe.API.Controllers
         ///     POST /Message
         ///     {
         ///         "RequestedQueries": [{
-        ///             "MessageId": "f8bc5992-22b9-491b-a94f-59484c91b705",
-        ///             "MessageTimestamp": {
-        ///                 "year": 2020,
-        ///                 "month": 4,
-        ///                 "day": 3,
-        ///                 "hour": 4,
-        ///                 "minute": 5,
-        ///                 "second": 23,
-        ///                 "millisecond": 298
-        ///             }
+        ///             "MessageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
+        ///             "MessageTimestamp": 1586199635012
         ///         }]
         ///     }
         ///     
@@ -90,98 +82,19 @@ namespace CovidSafe.API.Controllers
         }
 
         /// <summary>
-        /// Publish a <see cref="MatchMessage"/> for distribution among devices relevant to 
-        /// <see cref="Region"/>
+        /// Service status request endpoint
         /// </summary>
         /// <remarks>
-        /// Sample request:
-        ///
-        ///     PUT /Message
-        ///     {
-        ///         "matchCriteria": {
-        ///             "boolExpression": "(Currently unused)",
-        ///             "areaMatches": [
-        ///                 {
-        ///                     "userMessage": "User message content.",
-        ///                     "areas": [
-        ///                         {
-        ///                             "location": {
-        ///                                 "lattitude": -39.1234,
-        ///                                 "longitude": 47.1231,
-        ///                                 "radiusMeters": 100
-        ///                             },
-        ///                             "radiusMeters": 250.0,
-        ///                             "beginTime": {
-        ///                                 "year": 2020,
-        ///                                 "month": 3,
-        ///                                 "day": 31,
-        ///                                 "hour": 12,
-        ///                                 "minute": 30,
-        ///                                 "second": 12,
-        ///                                 "millisecond": 32
-        ///                             },
-        ///                             "endTime": {
-        ///                                 "year": 2020,
-        ///                                 "month": 3,
-        ///                                 "day": 31,
-        ///                                 "hour": 1,
-        ///                                 "minute": 49,
-        ///                                 "second": 28,
-        ///                                 "millisecond": 122
-        ///                             }
-        ///                         }
-        ///                     ]
-        ///                 }
-        ///             ],
-        ///             "bluetoothMatches": [{
-        ///                 "userMessages": "User message content.",
-        ///                 "seeds": [{
-        ///                     "seed": "seed string",
-        ///                     "sequenceStartTime": {
-        ///                         "year": 2020,
-        ///                         "month": 4,
-        ///                         "day": 4,
-        ///                         "hour": 9,
-        ///                         "minute": 47,
-        ///                         "second": 2,
-        ///                         "millisecond": 209
-        ///                     }
-        ///                 }]
-        ///             }],
-        ///         },
-        ///         "region": {
-        ///             "lattitudePrefix": 74.12,
-        ///             "longitudePrefix": -39.12,
-        ///             "precision": 2
-        ///         }
-        ///     }
-        ///
+        /// Used by Azure App Services to check if service is alive.
         /// </remarks>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
-        /// <response code="404">No query results</response>
-        /// <returns><see cref="AnnounceResponse"/></returns>
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <response code="200">Successful request with results</response>
+        [HttpHead]
+        [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(AnnounceRequest request)
+        public Task<OkResult> HeadAsync()
         {
-            CancellationToken ct = new CancellationToken();
+            return Task.FromResult(Ok());
 
-            // TODO: Proper argument validation. Remove precision requirement 
-            // Validate inputs
-            if (request == null)
-            {
-                return BadRequest();
-            }
-
-            if (request.Region.Precision != 4)
-            {
-                return BadRequest("Only 4 precision is supported for insertion temporarily");
-            }
-
-            await this._messageService.PublishAsync(request.Region, request.MatchCriteria, ct);
-            return Ok();
         }
     }
 }
