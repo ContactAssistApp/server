@@ -14,12 +14,12 @@ namespace CovidSafe.Test
     {
         void TestRegion(double lat, double lon, int precision, Tuple<double, double> first, Tuple<double, double> second)
         {
-            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+            var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
             RegionBoundary rb = RegionHelper.GetRegionBoundary(region);
 
-            Assert.AreEqual(rb.Min.Lattitude, first.Item1);
+            Assert.AreEqual(rb.Min.Latitude, first.Item1);
             Assert.AreEqual(rb.Min.Longitude, first.Item2);
-            Assert.AreEqual(rb.Max.Lattitude, second.Item1);
+            Assert.AreEqual(rb.Max.Latitude, second.Item1);
             Assert.AreEqual(rb.Max.Longitude, second.Item2);
         }
 
@@ -45,7 +45,7 @@ namespace CovidSafe.Test
 
             for (int i = 0; i < regions.Count; ++i)
             {
-                Assert.AreEqual(expected[i].Item1, regions[i].LattitudePrefix);
+                Assert.AreEqual(expected[i].Item1, regions[i].LatitudePrefix);
                 Assert.AreEqual(expected[i].Item2, regions[i].LongitudePrefix);
                 Assert.AreEqual(precision, regions[i].Precision);
             }
@@ -54,7 +54,7 @@ namespace CovidSafe.Test
         [TestMethod]
         public void NewYorkConnectedRegionsTest()
         {
-            var region = new Region { LattitudePrefix = 40.73, LongitudePrefix = -73.93, Precision = 0 };
+            var region = new Region { LatitudePrefix = 40.73, LongitudePrefix = -73.93, Precision = 0 };
             TestConnectedRegions(region, 1, 0, new List<Tuple<double, double>>
             {
                 Tuple.Create(39.0, -75.0),

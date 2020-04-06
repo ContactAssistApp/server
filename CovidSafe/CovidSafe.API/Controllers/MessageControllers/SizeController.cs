@@ -78,7 +78,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
             }
 
             // Get results
-            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+            var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
             long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, ct);
 
             if(result > 0)

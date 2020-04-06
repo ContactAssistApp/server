@@ -23,7 +23,7 @@ namespace CovidSafe.DAL.Helpers
         {
             if(region != null)
             {
-                return String.Format("{0},{1},{2}", region.LattitudePrefix, region.LongitudePrefix, region.Precision);
+                return String.Format("{0},{1},{2}", region.LatitudePrefix, region.LongitudePrefix, region.Precision);
             }
             else
             {
@@ -42,13 +42,13 @@ namespace CovidSafe.DAL.Helpers
                 throw new ArgumentNullException(nameof(region));
             }
 
-            Tuple<double, double> latRange = PrecisionHelper.GetRange(region.LattitudePrefix, region.Precision);
+            Tuple<double, double> latRange = PrecisionHelper.GetRange(region.LatitudePrefix, region.Precision);
             Tuple<double, double> lonRange = PrecisionHelper.GetRange(region.LongitudePrefix, region.Precision);
 
             return new RegionBoundary
             {
-                Min = new Location { Lattitude = latRange.Item1, Longitude = lonRange.Item1 },
-                Max = new Location { Lattitude = latRange.Item2, Longitude = lonRange.Item2 }
+                Min = new Location { Latitude = latRange.Item1, Longitude = lonRange.Item1 },
+                Max = new Location { Latitude = latRange.Item2, Longitude = lonRange.Item2 }
             };
         }
 
@@ -67,13 +67,13 @@ namespace CovidSafe.DAL.Helpers
             for (int precision = precisionStart; precision < precisionStart + precisionCount; ++precision)
             {
                 double step = PrecisionHelper.GetStep(precision);
-                for (double lat = rb.Min.Lattitude - extension * step; lat < rb.Max.Lattitude + extension * step; lat += step)
+                for (double lat = rb.Min.Latitude - extension * step; lat < rb.Max.Latitude + extension * step; lat += step)
                 {
                     for (double lon = rb.Min.Longitude - extension * step; lon < rb.Max.Longitude + extension * step; lon += step)
                     {
                         yield return new Region
                         {
-                            LattitudePrefix = lat,
+                            LatitudePrefix = lat,
                             LongitudePrefix = lon,
                             Precision = precision
                         };
@@ -91,7 +91,7 @@ namespace CovidSafe.DAL.Helpers
         {
             return new Region
             {
-                LattitudePrefix = PrecisionHelper.Round(region.LattitudePrefix, region.Precision),
+                LatitudePrefix = PrecisionHelper.Round(region.LatitudePrefix, region.Precision),
                 LongitudePrefix = PrecisionHelper.Round(region.LongitudePrefix, region.Precision),
                 Precision = region.Precision
             };
