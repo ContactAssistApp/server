@@ -31,7 +31,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <param name="region">Source <see cref="Region"/></param>
         public RegionProperty(Region region)
         {
-            this.Location = new Point(region.LongitudePrefix, region.LattitudePrefix);
+            this.Location = new Point(region.LongitudePrefix, region.LatitudePrefix);
             this.Precision = region.Precision;
         }
     }

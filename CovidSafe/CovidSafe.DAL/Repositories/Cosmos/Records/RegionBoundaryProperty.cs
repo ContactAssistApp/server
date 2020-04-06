@@ -42,8 +42,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         {
             if(boundary != null)
             {
-                this.Max = new Point(boundary.Max.Longitude, boundary.Max.Lattitude);
-                this.Min = new Point(boundary.Min.Longitude, boundary.Min.Lattitude);
+                this.Max = new Point(boundary.Max.Longitude, boundary.Max.Latitude);
+                this.Min = new Point(boundary.Min.Longitude, boundary.Min.Latitude);
             }
             else
             {
