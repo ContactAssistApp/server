@@ -41,7 +41,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// Current version of record schema
         /// </summary>
         [JsonIgnore]
-        public const string CURRENT_RECORD_VERSION = "1.0.2";
+        public const string CURRENT_RECORD_VERSION = "1.0.3";
 
         /// <summary>
         /// Creates a new <see cref="MatchMessageRecord"/> instance
