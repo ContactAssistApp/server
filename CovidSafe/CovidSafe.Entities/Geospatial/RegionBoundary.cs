@@ -35,8 +35,8 @@ namespace CovidSafe.Entities.Geospatial
             double delta = Math.Pow(0.1, region.Precision);
             return new RegionBoundary
             {
-                Min = new Location { Lattitude = (float)(region.LattitudePrefix - delta), Longitude = (float)(region.LattitudePrefix - delta) },
-                Max = new Location { Lattitude = (float)(region.LattitudePrefix + delta), Longitude = (float)(region.LattitudePrefix + delta) }
+                Min = new Location { Latitude = (float)(region.LatitudePrefix - delta), Longitude = (float)(region.LatitudePrefix - delta) },
+                Max = new Location { Latitude = (float)(region.LatitudePrefix + delta), Longitude = (float)(region.LatitudePrefix + delta) }
             };
         }
     }

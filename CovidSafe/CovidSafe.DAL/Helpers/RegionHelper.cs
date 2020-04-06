@@ -21,7 +21,7 @@ namespace CovidSafe.DAL.Helpers
         {
             if(region != null)
             {
-                return String.Format("{0},{1}", (int) region.LattitudePrefix, (int) region.LongitudePrefix);
+                return String.Format("{0},{1}", (int) region.LatitudePrefix, (int) region.LongitudePrefix);
             }
             else
             {

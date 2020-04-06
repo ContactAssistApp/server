@@ -70,7 +70,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         public async Task<IEnumerable<MessageInfo>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Get boundaries for provided region
-            Point regionPoint = new Point(region.LongitudePrefix, region.LattitudePrefix);
+            Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
 
             // Create LINQ query
             var queryable = this._queryContainer
@@ -106,7 +106,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         public async Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
             // Get boundaries for provided region
-            Point regionPoint = new Point(region.LongitudePrefix, region.LattitudePrefix);
+            Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
 
             // Create LINQ query
             var queryable = this._queryContainer
