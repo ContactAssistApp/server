@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 
@@ -22,7 +23,7 @@ namespace CovidSafe.DAL.Helpers
         {
             if(region != null)
             {
-                return String.Format("{0},{1}", (int) region.LattitudePrefix, (int) region.LongitudePrefix);
+                return String.Format("{0},{1},{2}", region.LattitudePrefix, region.LongitudePrefix, region.Precision);
             }
             else
             {
@@ -52,29 +53,48 @@ namespace CovidSafe.DAL.Helpers
         }
 
         /// <summary>
-        /// Enumerates all reions of given precision connected with given <see cref="Region"/>/>
+        /// Enumerates all regions of given precisions range connected with given <see cref="Region"/>/>
         /// Being connected means either intersects with the region extended by overlap amount of precision-aligned grids
         /// </summary>
         /// <param name="region">Source <see cref="Region"/></param>
-        /// <param name="precision">Precision parameter. Any integer value.</param>
-        /// <param name="overlap">Size of region extension (in precision-aligned steps)</param>
+        /// <param name="extension">Size of region extension (in precision-aligned steps)</param>
+        /// <param name="precisionStart"> Start precision parameter. Any integer value.</param>
+        /// <param name="precisionCount"> Count of precision parameters to include. Any non-negative integer value.</param>
         /// <returns>IEnumerable<<see cref="Region"/>> - all connected regions</returns>
-        public static IEnumerable<Region> GetConnectedRegions(Region region, int precision, int overlap)
+        public static IEnumerable<Region> GetConnectedRegions(Region region, int extension, int precisionStart, int precisionCount = 1)
         {
-            double step = PrecisionHelper.GetStep(precision);
             RegionBoundary rb = GetRegionBoundary(region);
-            for (double lat = rb.Min.Lattitude - overlap * step; lat < rb.Max.Lattitude + overlap * step; lat += step)
+            for (int precision = precisionStart; precision < precisionStart + precisionCount; ++precision)
             {
-                for (double lon = rb.Min.Longitude - overlap * step; lon < rb.Max.Longitude + overlap * step; lon += step)
+                double step = PrecisionHelper.GetStep(precision);
+                for (double lat = rb.Min.Lattitude - extension * step; lat < rb.Max.Lattitude + extension * step; lat += step)
                 {
-                    yield return new Region
+                    for (double lon = rb.Min.Longitude - extension * step; lon < rb.Max.Longitude + extension * step; lon += step)
                     {
-                        LattitudePrefix = lat,
-                        LongitudePrefix = lon,
-                        Precision = precision
-                    };
+                        yield return new Region
+                        {
+                            LattitudePrefix = lat,
+                            LongitudePrefix = lon,
+                            Precision = precision
+                        };
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Adjusts region coordinate prefixes to be aligned with precision<see cref="Region"/>/>
+        /// </summary>
+        /// <param name="region">Input <see cref="Region"/></param>
+        /// <returns><see cref="Region"/> - region with adjusted coordinate prefixes</returns>
+        public static Region AdjustToPrecision(Region region)
+        {
+            return new Region
+            {
+                LattitudePrefix = PrecisionHelper.Round(region.LattitudePrefix, region.Precision),
+                LongitudePrefix = PrecisionHelper.Round(region.LongitudePrefix, region.Precision),
+                Precision = region.Precision
+            };
         }
     }
 }

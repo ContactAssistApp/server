@@ -168,10 +168,16 @@ namespace CovidSafe.API.Controllers
         {
             CancellationToken ct = new CancellationToken();
 
+            // TODO: Proper argument validation. Remove precision requirement 
             // Validate inputs
-            if(request == null)
+            if (request == null)
             {
                 return BadRequest();
+            }
+
+            if (request.Region.Precision != 4)
+            {
+                return BadRequest("Only 4 precision is supported for insertion temporarily");
             }
 
             await this._messageService.PublishAsync(request.Region, request.MatchCriteria, ct);
