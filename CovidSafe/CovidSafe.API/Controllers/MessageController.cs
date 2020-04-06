@@ -82,68 +82,18 @@ namespace CovidSafe.API.Controllers
         }
 
         /// <summary>
-        /// Publish a <see cref="MatchMessage"/> for distribution among devices relevant to 
-        /// <see cref="Region"/>
+        /// Service status request endpoint
         /// </summary>
         /// <remarks>
-        /// Sample request:
-        ///
-        ///     PUT /Message
-        ///     {
-        ///         "matchCriteria": {
-        ///             "boolExpression": "(Currently unused)",
-        ///             "areaMatches": [
-        ///                 {
-        ///                     "userMessage": "User message content.",
-        ///                     "areas": [
-        ///                         {
-        ///                             "location": {
-        ///                                 "lattitude": -39.1234,
-        ///                                 "longitude": 47.1231,
-        ///                                 "radiusMeters": 100
-        ///                             },
-        ///                             "radiusMeters": 250.0,
-        ///                             "beginTime": 1586192613829,
-        ///                             "endTime": 1586193987253
-        ///                         }
-        ///                     ]
-        ///                 }
-        ///             ],
-        ///             "bluetoothMatches": [{
-        ///                 "userMessages": "User message content.",
-        ///                 "seeds": [{
-        ///                     "seed": "seed string",
-        ///                     "sequenceStartTime": 1586192613829
-        ///                 }]
-        ///             }],
-        ///         },
-        ///         "region": {
-        ///             "lattitudePrefix": 74.12,
-        ///             "longitudePrefix": -39.12,
-        ///             "precision": 2
-        ///         }
-        ///     }
-        ///
+        /// Used by Azure App Services to check if service is alive.
         /// </remarks>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
-        /// <response code="404">No query results</response>
-        /// <returns><see cref="AnnounceResponse"/></returns>
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <response code="200">Successful request with results</response>
+        [HttpHead]
+        [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(AnnounceRequest request)
+        public Task<OkResult> HeadAsync()
         {
-            CancellationToken ct = new CancellationToken();
-
-            // Validate inputs
-            if(request == null)
-            {
-                return BadRequest();
-            }
-
-            await this._messageService.PublishAsync(request.Region, request.MatchCriteria, ct);
-            return Ok();
+            return Task.FromResult(Ok());
         }
     }
 }
