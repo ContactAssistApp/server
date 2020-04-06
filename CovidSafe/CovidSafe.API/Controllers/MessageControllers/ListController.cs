@@ -77,7 +77,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
             }
 
             // Pull queries matching parameters
-            var region = new Region { LattitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+            var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
             IEnumerable<MessageInfo> results = await this._messageService
                 .GetLatestInfoAsync(region, lastTimestamp, ct);
 

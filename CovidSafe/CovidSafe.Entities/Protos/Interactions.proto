@@ -73,7 +73,7 @@ message Status {
 
 // Represents a geographic region quantized by precision of lat/long
 message Region {
-  double lattitude_prefix = 1;
+  double latitude_prefix = 1;
   double longitude_prefix = 2;
   // Mantissa mask.  Number of bits of Mantissa that should be preserved
   int32 precision = 3;
@@ -108,6 +108,6 @@ message Area {
 }
 
 message Location {
-  double lattitude = 1;
+  double latitude = 1;
   double longitude = 2;
 }

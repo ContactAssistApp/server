@@ -145,8 +145,8 @@ namespace CovidSafe.Entities.Protos
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-        [global::ProtoBuf.ProtoMember(1, Name = @"lattitude_prefix")]
-        public double LattitudePrefix { get; set; }
+        [global::ProtoBuf.ProtoMember(1, Name = @"latitude_prefix")]
+        public double LatitudePrefix { get; set; }
 
         [global::ProtoBuf.ProtoMember(2, Name = @"longitude_prefix")]
         public double LongitudePrefix { get; set; }
@@ -235,8 +235,8 @@ namespace CovidSafe.Entities.Protos
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-        [global::ProtoBuf.ProtoMember(1, Name = @"lattitude")]
-        public double Lattitude { get; set; }
+        [global::ProtoBuf.ProtoMember(1, Name = @"latitude")]
+        public double Latitude { get; set; }
 
         [global::ProtoBuf.ProtoMember(2, Name = @"longitude")]
         public double Longitude { get; set; }
