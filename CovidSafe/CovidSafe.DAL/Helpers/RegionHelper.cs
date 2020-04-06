@@ -12,6 +12,67 @@ namespace CovidSafe.DAL.Helpers
     public static class RegionHelper
     {
         /// <summary>
+        /// Returns a <see cref="Region"/> from an identifier
+        /// </summary>
+        /// <param name="regionId">Source <see cref="Region"/> ID</param>
+        /// <returns><see cref="Region"/></returns>
+        public static Region FromRegionIdentifier(string regionId)
+        {
+            if(!String.IsNullOrEmpty(regionId))
+            {
+                // Parse lat/lng
+                string[] parts = regionId.Split(',');
+                
+                if(parts.Length == 3)
+                {
+                    return new Region
+                    {
+                        LatitudePrefix = Double.Parse(parts[0]),
+                        LongitudePrefix = Double.Parse(parts[1]),
+                        Precision = Int32.Parse(parts[2])
+                    };
+                }
+                else
+                {
+                    throw new FormatException();
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(regionId));
+            }
+        }
+
+        /// <summary>
+        /// Returns a unique identifier for a provided <see cref="Area"/>
+        /// </summary>
+        /// <param name="area">Source <see cref="Area"/></param>
+        /// <returns><see cref="Region"/> identifier</returns>
+        public static string GetRegionIdentifier(Area area)
+        {
+            if (area != null)
+            {
+                // Create region from area
+                Region mapped = new Region
+                {
+                    LatitudePrefix = area.Location.Latitude,
+                    LongitudePrefix = area.Location.Longitude,
+                    Precision = 4 // TODO: Fix default
+                };
+
+                // Adjust for precision
+                mapped = AdjustToPrecision(mapped);
+
+                // Return identfier
+                return GetRegionIdentifier(mapped);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(area));
+            }
+        }
+
+        /// <summary>
         /// Returns a unique identifier for a provided <see cref="Region"/>
         /// </summary>
         /// <param name="region">Source <see cref="Region"/></param>
@@ -60,7 +121,7 @@ namespace CovidSafe.DAL.Helpers
         /// <param name="extension">Size of region extension (in precision-aligned steps)</param>
         /// <param name="precisionStart"> Start precision parameter. Any integer value.</param>
         /// <param name="precisionCount"> Count of precision parameters to include. Any non-negative integer value.</param>
-        /// <returns>IEnumerable<<see cref="Region"/>> - all connected regions</returns>
+        /// <returns>Collection of connected <see cref="Region"/> objects</returns>
         public static IEnumerable<Region> GetConnectedRegions(Region region, int extension, int precisionStart, int precisionCount = 1)
         {
             RegionBoundary rb = GetRegionBoundary(region);

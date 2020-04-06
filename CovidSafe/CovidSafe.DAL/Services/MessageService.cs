@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using CovidSafe.DAL.Helpers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.Entities.Protos;
 
@@ -89,34 +89,65 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(Region region, AreaMatch areas, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<string>> PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
         {
-            if (region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
             if (areas == null)
             {
                 throw new ArgumentNullException(nameof(areas));
             }
 
-            // Build MatchMessage from submitted content
-            MatchMessage message = new MatchMessage();
-            message.AreaMatches.Add(areas);
+            // Determine regions for each area
+            Dictionary<string, AreaMatch> areaMatches = new Dictionary<string, AreaMatch>();
 
-            return await this._messageRepo.InsertAsync(region, message, cancellationToken);
+            foreach(Area area in areas.Areas)
+            {
+                // Get RegionID of area
+                string regionId = RegionHelper.GetRegionIdentifier(area);
+
+                if(areaMatches.ContainsKey(regionId))
+                {
+                    // Add area match
+                    areaMatches[regionId].Areas.Add(area);
+                }
+                else
+                {
+                    AreaMatch match = new AreaMatch();
+                    match.UserMessage = areas.UserMessage;
+                    match.Areas.Add(area);
+
+                    areaMatches[regionId] = match;
+                }
+            }
+
+            // Build MatchMessage from submitted content
+            // TODO: Execute in a transaction
+            List<string> createdIdentifiers = new List<string>();
+            foreach(KeyValuePair<string, AreaMatch> match in areaMatches)
+            {
+                MatchMessage message = new MatchMessage();
+                message.AreaMatches.Add(match.Value);
+
+                string id =await this._messageRepo.InsertAsync(
+                    RegionHelper.FromRegionIdentifier(match.Key),
+                    message,
+                    cancellationToken
+                );
+                createdIdentifiers.Add(id);
+            }
+
+            return createdIdentifiers;
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(Region region, IEnumerable<BlueToothSeed> seeds, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(IEnumerable<BlueToothSeed> seeds, Region region, CancellationToken cancellationToken = default)
         {
-            if (region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
             if (seeds == null || seeds.Count() == 0)
             {
                 throw new ArgumentNullException(nameof(seeds));
+            }
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
             }
 
             // Build MatchMessage from submitted content

@@ -38,20 +38,19 @@ namespace CovidSafe.DAL.Services
         /// <returns></returns>
         Task<long> GetLatestRegionDataSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default);
         /// <summary>
-        /// Store a new <see cref="MatchMessage"/>
+        /// Store a new <see cref="MatchMessage"/> based on an <see cref="AreaMatch"/>
         /// </summary>
-        /// <param name="region">Target <see cref="Region"/> for published <see cref="MatchMessage"/></param>
         /// <param name="areas"><see cref="AreaMatch"/> content</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Published <see cref="MatchMessage"/> identifier</returns>
-        Task<string> PublishAsync(Region region, AreaMatch areas, CancellationToken cancellationToken = default);
+        /// <returns>Collection of published <see cref="MatchMessage"/> identifiers</returns>
+        Task<IEnumerable<string>> PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default);
         /// <summary>
         /// Store a new <see cref="SelfReportRequest"/>
         /// </summary>
-        /// <param name="region">Target <see cref="Region"/> for published <see cref="MatchMessage"/></param>
         /// <param name="seeds"><see cref="BlueToothSeed"/> collection</param>
+        /// <param name="region">Target <see cref="Region"/> for published <see cref="MatchMessage"/></param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Published <see cref="MatchMessage"/> identifier</returns>
-        Task<string> PublishAsync(Region region, IEnumerable<BlueToothSeed> seeds, CancellationToken cancellationToken = default);
+        Task<string> PublishAsync(IEnumerable<BlueToothSeed> seeds, Region region, CancellationToken cancellationToken = default);
     }
 }

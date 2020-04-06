@@ -45,7 +45,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///             "sequenceEndTime": 1586048400
         ///         }],
         ///         "region": {
-        ///             "lattitudePrefix": 74.12,
+        ///             "latitudePrefix": 74.12,
         ///             "longitudePrefix": -39.12,
         ///             "precision": 2
         ///         }
@@ -73,7 +73,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 return BadRequest("Only precision 4 is supported for insertion temporarily");
             }
 
-            await this._messageService.PublishAsync(request.Region, request.Seeds, ct);
+            await this._messageService.PublishAsync(request.Seeds, request.Region, ct);
 
             return Ok();
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
@@ -30,8 +31,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// Publish a <see cref="AreaMatch"/> for distribution among devices relevant to 
-        /// <see cref="Region"/>
+        /// Publish a <see cref="AreaMatch"/> for distribution among devices
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -42,31 +42,36 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///             "userMessage": "Monitor symptoms for one week.",
         ///             "areas": [{
         ///                 "location": {
-        ///                     "lattitude": 74.12345,
+        ///                     "latitude": 74.12345,
         ///                     "longitude": -39.12345
         ///                 },
         ///                 "radiusMeters": 100,
         ///                 "beginTime": 1586083599,
         ///                 "endTime": 1586085189
         ///             }]
-        ///         }],
-        ///         "region": {
-        ///             "lattitudePrefix": 74.12,
-        ///             "longitudePrefix": -39.12,
-        ///             "precision": 2
-        ///         }
+        ///         }]
         ///     }
         ///
         /// </remarks>
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
+        /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(AreaMatch request)
         {
-            // Blocked for now
-            return NotFound();
+            CancellationToken ct = new CancellationToken();
+
+            // Validate inputs
+            if (request == null)
+            {
+                return BadRequest();
+            }
+
+            await this._messageService.PublishAreaAsync(request, ct);
+
+            return Ok();
         }
     }
 }

@@ -68,11 +68,11 @@ namespace CovidSafe.DAL.Helpers
 
 		/// <summary>
 		/// For given number and precision parameter, returns range [xmin, xmax] containing the number,
-		/// where xmin < xmax, xmin and xmax are to numbers next to each other on the grid aligned with given precision
+		/// where xmin &lt; xmax, xmin and xmax are to numbers next to each other on the grid aligned with given precision
 		/// </summary>
 		/// <param name="d">Any double number</param>
 		/// <param name="precision">Precision parameter, any integer</param>
-		/// <returns>Tuple<double, double> - (xmin, xmax)</returns>
+		/// <returns>Tuple of doubles (xmin, xmax)</returns>
 		public static Tuple<double, double> GetRange(double d, int precision)
 		{
 			double rounded = Round(d, precision);
