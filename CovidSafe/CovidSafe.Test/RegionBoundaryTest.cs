@@ -21,9 +21,17 @@ namespace CovidSafe.Test
         }
 
         [TestMethod]
-        public void SomeTest()
+        public void NewYorkTest()
         {
             TestRegion(40.73, -73.93, 0, Tuple.Create(40.0, -74.0), Tuple.Create(41.0, -73.0));
+            TestRegion(40.73, -73.93, 1, Tuple.Create(40.5, -74.0), Tuple.Create(41.0, -73.5));
+            TestRegion(40.73, -73.93, 2, Tuple.Create(40.5, -74.0), Tuple.Create(40.75, -73.75));
+            TestRegion(40.73, -73.93, 3, Tuple.Create(40.625, -74.0), Tuple.Create(40.75, -73.875));
+            TestRegion(40.73, -73.93, 4, Tuple.Create(40.6875, -73.9375), Tuple.Create(40.75, -73.875));
+            TestRegion(40.73, -73.93, -1, Tuple.Create(40.0, -74.0), Tuple.Create(42.0, -72.0));
+            TestRegion(40.73, -73.93, -2, Tuple.Create(40.0, -76.0), Tuple.Create(44.0, -72.0));
+            TestRegion(40.73, -73.93, -3, Tuple.Create(40.0, -80.0), Tuple.Create(48.0, -72.0));
+            TestRegion(40.73, -73.93, -4, Tuple.Create(32.0, -80.0), Tuple.Create(48.0, -64.0));
         }
     }
 }
