@@ -23,11 +23,11 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
         /// <summary>
         /// Creates a new <see cref="CosmosConnectionFactory"/> instance
         /// </summary>
-        /// <param name="appConfig">Application configuration</param>
-        public CosmosConnectionFactory(IConfiguration appConfig)
+        /// <param name="connectionString">Database connection string</param>
+        public CosmosConnectionFactory(string connectionString)
         {
-            // Get Cosmos connection data from application configuration
-            this._connectionString = appConfig["CosmosConnection"];
+            // Store local variables
+            this._connectionString = connectionString;
         }
 
         /// <summary>

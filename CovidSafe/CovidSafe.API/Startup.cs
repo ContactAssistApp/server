@@ -4,6 +4,7 @@ using System.Reflection;
 
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Repositories.Cosmos;
+using CovidSafe.DAL.Repositories.Cosmos.Client;
 using CovidSafe.DAL.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -62,9 +63,9 @@ namespace CovidSafe.API
             services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));
 
             // Configure data repository implementations
-            services.AddTransient<CosmosConnectionFactory>();
+            services.AddTransient(cf => new CosmosConnectionFactory(this.Configuration["CosmosConnection"]));
+            services.AddTransient<CosmosContext>();
             services.AddSingleton<IMatchMessageRepository, CosmosMatchMessageRepository>();
-            //services.AddSingleton<IMatchMessageRepository, MockMessageRepository>();
 
             // Configure service layer
             services.AddSingleton<IMessageService, MessageService>();
