@@ -6,13 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Helpers;
+using CovidSafe.DAL.Repositories.Cosmos.Client;
 using CovidSafe.DAL.Repositories.Cosmos.Records;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos.Spatial;
-using Microsoft.Extensions.Options;
 
 namespace CovidSafe.DAL.Repositories.Cosmos
 {
@@ -22,15 +22,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos
     public class CosmosMatchMessageRepository : CosmosRepository, IMatchMessageRepository
     {
         /// <summary>
-        /// <see cref="MatchMessage"/> container reference
-        /// </summary>
-        private Container _queryContainer;
-
-        /// <summary>
         /// Precision of regions that are used for keys.
         /// </summary>
         private int RegionPrecision = 4;
-
         /// <summary>
         /// Search extension size
         /// </summary>
@@ -39,20 +33,20 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         /// <summary>
         /// Creates a new <see cref="CosmosMatchMessageRepository"/> instance
         /// </summary>
-        /// <param name="connectionFactory">Database connection factory instance</param>
-        /// <param name="schemaOptions">Schema options object</param>
-        public CosmosMatchMessageRepository(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaOptions) : base(connectionFactory, schemaOptions)
+        /// <param name="dbContext"><see cref="CosmosContext"/> instance</param>
+        public CosmosMatchMessageRepository(CosmosContext dbContext) : base(dbContext)
         {
             // Create container reference
-            this._queryContainer = this.Database
-                .GetContainer(this.SchemaOptions.MessageContainerName);
+            this.Container = this.Context.GetContainer(
+                this.Context.SchemaOptions.MessageContainerName
+            );
         }
 
         /// <inheritdoc/>
         public async Task<MatchMessage> GetAsync(string messageId, CancellationToken cancellationToken = default)
         {
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             // Execute query
@@ -82,7 +76,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
 
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             ISet<string> regionIds = new HashSet<string>(
@@ -121,7 +115,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
 
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             ISet<string> regionIds = new HashSet<string>(
@@ -153,7 +147,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         public async Task<IEnumerable<MatchMessage>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             // Execute query
@@ -208,7 +202,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 Version = MatchMessageRecord.CURRENT_RECORD_VERSION
             };
 
-            ItemResponse<MatchMessageRecord> response = await this._queryContainer
+            ItemResponse<MatchMessageRecord> response = await this.Container
                 .CreateItemAsync<MatchMessageRecord>(
                     record,
                     new PartitionKey(record.RegionId),
