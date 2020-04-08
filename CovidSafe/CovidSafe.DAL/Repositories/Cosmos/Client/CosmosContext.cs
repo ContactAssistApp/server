@@ -44,6 +44,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
             // Set local variables
             this._schemaConfig = schemaConfig;
             this.Client = connectionFactory.GetClient();
+
+            // Create Database object reference
+            this.Database = this.Client.GetDatabase(this.SchemaOptions.DatabaseName);
         }
 
         /// <summary>
