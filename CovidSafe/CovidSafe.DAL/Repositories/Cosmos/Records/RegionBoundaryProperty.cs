@@ -43,8 +43,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         {
             if (boundary != null)
             {
-                this.Max = new Location { Latitude = boundary.Max.Longitude, Longitude = boundary.Max.Latitude };
-                this.Min = new Location { Latitude = boundary.Min.Longitude, Longitude = boundary.Min.Latitude};
+                this.Max = new Location { Longitude = boundary.Max.Longitude, Latitude = boundary.Max.Latitude };
+                this.Min = new Location { Longitude = boundary.Min.Longitude, Latitude = boundary.Min.Latitude};
             }
             else
             {

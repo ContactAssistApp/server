@@ -25,7 +25,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// </summary>
         [JsonProperty("partitionKey", Required = Required.Always)]
         [Required]
-        public PartitionKey PartitionKey { get; set; }
+        public long PartitionKey { get; set; }
         /// <summary>
         /// Timestamp of record database insert, in ms since UNIX epoch
         /// </summary>
@@ -60,7 +60,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// </summary>
         /// <param name="timestamp">Timestamp used to derive Partition Key</param>
         /// <returns><see cref="PartitionKey"/></returns>
-        public virtual PartitionKey GetPartitionKey(DateTimeOffset? timestamp = null)
+        public virtual long GetPartitionKey(DateTimeOffset? timestamp = null)
         {
             if (!timestamp.HasValue)
             {
@@ -80,7 +80,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
             );
 
             // Return as UNIX epoch, in ms
-            return new PartitionKey(value.ToUnixTimeMilliseconds());
+            return value.ToUnixTimeMilliseconds();
         }
     }
 }

@@ -204,7 +204,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             ItemResponse<MatchMessageRecord> response = await this.Container
                 .CreateItemAsync<MatchMessageRecord>(
                     record,
-                    record.PartitionKey,
+                    new PartitionKey(record.PartitionKey),
                     cancellationToken: cancellationToken
                 );
 
@@ -234,7 +234,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             // Begin batch operation
             // All MatchMessageRecords will have same PartitionID in this batch
-            TransactionalBatch batch = this.Container.CreateTransactionalBatch(records.First().PartitionKey);
+            TransactionalBatch batch = this.Container.CreateTransactionalBatch(new PartitionKey(records.First().PartitionKey));
 
             foreach(MatchMessageRecord record in records)
             {
