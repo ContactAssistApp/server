@@ -1,4 +1,6 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using System;
+
+using Microsoft.Azure.Cosmos;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Client
 {

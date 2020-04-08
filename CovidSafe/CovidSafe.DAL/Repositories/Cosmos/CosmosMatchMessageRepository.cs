@@ -171,15 +171,15 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<string> InsertAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
+        public async Task<string> InsertAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
         {
-            if(region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
-            if(message == null)
+            if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
+            }
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
             }
             if(region.Precision != this.RegionPrecision)
             {
@@ -205,11 +205,56 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             ItemResponse<MatchMessageRecord> response = await this.Container
                 .CreateItemAsync<MatchMessageRecord>(
                     record,
-                    new PartitionKey(record.RegionId),
+                    record.PartitionKey,
                     cancellationToken: cancellationToken
                 );
 
             return response.Resource.Id;
+        }
+
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> InsertManyAsync(IEnumerable<MatchMessage> messages, CancellationToken cancellationToken = default)
+        {
+            // Validate inputs
+            if(messages == null || messages.Count() == 0)
+            {
+                throw new ArgumentNullException(nameof(messages));
+            }
+
+            // Resolve region(s) for record(s) to insert
+            List<MatchMessageRecord> records = new List<MatchMessageRecord>();
+
+            foreach(MatchMessage message in messages)
+            {
+
+            }
+
+            // Begin batch operation
+            TransactionalBatch batch = this.Container.CreateTransactionalBatch(records.First().PartitionKey);
+
+            foreach(MatchMessageRecord record in records)
+            {
+                batch.CreateItem<MatchMessageRecord>(record);
+            }
+
+            // Execute transaction
+            TransactionalBatchResponse response = await batch.ExecuteAsync(cancellationToken);
+
+            if(response.IsSuccessStatusCode)
+            {
+                // Return new record IDs
+                return records.Select(r => r.Id);
+            }
+            else
+            {
+                throw new Exception(
+                    String.Format(
+                        "Cosmos bulk insert failed with HTTP Status Code {0}.",
+                        response.StatusCode.ToString()
+                    )
+                );
+            }
         }
     }
 }

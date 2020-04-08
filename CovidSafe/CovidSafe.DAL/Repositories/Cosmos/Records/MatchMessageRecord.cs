@@ -25,9 +25,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Unique <see cref="Region"/> identifier
         /// </summary>
-        /// <remarks>
-        /// Used as partition key
-        /// </remarks>
         [JsonProperty("regionId", Required = Required.Always)]
         [Required]
         public string RegionId { get; set; }

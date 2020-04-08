@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using CovidSafe.DAL.Helpers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.Entities.Protos;
@@ -73,19 +74,19 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
         {
-            if(region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
             if(message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
 
             // Push to upstream data repository
-            return await this._messageRepo.InsertAsync(region, message, cancellationToken);
+            return await this._messageRepo.InsertAsync(message, region, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -96,58 +97,27 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(areas));
             }
 
-            // Determine regions for each area
-            Dictionary<string, AreaMatch> areaMatches = new Dictionary<string, AreaMatch>();
+            // Build a MatchMessage containing the submitted areas
+            MatchMessage message = new MatchMessage();
+            message.AreaMatches.Add(areas);
 
-            foreach(Area area in areas.Areas)
-            {
-                // Get RegionID of area
-                string regionId = RegionHelper.GetRegionIdentifier(area);
+            // Add to collection to utilize region resolution for potentially many MatchMessages to create
+            List<MatchMessage> messages = new List<MatchMessage> { message };
 
-                if(areaMatches.ContainsKey(regionId))
-                {
-                    // Add area match
-                    areaMatches[regionId].Areas.Add(area);
-                }
-                else
-                {
-                    AreaMatch match = new AreaMatch();
-                    match.UserMessage = areas.UserMessage;
-                    match.Areas.Add(area);
-
-                    areaMatches[regionId] = match;
-                }
-            }
-
-            // Build MatchMessage from submitted content
-            // TODO: Execute in a transaction
-            List<string> createdIdentifiers = new List<string>();
-            foreach(KeyValuePair<string, AreaMatch> match in areaMatches)
-            {
-                MatchMessage message = new MatchMessage();
-                message.AreaMatches.Add(match.Value);
-
-                string id =await this._messageRepo.InsertAsync(
-                    RegionHelper.FromRegionIdentifier(match.Key),
-                    message,
-                    cancellationToken
-                );
-                createdIdentifiers.Add(id);
-            }
-
-            return createdIdentifiers;
+            // Publish
+            return await this._messageRepo.InsertManyAsync(messages, cancellationToken);
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(IEnumerable<BlueToothSeed> seeds, Region region, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(Region region, IEnumerable<BlueToothSeed> seeds, CancellationToken cancellationToken = default)
         {
-            if (seeds == null || seeds.Count() == 0)
-            {
-                throw new ArgumentNullException(nameof(seeds));
-            }
             if (region == null)
             {
                 throw new ArgumentNullException(nameof(region));
+            }
+            if (seeds == null || seeds.Count() == 0)
+            {
+                throw new ArgumentNullException(nameof(seeds));
             }
 
             // Build MatchMessage from submitted content
@@ -157,7 +127,7 @@ namespace CovidSafe.DAL.Services
             message.BluetoothMatches.Add(matches);
 
             // Store in data repository
-            return await this._messageRepo.InsertAsync(region, message, cancellationToken);
+            return await this._messageRepo.InsertAsync(message, region, cancellationToken);
         }
     }
 }
