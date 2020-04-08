@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -88,6 +90,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 // Convert to response proto
                 MessageListResponse response = new MessageListResponse();
                 response.MessageInfoes.AddRange(results);
+                // Take greatest timestamp
+                // Avoids race condition of new messages becoming available during operation
+                response.QueryTime = response.MessageInfoes.Max(i => i.MessageTimestamp);
 
                 return Ok(response);
             }
