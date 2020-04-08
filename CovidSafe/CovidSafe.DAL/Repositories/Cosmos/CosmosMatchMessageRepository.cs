@@ -197,8 +197,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var record = new MatchMessageRecord(message)
             {
                 RegionBoundary = new RegionBoundaryProperty(boundary),
-                Region = new RegionProperty(region),
-                RegionId = RegionHelper.GetRegionIdentifier(region)
+                Region = new RegionProperty(region)
             };
 
             ItemResponse<MatchMessageRecord> response = await this.Container
@@ -222,23 +221,18 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             }
 
             // Resolve region(s) for record(s) to insert
-            List<MatchMessageRecord> records = new List<MatchMessageRecord>();
-
-            foreach(MatchMessage message in messages)
-            {
-                // Determine Region ID
-                MatchMessageRecord record = new MatchMessageRecord(message);
-                record.RegionId = RegionHelper.GetRegionIdentifier(message.AreaMatches);
-                records.Add(record);
-            }
+            IEnumerable<MatchMessageRecord> records = messages
+                .Select(m => new MatchMessageRecord(m));
 
             // Begin batch operation
             // All MatchMessageRecords will have same PartitionID in this batch
-            TransactionalBatch batch = this.Container.CreateTransactionalBatch(new PartitionKey(records.First().PartitionKey));
+            TransactionalBatch batch = this.Container.CreateTransactionalBatch(
+                new PartitionKey(records.First().PartitionKey)
+            );
 
             foreach(MatchMessageRecord record in records)
             {
-                batch.CreateItem<MatchMessageRecord>(record);
+                batch.CreateItem(record);
             }
 
             // Execute transaction

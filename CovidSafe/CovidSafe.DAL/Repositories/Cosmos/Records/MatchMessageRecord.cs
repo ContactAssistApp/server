@@ -24,12 +24,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [Required]
         public RegionProperty Region { get; set; }
         /// <summary>
-        /// Unique <see cref="Region"/> identifier
-        /// </summary>
-        [JsonProperty("regionId", Required = Required.Always)]
-        [Required]
-        public string RegionId { get; set; }
-        /// <summary>
         /// Size of the record <see cref="MatchMessage"/>, in bytes
         /// </summary>
         [JsonProperty("size", Required = Required.Always)]
