@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
@@ -65,6 +66,22 @@ namespace CovidSafe.API.Controllers.MessageControllers
 
             // Validate inputs
             if (request == null)
+            {
+                return BadRequest();
+            }
+            if (request.Seeds.Count > 0)
+            {
+                // Validate seed formats (can they parse to Guid?)
+                foreach(BlueToothSeed seed in request.Seeds)
+                {
+                    Guid output;
+                    if(!Guid.TryParse(seed.Seed, out output))
+                    {
+                        return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
+                    }
+                }
+            }
+            else
             {
                 return BadRequest();
             }
