@@ -49,8 +49,10 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// </summary>
         public CosmosRecord()
         {
-            // Set partition key
+            // Set default local values
+            this.Id = Guid.NewGuid().ToString();
             this.PartitionKey = GetPartitionKey();
+            this.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
         /// <summary>

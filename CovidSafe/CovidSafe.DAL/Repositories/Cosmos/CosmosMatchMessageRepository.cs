@@ -193,13 +193,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             var record = new MatchMessageRecord(message)
             {
-                Id = Guid.NewGuid().ToString(),
                 RegionBoundary = new RegionBoundaryProperty(boundary),
                 Region = new RegionProperty(region),
-                RegionId = RegionHelper.GetRegionIdentifier(region),
-                Size = PayloadSizeHelper.GetSize(message),
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Version = MatchMessageRecord.CURRENT_RECORD_VERSION
+                RegionId = RegionHelper.GetRegionIdentifier(region)
             };
 
             ItemResponse<MatchMessageRecord> response = await this.Container
@@ -227,10 +223,14 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             foreach(MatchMessage message in messages)
             {
-
+                // Determine Region ID
+                MatchMessageRecord record = new MatchMessageRecord(message);
+                record.RegionId = RegionHelper.GetRegionIdentifier(message.AreaMatches);
+                records.Add(record);
             }
 
             // Begin batch operation
+            // All MatchMessageRecords will have same PartitionID in this batch
             TransactionalBatch batch = this.Container.CreateTransactionalBatch(records.First().PartitionKey);
 
             foreach(MatchMessageRecord record in records)

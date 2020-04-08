@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 
@@ -69,6 +69,60 @@ namespace CovidSafe.DAL.Helpers
             else
             {
                 throw new ArgumentNullException(nameof(area));
+            }
+        }
+
+        /// <summary>
+        /// Returns a unique identifier for a collection of <see cref="AreaMatch"/> objects
+        /// </summary>
+        /// <param name="areaMatches">Source <see cref="AreaMatch"/> collection</param>
+        /// <returns><see cref="Region"/> identifier</returns>
+        /// <remarks>
+        /// Takes the most common Region identifier
+        /// </remarks>
+        public static string GetRegionIdentifier(IEnumerable<AreaMatch> areaMatches)
+        {
+            if (areaMatches != null)
+            {
+                // Get most common RegionId
+                Dictionary<string, int> regionIds = new Dictionary<string, int>();
+
+                foreach (AreaMatch areaMatch in areaMatches)
+                {
+                    foreach (Area area in areaMatch.Areas)
+                    {
+                        // Get identifier
+                        string regionId = GetRegionIdentifier(area);
+
+                        if (regionIds.ContainsKey(regionId))
+                        {
+                            regionIds[regionId]++;
+                        }
+                        else
+                        {
+                            regionIds[regionId] = 1;
+                        }
+                    }
+                }
+
+                // Return most common identifier
+                int maxCnt = Int32.MinValue;
+                string maxKey = String.Empty;
+
+                foreach(KeyValuePair<string, int> tuple in regionIds)
+                {
+                    if(tuple.Value > maxCnt)
+                    {
+                        maxCnt = tuple.Value;
+                        maxKey = tuple.Key;
+                    }
+                }
+                
+                return maxKey;
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(areaMatches));
             }
         }
 
