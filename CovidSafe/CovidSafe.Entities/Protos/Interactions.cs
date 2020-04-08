@@ -58,6 +58,9 @@ namespace CovidSafe.Entities.Protos
         [global::ProtoBuf.ProtoMember(1, Name = @"message_info")]
         public global::System.Collections.Generic.List<MessageInfo> MessageInfoes { get; } = new global::System.Collections.Generic.List<MessageInfo>();
 
+        [global::ProtoBuf.ProtoMember(2, Name = @"query_time")]
+        public long QueryTime { get; set; }
+
     }
 
     [global::ProtoBuf.ProtoContract()]

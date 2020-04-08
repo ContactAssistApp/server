@@ -21,8 +21,12 @@ message MessageListRequest {
   int64 last_query_time = 2;
 }
 
-// Server -> Phone; list of messages for region
-message MessageListResponse { repeated MessageInfo message_info = 1; }
+// Server -> Phone; list of messages for region;
+// query_time can be used in next MessageListRequest as last_query_time for filtering out messages that are already processed
+message MessageListResponse {
+  repeated MessageInfo message_info = 1;
+  int64 query_time = 2;
+}
 
 // Phone -> Server GetMessages(new_message_ids)
 // Request to download the details of given query ids
