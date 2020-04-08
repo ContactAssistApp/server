@@ -6,13 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Helpers;
+using CovidSafe.DAL.Repositories.Cosmos.Client;
 using CovidSafe.DAL.Repositories.Cosmos.Records;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos.Spatial;
-using Microsoft.Extensions.Options;
 
 namespace CovidSafe.DAL.Repositories.Cosmos
 {
@@ -22,15 +22,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos
     public class CosmosMatchMessageRepository : CosmosRepository, IMatchMessageRepository
     {
         /// <summary>
-        /// <see cref="MatchMessage"/> container reference
-        /// </summary>
-        private Container _queryContainer;
-
-        /// <summary>
         /// Precision of regions that are used for keys.
         /// </summary>
         private int RegionPrecision = 4;
-
         /// <summary>
         /// Search extension size
         /// </summary>
@@ -39,20 +33,20 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         /// <summary>
         /// Creates a new <see cref="CosmosMatchMessageRepository"/> instance
         /// </summary>
-        /// <param name="connectionFactory">Database connection factory instance</param>
-        /// <param name="schemaOptions">Schema options object</param>
-        public CosmosMatchMessageRepository(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaOptions) : base(connectionFactory, schemaOptions)
+        /// <param name="dbContext"><see cref="CosmosContext"/> instance</param>
+        public CosmosMatchMessageRepository(CosmosContext dbContext) : base(dbContext)
         {
             // Create container reference
-            this._queryContainer = this.Database
-                .GetContainer(this.SchemaOptions.MessageContainerName);
+            this.Container = this.Context.GetContainer(
+                this.Context.SchemaOptions.MessageContainerName
+            );
         }
 
         /// <inheritdoc/>
         public async Task<MatchMessage> GetAsync(string messageId, CancellationToken cancellationToken = default)
         {
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             // Execute query
@@ -82,7 +76,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
 
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             ISet<string> regionIds = new HashSet<string>(
@@ -121,7 +115,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
 
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             ISet<string> regionIds = new HashSet<string>(
@@ -153,7 +147,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         public async Task<IEnumerable<MatchMessage>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             // Create LINQ query
-            var queryable = this._queryContainer
+            var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             // Execute query
@@ -177,15 +171,15 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<string> InsertAsync(Region region, MatchMessage message, CancellationToken cancellationToken = default)
+        public async Task<string> InsertAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
         {
-            if(region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
-            if(message == null)
+            if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
+            }
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
             }
             if(region.Precision != this.RegionPrecision)
             {
@@ -199,23 +193,68 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             var record = new MatchMessageRecord(message)
             {
-                Id = Guid.NewGuid().ToString(),
                 RegionBoundary = new RegionBoundaryProperty(boundary),
                 Region = new RegionProperty(region),
-                RegionId = RegionHelper.GetRegionIdentifier(region),
-                Size = PayloadSizeHelper.GetSize(message),
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Version = MatchMessageRecord.CURRENT_RECORD_VERSION
+                RegionId = RegionHelper.GetRegionIdentifier(region)
             };
 
-            ItemResponse<MatchMessageRecord> response = await this._queryContainer
+            ItemResponse<MatchMessageRecord> response = await this.Container
                 .CreateItemAsync<MatchMessageRecord>(
                     record,
-                    new PartitionKey(record.RegionId),
+                    record.PartitionKey,
                     cancellationToken: cancellationToken
                 );
 
             return response.Resource.Id;
+        }
+
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> InsertManyAsync(IEnumerable<MatchMessage> messages, CancellationToken cancellationToken = default)
+        {
+            // Validate inputs
+            if(messages == null || messages.Count() == 0)
+            {
+                throw new ArgumentNullException(nameof(messages));
+            }
+
+            // Resolve region(s) for record(s) to insert
+            List<MatchMessageRecord> records = new List<MatchMessageRecord>();
+
+            foreach(MatchMessage message in messages)
+            {
+                // Determine Region ID
+                MatchMessageRecord record = new MatchMessageRecord(message);
+                record.RegionId = RegionHelper.GetRegionIdentifier(message.AreaMatches);
+                records.Add(record);
+            }
+
+            // Begin batch operation
+            // All MatchMessageRecords will have same PartitionID in this batch
+            TransactionalBatch batch = this.Container.CreateTransactionalBatch(records.First().PartitionKey);
+
+            foreach(MatchMessageRecord record in records)
+            {
+                batch.CreateItem<MatchMessageRecord>(record);
+            }
+
+            // Execute transaction
+            TransactionalBatchResponse response = await batch.ExecuteAsync(cancellationToken);
+
+            if(response.IsSuccessStatusCode)
+            {
+                // Return new record IDs
+                return records.Select(r => r.Id);
+            }
+            else
+            {
+                throw new Exception(
+                    String.Format(
+                        "Cosmos bulk insert failed with HTTP Status Code {0}.",
+                        response.StatusCode.ToString()
+                    )
+                );
+            }
         }
     }
 }

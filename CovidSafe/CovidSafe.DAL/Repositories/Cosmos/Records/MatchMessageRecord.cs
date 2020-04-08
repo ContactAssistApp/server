@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Protos;
 using Newtonsoft.Json;
 
@@ -25,9 +26,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Unique <see cref="Region"/> identifier
         /// </summary>
-        /// <remarks>
-        /// Used as partition key
-        /// </remarks>
         [JsonProperty("regionId", Required = Required.Always)]
         [Required]
         public string RegionId { get; set; }
@@ -56,7 +54,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <param name="message"><see cref="MatchMessage"/> to store</param>
         public MatchMessageRecord(MatchMessage message)
         {
+            this.Size = PayloadSizeHelper.GetSize(message);
             this.Value = message;
+            this.Version = CURRENT_RECORD_VERSION;
         }
     }
 }

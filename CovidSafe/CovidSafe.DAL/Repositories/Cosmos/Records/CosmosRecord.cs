@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Records
@@ -20,6 +21,12 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [JsonProperty("id")]
         public string Id { get; set; }
         /// <summary>
+        /// Partition Key value
+        /// </summary>
+        [JsonProperty("partitionKey", Required = Required.Always)]
+        [Required]
+        public PartitionKey PartitionKey { get; set; }
+        /// <summary>
         /// Timestamp of record database insert, in ms since UNIX epoch
         /// </summary>
         [JsonProperty("timestamp", Required = Required.Always)]
@@ -36,5 +43,44 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// </summary>
         [JsonProperty("version", Required = Required.Always)]
         public string Version { get; set; } = "";
+
+        /// <summary>
+        /// Creates a new <see cref="CosmosRecord{T}"/> instance
+        /// </summary>
+        public CosmosRecord()
+        {
+            // Set default local values
+            this.Id = Guid.NewGuid().ToString();
+            this.PartitionKey = GetPartitionKey();
+            this.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
+
+        /// <summary>
+        /// Generates a new Partition Key value for the record
+        /// </summary>
+        /// <param name="timestamp">Timestamp used to derive Partition Key</param>
+        /// <returns><see cref="PartitionKey"/></returns>
+        public virtual PartitionKey GetPartitionKey(DateTimeOffset? timestamp = null)
+        {
+            if (!timestamp.HasValue)
+            {
+                // UtcNow is default
+                timestamp = DateTimeOffset.UtcNow;
+            }
+
+            // Generate key based on the current day, in UNIX epoch
+            DateTimeOffset value = new DateTimeOffset(
+                timestamp.Value.Year,
+                timestamp.Value.Month,
+                timestamp.Value.Day,
+                0,
+                0,
+                0,
+                TimeSpan.Zero
+            );
+
+            // Return as UNIX epoch, in ms
+            return new PartitionKey(value.ToUnixTimeMilliseconds());
+        }
     }
 }

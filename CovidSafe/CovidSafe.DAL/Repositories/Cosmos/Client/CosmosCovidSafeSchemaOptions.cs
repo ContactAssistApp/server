@@ -1,7 +1,7 @@
 ﻿using CovidSafe.Entities.Protos;
 using Microsoft.Azure.Cosmos;
 
-namespace CovidSafe.DAL.Repositories.Cosmos
+namespace CovidSafe.DAL.Repositories.Cosmos.Client
 {
     /// <summary>
     /// Settings object for using Cosmos with the CovidSafe schema
