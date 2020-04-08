@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using CovidSafe.Entities.Geospatial;
+using CovidSafe.Entities.Protos;
 using Microsoft.Azure.Cosmos.Spatial;
 using Newtonsoft.Json;
 
@@ -19,13 +20,13 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// </summary>
         [JsonProperty("max", Required = Required.Always)]
         [Required]
-        public Point Max { get; set; }
+        public Location Max { get; set; }
         /// <summary>
         /// Minimum boundary coordinate
         /// </summary>
         [JsonProperty("min", Required = Required.Always)]
         [Required]
-        public Point Min { get; set; }
+        public Location Min { get; set; }
 
         /// <summary>
         /// Creates a new <see cref="RegionBoundaryProperty"/> instance
@@ -40,10 +41,10 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <param name="boundary">Source <see cref="RegionBoundary"/></param>
         public RegionBoundaryProperty(RegionBoundary boundary)
         {
-            if(boundary != null)
+            if (boundary != null)
             {
-                this.Max = new Point(boundary.Max.Longitude, boundary.Max.Latitude);
-                this.Min = new Point(boundary.Min.Longitude, boundary.Min.Latitude);
+                this.Max = new Location { Longitude = boundary.Max.Longitude, Latitude = boundary.Max.Latitude };
+                this.Min = new Location { Longitude = boundary.Min.Longitude, Latitude = boundary.Min.Latitude};
             }
             else
             {

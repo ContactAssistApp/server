@@ -211,5 +211,29 @@ namespace CovidSafe.DAL.Helpers
                 Precision = region.Precision
             };
         }
+
+        ///<summary>
+        ///For given region, target precision and extension size,
+        ///returns region boundary that gives available ranges of latitude/longitude 
+        ///for regions of target precision, overlapping with extension of given region
+        /// </summary>
+        /// <param name="region">Source <see cref="Region"/></param>
+        /// <param name="extension">Size of region extension (in precision-aligned steps)</param>
+        /// <param name="precision"> Target precision parameter. Any integer value.</param>
+        /// <returns>Region boundary rb. Every region with Lat/Lon of corresponding RegionBoundary's min
+        /// belonging to rb overlaps with extension of given region <see cref="Region"/> objects</returns>
+        public static RegionBoundary GetConnectedRegionsRange(Region region, int extension, int precision)
+        {
+            RegionBoundary rb = RegionHelper.GetRegionBoundary(region);
+
+            double step = PrecisionHelper.GetStep(precision);
+            rb.Min.Latitude -= extension * step;
+            rb.Min.Longitude -= extension * step;
+
+            rb.Max.Latitude += (extension - 1) * step;
+            rb.Max.Latitude += (extension - 1) * step;
+
+            return rb;
+        }
     }
 }
