@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -79,15 +80,16 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
-            ISet<string> regionIds = new HashSet<string>(
-                RegionHelper.GetConnectedRegions(region, this.RegionsExtension, this.RegionPrecision).Select(
-                    r => RegionHelper.GetRegionIdentifier(r)));
+            RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
                     r.Timestamp > lastTimestamp
-                    && regionIds.Contains(r.RegionId)
+                    && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
+                    && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
+                    && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
+                    && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 ).ToFeedIterator();
 
@@ -118,15 +120,16 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var queryable = this.Container
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
-            ISet<string> regionIds = new HashSet<string>(
-                RegionHelper.GetConnectedRegions(region, this.RegionsExtension, this.RegionPrecision).Select(
-                    r => RegionHelper.GetRegionIdentifier(r)));
+            RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
                     r.Timestamp > lastTimestamp
-                    && regionIds.Contains(r.RegionId)
+                    && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
+                    && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
+                    && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
+                    && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 ).ToFeedIterator();
 
