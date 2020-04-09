@@ -22,10 +22,10 @@ message MessageListRequest {
 }
 
 // Server -> Phone; list of messages for region;
-// query_time can be used in next MessageListRequest as last_query_time for filtering out messages that are already processed
+// as_of tells a client the current server time to enable clock synchronization
 message MessageListResponse {
   repeated MessageInfo message_info = 1;
-  int64 query_time = 2;
+  int64 as_of = 2;
 }
 
 // Phone -> Server GetMessages(new_message_ids)
@@ -64,6 +64,8 @@ message SelfReportRequest {
   // Coarse region that this request applies to specified
   // to maximum allowed privacy preserving precision
   Region region = 2;
+  // Current timestamp on the client, in UTC ms since UNIX epoch
+  int64 client_timestamp = 3;
 }
 
 // Server -> Phone
@@ -102,6 +104,10 @@ message BlueToothSeed{
   string seed = 1;
   int64 sequence_start_time = 2;
   int64 sequence_end_time = 3;
+  // This is calculated on the server-side, based on the difference between the 
+  // submitted client_timestamp in SelfReportRequest and the current server time
+  // In milliseconds
+  int64 estimated_skew = 4;
 }
 
 message Area {

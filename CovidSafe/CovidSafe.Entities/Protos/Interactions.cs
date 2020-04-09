@@ -58,8 +58,8 @@ namespace CovidSafe.Entities.Protos
         [global::ProtoBuf.ProtoMember(1, Name = @"message_info")]
         public global::System.Collections.Generic.List<MessageInfo> MessageInfoes { get; } = new global::System.Collections.Generic.List<MessageInfo>();
 
-        [global::ProtoBuf.ProtoMember(2, Name = @"query_time")]
-        public long QueryTime { get; set; }
+        [global::ProtoBuf.ProtoMember(2, Name = @"as_of")]
+        public long AsOf { get; set; }
 
     }
 
@@ -122,6 +122,9 @@ namespace CovidSafe.Entities.Protos
 
         [global::ProtoBuf.ProtoMember(2, Name = @"region")]
         public Region Region { get; set; }
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"client_timestamp")]
+        public long ClientTimestamp { get; set; }
 
     }
 
@@ -207,6 +210,9 @@ namespace CovidSafe.Entities.Protos
 
         [global::ProtoBuf.ProtoMember(3, Name = @"sequence_end_time")]
         public long SequenceEndTime { get; set; }
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"estimated_skew")]
+        public long EstimatedSkew { get; set; }
 
     }
 

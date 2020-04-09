@@ -47,10 +47,10 @@ namespace CovidSafe.DAL.Services
         /// <summary>
         /// Store a new <see cref="SelfReportRequest"/>
         /// </summary>
-        /// <param name="seeds"><see cref="BlueToothSeed"/> collection</param>
-        /// <param name="region">Target <see cref="Region"/> for published <see cref="MatchMessage"/></param>
+        /// <param name="report">Source <see cref="SelfReportRequest"/></param>
+        /// <param name="serverTimestamp">Server timestamp when request was received, in ms since UNIX epoch (for calculating skew)</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Published <see cref="MatchMessage"/> identifier</returns>
-        Task<string> PublishAsync(IEnumerable<BlueToothSeed> seeds, Region region, CancellationToken cancellationToken = default);
+        Task<string> PublishAsync(SelfReportRequest report, long serverTimestamp, CancellationToken cancellationToken = default);
     }
 }

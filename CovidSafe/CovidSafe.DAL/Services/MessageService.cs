@@ -109,25 +109,30 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(IEnumerable<BlueToothSeed> seeds, Region region, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAsync(SelfReportRequest request, long timeAtRequest, CancellationToken cancellationToken = default)
         {
-            if (region == null)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(region));
+                throw new ArgumentNullException(nameof(request));
             }
-            if (seeds == null || seeds.Count() == 0)
-            {
-                throw new ArgumentNullException(nameof(seeds));
-            }
+
+            // Determine estimated skew
+            long estSkew = timeAtRequest - request.ClientTimestamp;
 
             // Build MatchMessage from submitted content
             MatchMessage message = new MatchMessage();
             BluetoothMatch matches = new BluetoothMatch();
-            matches.Seeds.AddRange(seeds);
-            message.BluetoothMatches.Add(matches);
+
+            // Calculate possible offset for each seed
+            foreach(BlueToothSeed seed in request.Seeds)
+            {
+                seed.EstimatedSkew = estSkew;
+                matches.Seeds.Add(seed);
+            }
 
             // Store in data repository
-            return await this._messageRepo.InsertAsync(message, region, cancellationToken);
+            message.BluetoothMatches.Add(matches);
+            return await this._messageRepo.InsertAsync(message, request.Region, cancellationToken);
         }
     }
 }

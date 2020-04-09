@@ -92,7 +92,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 response.MessageInfoes.AddRange(results);
                 // Take greatest timestamp
                 // Avoids race condition of new messages becoming available during operation
-                response.QueryTime = response.MessageInfoes.Max(i => i.MessageTimestamp);
+                response.AsOf = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
                 return Ok(response);
             }
