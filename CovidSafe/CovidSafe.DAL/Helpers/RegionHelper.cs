@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.CompilerServices;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 
@@ -12,28 +12,6 @@ namespace CovidSafe.DAL.Helpers
     /// </summary>
     public static class RegionHelper
     {
-        /// <summary>
-        /// Creates a new <see cref="RegionBoundary"/> from a provided <see cref="AreaMatch"/>
-        /// </summary>
-        /// <param name="areaMatch">Source <see cref="AreaMatch"/></param>
-        public static Region GetRegion(AreaMatch areaMatch)
-        {
-            if(areaMatch != null && areaMatch.Areas.Count() > 0)
-            {
-                // Get midpoint of areas
-                return new Region
-                {
-                    LatitudePrefix = areaMatch.Areas.Select(a => a.Location.Latitude).Sum() / areaMatch.Areas.Count,
-                    LongitudePrefix = areaMatch.Areas.Select(a => a.Location.Longitude).Sum() / areaMatch.Areas.Count,
-                    Precision = 4
-                };
-            }
-            else
-            {
-                throw new ArgumentNullException(nameof(areaMatch));
-            }
-        }
-
         /// <summary>
         /// Creates a new <see cref="RegionBoundary"/> from a provided <see cref="Region"/>
         /// </summary>
@@ -122,6 +100,43 @@ namespace CovidSafe.DAL.Helpers
             rb.Max.Latitude += (extension - 1) * step;
 
             return rb;
+        }
+
+        /// <summary>
+        /// Enumerates all <see cref="Region"/>s of given precision covering given area/>
+        /// Current implementation only returns single region associated with area center.
+        /// Under assumption of radius of area to be significantly below precision resolution and usage of extension >= 1 in search,
+        /// that is enough
+        /// </summary>
+        /// <param name="area"><see cref="Area"/></param>
+        /// <param name="precision">Precision. Any integer number</param>
+        /// <returns>Collection of <see cref="Region"/>s</returns>
+
+        public static IEnumerable<Region> GetRegionsCoverage(Area area, int precision)
+        {
+            yield return new Region
+            {
+                LatitudePrefix = PrecisionHelper.Round(area.Location.Latitude, precision),
+                LongitudePrefix = PrecisionHelper.Round(area.Location.Longitude, precision),
+                Precision = precision
+            };
+        }
+
+        /// <summary>
+        /// Enumerates all <see cref="Region"/>s of given precision covering given areas/>
+        /// </summary>
+        /// <param name="areas">Container of <see cref="Area"/>s</param>
+        /// <param name="precision">Precision. Any integer number</param>
+        /// <returns>Collection of <see cref="Region"/>s</returns>
+
+        public static IEnumerable<Region> GetRegionsCoverage(IEnumerable<Area> areas, int precision)
+        {
+            var result = new HashSet<Region>(new RegionComparer());
+            foreach (var a in areas)
+            {
+                result.UnionWith(GetRegionsCoverage(a, precision));
+            }
+            return result;
         }
     }
 }

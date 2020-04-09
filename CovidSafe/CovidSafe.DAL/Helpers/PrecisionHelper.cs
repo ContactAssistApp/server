@@ -32,38 +32,16 @@ namespace CovidSafe.DAL.Helpers
 		/// </remarks>
 		public static double Round(double d, int precision)
 		{
-			long bits = BitConverter.DoubleToInt64Bits(d);
-
-			long negative = bits & (1L << 63);
-			int exponent = (int)((bits >> 52) & 0x7ffL);
-			long mantissa = bits & 0xfffffffffffffL;
-
-			int mantissaLog = 52;
-			if (exponent == 0)
+			if (precision >= 0)
 			{
-				mantissaLog = (int)Math.Log(mantissa, 2);
+				int exp = 1 << precision;
+				return ((double)(int)(d * exp)) / exp;
 			}
 			else
 			{
-				mantissa = mantissa | (1L << 52);
+				int exp = 1 << (-precision);
+				return (double)(((int)(d / exp)) * exp);
 			}
-
-			int precisionShift = mantissaLog + exponent - 1075;
-
-			int maskLength = Math.Min(precision + precisionShift, 52);
-
-			mantissa = mantissa >> (52 - maskLength);
-			mantissa = mantissa << (52 - maskLength);
-
-			if (mantissa == 0)
-			{
-				exponent = 0;
-			}
-			long result = negative |
-				((long)(exponent & 0x7ffL) << 52) |
-				(mantissa & 0xfffffffffffffL);
-
-			return BitConverter.Int64BitsToDouble(result);
 		}
 
 		/// <summary>
