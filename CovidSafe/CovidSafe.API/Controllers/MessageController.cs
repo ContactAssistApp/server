@@ -13,8 +13,9 @@ namespace CovidSafe.API.Controllers
     /// <summary>
     /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
-    [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class MessageController : ControllerBase
     {
         /// <summary>

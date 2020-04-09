@@ -12,8 +12,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// <summary>
     /// Handles <see cref="MatchMessage"/> size requests
     /// </summary>
-    [Route("api/Messages/[controller]")]
     [ApiController]
+    [ApiVersion("1")]
+    [Route("api/v{version:apiVersion}/Messages/[controller]")]
     public class SizeController : ControllerBase
     {
         /// <summary>

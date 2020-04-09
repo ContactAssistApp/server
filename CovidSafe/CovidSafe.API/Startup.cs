@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-
+using CovidSafe.API.Swagger;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Repositories.Cosmos;
 using CovidSafe.DAL.Repositories.Cosmos.Client;
@@ -11,8 +11,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace CovidSafe.API
@@ -43,6 +44,7 @@ namespace CovidSafe.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Controller setup
             services
                 .AddMvc(
                     option =>
@@ -70,16 +72,26 @@ namespace CovidSafe.API
             // Configure service layer
             services.AddSingleton<IMessageService, MessageService>();
 
+            // Enable API versioning
+            services.AddApiVersioning(o =>
+            {
+                // Share supported API versions in headers
+                o.ReportApiVersions = true;
+            });
+            services.AddVersionedApiExplorer(
+                options =>
+                {
+                    // API versions formatted as 'v'major[.minor][-status]
+                    options.GroupNameFormat = "'v'VVV";
+                    // Enable API version in URL
+                    options.SubstituteApiVersionInUrl = true;
+                }
+            );
+
             // Add Swagger generator
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Description = "API enabling CovidSafe client applications to communicate with backend services.",
-                    Title = "CovidSafe",
-                    Version = "v1"
-                });
-
                 // Set the comments path for the Swagger JSON
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -102,7 +114,7 @@ namespace CovidSafe.API
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            // Add Swagger UI
+            // Add Swagger
             app.UseSwagger();
         }
     }

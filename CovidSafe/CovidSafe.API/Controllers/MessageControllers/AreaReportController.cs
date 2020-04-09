@@ -11,8 +11,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// <summary>
     /// Handles requests for infected clients volunteering <see cref="AreaMatch"/> identifiers
     /// </summary>
-    [Route("api/Messages/[controller]")]
+    [ApiVersion("1")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/Messages/[controller]")]
     public class AreaReportController : ControllerBase
     {
         /// <summary>
