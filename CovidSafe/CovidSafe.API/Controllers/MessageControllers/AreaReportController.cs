@@ -65,7 +65,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
-            if (request == null)
+            if (request == null || request.Areas.Count() == 0 || String.IsNullOrEmpty(request.UserMessage))
             {
                 return BadRequest();
             }
