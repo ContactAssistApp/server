@@ -43,14 +43,15 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///     {
         ///         "seeds": [{
         ///             "seed": "00000000-0000-0000-0000-000000000000",
-        ///             "sequenceStartTime": 1586044800,
-        ///             "sequenceEndTime": 1586048400
+        ///             "sequenceStartTime": 1586406048649,
+        ///             "sequenceEndTime": 1586408048649
         ///         }],
         ///         "region": {
         ///             "latitudePrefix": 74.12,
         ///             "longitudePrefix": -39.12,
         ///             "precision": 2
-        ///         }
+        ///         },
+        ///         "clientTimestamp": 1586409048649
         ///     }
         ///
         /// </remarks>
