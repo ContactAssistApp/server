@@ -209,52 +209,5 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             return response.Resource.Id;
         }
-
-
-        /// <inheritdoc/>
-        public async Task<IEnumerable<string>> InsertManyAsync(IEnumerable<MatchMessage> messages, CancellationToken cancellationToken = default)
-        {
-            // Validate inputs
-            if(messages == null || messages.Count() == 0)
-            {
-                throw new ArgumentNullException(nameof(messages));
-            }
-
-            // Resolve region(s) for record(s) to insert
-            IEnumerable<MatchMessageRecord> records = messages
-                .Select(m => new MatchMessageRecord(m));
-
-            // Begin batch operation
-            // All MatchMessageRecords will have same PartitionID in this batch
-            TransactionalBatch batch = this.Container.CreateTransactionalBatch(
-                new PartitionKey(records.First().PartitionKey)
-            );
-
-            foreach(MatchMessageRecord record in records)
-            {
-                // Create a Region Boundary for the record
-                RegionBoundary boundary = RegionHelper.GetRegionBoundary(record.Value.AreaMatches);
-                record.RegionBoundary = new RegionBoundaryProperty(boundary);
-                batch.CreateItem(record);
-            }
-
-            // Execute transaction
-            TransactionalBatchResponse response = await batch.ExecuteAsync(cancellationToken);
-
-            if(response.IsSuccessStatusCode)
-            {
-                // Return new record IDs
-                return records.Select(r => r.Id);
-            }
-            else
-            {
-                throw new Exception(
-                    String.Format(
-                        "Cosmos bulk insert failed with HTTP Status Code {0}.",
-                        response.StatusCode.ToString()
-                    )
-                );
-            }
-        }
     }
 }

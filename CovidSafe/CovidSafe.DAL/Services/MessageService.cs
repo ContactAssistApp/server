@@ -90,7 +90,7 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string>> PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
+        public async Task<string> PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
         {
             if (areas == null)
             {
@@ -101,11 +101,11 @@ namespace CovidSafe.DAL.Services
             MatchMessage message = new MatchMessage();
             message.AreaMatches.Add(areas);
 
-            // Add to collection to utilize region resolution for potentially many MatchMessages to create
-            List<MatchMessage> messages = new List<MatchMessage> { message };
+            // Define a region for the published message
+            Region messageRegion = RegionHelper.GetRegion(areas);
 
             // Publish
-            return await this._messageRepo.InsertManyAsync(messages, cancellationToken);
+            return await this._messageRepo.InsertAsync(message, messageRegion, cancellationToken);
         }
 
         /// <inheritdoc/>

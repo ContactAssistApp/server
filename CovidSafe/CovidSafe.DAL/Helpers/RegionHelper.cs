@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 
@@ -14,29 +15,22 @@ namespace CovidSafe.DAL.Helpers
         /// <summary>
         /// Creates a new <see cref="RegionBoundary"/> from a provided <see cref="AreaMatch"/>
         /// </summary>
-        /// <param name="areaMatches">Source <see cref="AreaMatch"/> collection</param>
-        public static RegionBoundary GetRegionBoundary(IEnumerable<AreaMatch> areaMatches)
+        /// <param name="areaMatch">Source <see cref="AreaMatch"/></param>
+        public static Region GetRegion(AreaMatch areaMatch)
         {
-            if(areaMatches != null && areaMatches.Count() > 0)
+            if(areaMatch != null && areaMatch.Areas.Count() > 0)
             {
-                // Define as min/max lat/lng of set
-                return new RegionBoundary
+                // Get midpoint of areas
+                return new Region
                 {
-                    Max = new Location
-                    {
-                        Latitude = areaMatches.Max(am => am.Areas.Max(a => a.Location.Latitude)),
-                        Longitude = areaMatches.Max(am => am.Areas.Max(a => a.Location.Longitude))
-                    },
-                    Min = new Location
-                    {
-                        Latitude = areaMatches.Min(am => am.Areas.Min(a => a.Location.Latitude)),
-                        Longitude = areaMatches.Min(am => am.Areas.Min(a => a.Location.Longitude))
-                    }
+                    LatitudePrefix = areaMatch.Areas.Select(a => a.Location.Latitude).Sum() / areaMatch.Areas.Count,
+                    LongitudePrefix = areaMatch.Areas.Select(a => a.Location.Longitude).Sum() / areaMatch.Areas.Count,
+                    Precision = 4
                 };
             }
             else
             {
-                throw new ArgumentNullException(nameof(areaMatches));
+                throw new ArgumentNullException(nameof(areaMatch));
             }
         }
 
