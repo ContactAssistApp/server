@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,8 +14,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// <summary>
     /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
-    [Route("api/Messages/[controller]")]
     [ApiController]
+    [ApiVersion("1")]
+    [Route("api/v{version:apiVersion}/Messages/[controller]")]
     public class ListController : ControllerBase
     {
         /// <summary>
