@@ -12,6 +12,35 @@ namespace CovidSafe.DAL.Helpers
     public static class RegionHelper
     {
         /// <summary>
+        /// Creates a new <see cref="RegionBoundary"/> from a provided <see cref="AreaMatch"/>
+        /// </summary>
+        /// <param name="areaMatches">Source <see cref="AreaMatch"/> collection</param>
+        public static RegionBoundary GetRegionBoundary(IEnumerable<AreaMatch> areaMatches)
+        {
+            if(areaMatches != null && areaMatches.Count() > 0)
+            {
+                // Define as min/max lat/lng of set
+                return new RegionBoundary
+                {
+                    Max = new Location
+                    {
+                        Latitude = areaMatches.Max(am => am.Areas.Max(a => a.Location.Latitude)),
+                        Longitude = areaMatches.Max(am => am.Areas.Max(a => a.Location.Longitude))
+                    },
+                    Min = new Location
+                    {
+                        Latitude = areaMatches.Min(am => am.Areas.Min(a => a.Location.Latitude)),
+                        Longitude = areaMatches.Min(am => am.Areas.Min(a => a.Location.Longitude))
+                    }
+                };
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(areaMatches));
+            }
+        }
+
+        /// <summary>
         /// Creates a new <see cref="RegionBoundary"/> from a provided <see cref="Region"/>
         /// </summary>
         /// <param name="region">Source <see cref="Region"/></param>

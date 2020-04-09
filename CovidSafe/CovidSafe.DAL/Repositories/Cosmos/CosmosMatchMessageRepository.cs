@@ -232,6 +232,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             foreach(MatchMessageRecord record in records)
             {
+                // Create a Region Boundary for the record
+                RegionBoundary boundary = RegionHelper.GetRegionBoundary(record.Value.AreaMatches);
+                record.RegionBoundary = new RegionBoundaryProperty(boundary);
                 batch.CreateItem(record);
             }
 
