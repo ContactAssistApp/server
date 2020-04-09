@@ -39,17 +39,15 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///
         ///     PUT /Messages/AreaReport
         ///     {
-        ///         "areaMatches": [{
-        ///             "userMessage": "Monitor symptoms for one week.",
-        ///             "areas": [{
-        ///                 "location": {
-        ///                     "latitude": 74.12345,
-        ///                     "longitude": -39.12345
-        ///                 },
-        ///                 "radiusMeters": 100,
-        ///                 "beginTime": 1586083599,
-        ///                 "endTime": 1586085189
-        ///             }]
+        ///         "userMessage": "Monitor symptoms for one week.",
+        ///         "areas": [{
+        ///             "location": {
+        ///                 "latitude": 74.12345,
+        ///                 "longitude": -39.12345
+        ///             },
+        ///             "radiusMeters": 100,
+        ///             "beginTime": 1586083599,
+        ///             "endTime": 1586085189
         ///         }]
         ///     }
         ///
