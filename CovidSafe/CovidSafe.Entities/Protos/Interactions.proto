@@ -106,7 +106,8 @@ message BlueToothSeed{
   int64 sequence_end_time = 3;
   // This is calculated on the server-side, based on the difference between the 
   // submitted client_timestamp in SelfReportRequest and the current server time
-  int32 estimated_skew = 4;
+  // In milliseconds
+  int64 estimated_skew = 4;
 }
 
 message Area {

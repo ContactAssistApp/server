@@ -62,6 +62,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(SelfReportRequest request)
         {
+            // Get server timestamp at request immediately
+            long serverTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
             CancellationToken ct = new CancellationToken();
 
             // Validate inputs
@@ -92,7 +95,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 return BadRequest("Only precision 4 is supported for insertion temporarily");
             }
 
-            await this._messageService.PublishAsync(request.Seeds, request.Region, ct);
+            await this._messageService.PublishAsync(request, serverTimestamp, ct);
 
             return Ok();
         }

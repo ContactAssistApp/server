@@ -212,7 +212,7 @@ namespace CovidSafe.Entities.Protos
         public long SequenceEndTime { get; set; }
 
         [global::ProtoBuf.ProtoMember(4, Name = @"estimated_skew")]
-        public int EstimatedSkew { get; set; }
+        public long EstimatedSkew { get; set; }
 
     }
 
