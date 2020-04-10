@@ -1,10 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CovidSafe.DAL.Helpers;
 
-namespace CovidSafe.Test
+namespace CovidSafe.Tests.Helpers
 {
     [TestClass]
-    public class PrecisionHelperTest
+    public class PrecisionHelperTests
     {
         [TestMethod]
         public void StepTest()

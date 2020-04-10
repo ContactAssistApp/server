@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CovidSafe.Test
+namespace CovidSafe.Test.Helpers
 {
     [TestClass]
-    public class RegionBoundaryTest
+    public class RegionBoundaryTests
     {
         void TestRegion(double lat, double lon, int precision, Tuple<double, double> first, Tuple<double, double> second)
         {

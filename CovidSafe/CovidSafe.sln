@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CovidSafe.Entities", "Covid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CovidSafe.DAL", "CovidSafe.DAL\CovidSafe.DAL.csproj", "{AB7BA3D0-9A41-4D7C-AAAA-66B8BE10C2ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CovidSafe.Test", "CovidSafe.Test\CovidSafe.Test.csproj", "{CF8D6EDC-E318-4B47-AA82-F0994AA0718A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CovidSafe.DAL.Tests", "CovidSafe.DAL.Tests\CovidSafe.DAL.Tests.csproj", "{CF8D6EDC-E318-4B47-AA82-F0994AA0718A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5323748A-8DB7-446E-947B-71D92A0F752E}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
