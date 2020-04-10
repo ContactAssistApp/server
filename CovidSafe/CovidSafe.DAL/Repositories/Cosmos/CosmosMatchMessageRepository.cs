@@ -197,7 +197,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var record = new MatchMessageRecord(message)
             {
                 RegionBoundary = new RegionBoundaryProperty(boundary),
-                Region = new RegionProperty(region)
+                Region = new RegionProperty(region),
+                PartitionKey = MatchMessageRecord.GetPartitionKey(region)
             };
 
             ItemResponse<MatchMessageRecord> response = await this.Container
@@ -224,7 +225,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 {
                     RegionBoundary = new RegionBoundaryProperty(
                         RegionHelper.GetRegionBoundary(r)),
-                    Region = new RegionProperty(r)
+                    Region = new RegionProperty(r),
+                    PartitionKey = MatchMessageRecord.GetPartitionKey(r)
                 }).GroupBy(r => r.PartitionKey);
 
             // Begin batch operation

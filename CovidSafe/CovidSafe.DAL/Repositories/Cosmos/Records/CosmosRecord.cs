@@ -51,36 +51,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         {
             // Set default local values
             this.Id = Guid.NewGuid().ToString();
-            this.PartitionKey = GetPartitionKey();
             this.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
-
-        /// <summary>
-        /// Generates a new Partition Key value for the record
-        /// </summary>
-        /// <param name="timestamp">Timestamp used to derive Partition Key</param>
-        /// <returns><see cref="PartitionKey"/></returns>
-        public virtual string GetPartitionKey(DateTimeOffset? timestamp = null)
-        {
-            if (!timestamp.HasValue)
-            {
-                // UtcNow is default
-                timestamp = DateTimeOffset.UtcNow;
-            }
-
-            // Generate key based on the current day, in UNIX epoch
-            DateTimeOffset value = new DateTimeOffset(
-                timestamp.Value.Year,
-                timestamp.Value.Month,
-                timestamp.Value.Day,
-                0,
-                0,
-                0,
-                TimeSpan.Zero
-            );
-
-            // Return as UNIX epoch, in ms
-            return value.ToUnixTimeMilliseconds().ToString();
         }
     }
 }
