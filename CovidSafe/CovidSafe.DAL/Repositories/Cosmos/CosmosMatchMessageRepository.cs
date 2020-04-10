@@ -209,5 +209,46 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             return response.Resource.Id;
         }
+
+        public async Task InsertAsync(MatchMessage message, IEnumerable<Region> regions, CancellationToken cancellationToken = default)
+        {
+            // Validate inputs
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            // Prepare records to insert (grouped by partition key)
+            var recordGroups = regions.Select(
+                r => new MatchMessageRecord(message)
+                {
+                    RegionBoundary = new RegionBoundaryProperty(
+                        RegionHelper.GetRegionBoundary(r)),
+                    Region = new RegionProperty(r)
+                }).GroupBy(r => r.PartitionKey);
+
+            // Begin batch operation
+            // All MatchMessageRecords will have same PartitionID in this batch
+            var batches = recordGroups.Select(g => g.Aggregate(
+                this.Container.CreateTransactionalBatch(new PartitionKey(g.Key)),
+                (result, item) => result.CreateItem<MatchMessageRecord>(item)));
+
+            // Execute transactions
+            // TODO: make a single transaction. 
+            var responses = await Task.WhenAll(batches.Select(b => b.ExecuteAsync(cancellationToken)));
+
+            var failed = responses.Where(r => !r.IsSuccessStatusCode);
+            if (failed.Any())
+            {
+                throw new Exception(
+                    String.Format(
+                        "{0} out of {1} insertions failed. Cosmos bulk insert failed with HTTP Status Code {2}.",
+                        responses.Count(),
+                        failed.Count(),
+                        failed.First().StatusCode.ToString()
+                )
+                );
+            }
+        }
     }
 }
