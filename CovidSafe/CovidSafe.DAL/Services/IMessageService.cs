@@ -43,7 +43,7 @@ namespace CovidSafe.DAL.Services
         /// <param name="areas"><see cref="AreaMatch"/> content</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of published <see cref="MatchMessage"/> identifiers</returns>
-        Task<string> PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default);
+        Task PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default);
         /// <summary>
         /// Store a new <see cref="SelfReportRequest"/>
         /// </summary>

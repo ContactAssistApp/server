@@ -21,6 +21,11 @@ namespace CovidSafe.DAL.Services
         private IMatchMessageRepository _messageRepo;
 
         /// <summary>
+        /// Precision of regions that are used for keys.
+        /// </summary>
+        private int RegionPrecision = 4;
+
+        /// <summary>
         /// Creates a new <see cref="MessageService"/> instance
         /// </summary>
         /// <param name="messageRepo"><see cref="MatchMessage"/> data repository</param>
@@ -90,7 +95,7 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
+        public async Task PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
         {
             if (areas == null)
             {
@@ -101,11 +106,11 @@ namespace CovidSafe.DAL.Services
             MatchMessage message = new MatchMessage();
             message.AreaMatches.Add(areas);
 
-            // Define a region for the published message
-            Region messageRegion = RegionHelper.GetRegion(areas);
+            // Define a regions for the published message
+            IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(areas.Areas, this.RegionPrecision);
 
             // Publish
-            return await this._messageRepo.InsertAsync(message, messageRegion, cancellationToken);
+            await this._messageRepo.InsertAsync(message, messageRegions, cancellationToken);
         }
 
         /// <inheritdoc/>
