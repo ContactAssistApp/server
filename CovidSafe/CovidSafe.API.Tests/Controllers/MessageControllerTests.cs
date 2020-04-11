@@ -8,8 +8,11 @@ namespace CovidSafe.API.Tests.Controllers
     [TestClass]
     public class MessageControllerTests
     {
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns a valid response 
+        /// </summary>
         [TestMethod]
-        public void TestMethod1()
+        public void PostAsyncReturnsValidResponse()
         {
         }
     }
