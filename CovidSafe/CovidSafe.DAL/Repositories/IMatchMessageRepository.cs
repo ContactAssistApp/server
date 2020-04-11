@@ -42,5 +42,12 @@ namespace CovidSafe.DAL.Repositories
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Unique identifier of stored object</returns>
         Task<string> InsertAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Store a new <see cref="MatchMessage"/> in the repository to multiple regions
+        /// </summary>
+        /// <param name="message"><see cref="MatchMessage"/> to store</param>
+        /// <param name="regions">Target <see cref="Region"/></param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        Task InsertAsync(MatchMessage message, IEnumerable<Region> regions, CancellationToken cancellationToken = default);
     }
 }
