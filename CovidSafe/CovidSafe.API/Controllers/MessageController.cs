@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,6 +66,16 @@ namespace CovidSafe.API.Controllers
             if(request == null || request.RequestedQueries.Count == 0)
             {
                 return BadRequest();
+            }
+            
+            // Check if query IDs are valid
+            foreach(MessageInfo info in request.RequestedQueries)
+            {
+                Guid output;
+                if(!Guid.TryParse(info.MessageId, out output))
+                {
+                    return BadRequest();
+                }
             }
 
             // Get results

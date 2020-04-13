@@ -56,21 +56,41 @@ namespace CovidSafe.API.Tests.Controllers
         }
 
         /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="OkResponse"/> 
-        /// with matched parameters
+        /// <see cref="MessageController.HeadAsync(CancellationToken)"/> always 
+        /// returns a <see cref="OkResult"/>
         /// </summary>
         [TestMethod]
-        public void PostAsync_OkResponseWithValidData()
+        public void HeadAsync_AlwaysReturnsOkResult()
         {
             // Arrange
-            string[] ids = new string[]
+            // N/A
+
+            // Act
+            ActionResult controllerResponse = this._controller
+                .HeadAsync(CancellationToken.None)
+                .Result;
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(OkResult));
+        }
+
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="NotFoundResult"/> 
+        /// with unmatched parameters
+        /// </summary>
+        [TestMethod]
+        public void PostAsync_NotFoundResponseWithUnmatchedParams()
+        {
+            // Arrange
+            IEnumerable<string> ids = new string[]
             {
                 "00000000-0000-0000-0000-000000000000",
                 "00000000-0000-0000-0000-000000000001"
             };
             MatchMessage result1 = new MatchMessage();
             MatchMessage result2 = new MatchMessage();
-            IEnumerable<MatchMessage> response = new List<MatchMessage>
+            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
             {
                 result1,
                 result2
@@ -78,17 +98,17 @@ namespace CovidSafe.API.Tests.Controllers
 
             this._service
                 .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
-                .Returns(Task.FromResult(response));
+                .Returns(Task.FromResult(toReturn));
 
             MessageRequest request = new MessageRequest();
             request.RequestedQueries.Add(new MessageInfo
             {
-                MessageId = ids[0],
+                MessageId = "00000000-0000-0000-0000-000000000002",
                 MessageTimestamp = 0
             });
             request.RequestedQueries.Add(new MessageInfo
             {
-                MessageId = ids[1],
+                MessageId = "00000000-0000-0000-0000-000000000003",
                 MessageTimestamp = 0
             });
 
@@ -99,17 +119,186 @@ namespace CovidSafe.API.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Value, typeof(IEnumerable<MatchMessage>));
-            Assert.AreEqual(response.Count(), controllerResponse.Value.Count());
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(NotFoundResult));
         }
 
         /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="NotFoundResponse"/> 
-        /// with unmatched parameters
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="OkObjectResult"/> 
+        /// with matched parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_NotFoundResponseWithInvalidParams()
+        public void PostAsync_OkObjectResultWithMatchedParameters()
         {
+            // Arrange
+            IEnumerable<string> ids = new string[]
+            {
+                "00000000-0000-0000-0000-000000000000",
+                "00000000-0000-0000-0000-000000000001"
+            };
+            MatchMessage result1 = new MatchMessage();
+            MatchMessage result2 = new MatchMessage();
+            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
+            {
+                result1,
+                result2
+            };
+
+            this._service
+                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
+                .Returns(Task.FromResult(toReturn));
+
+            MessageRequest request = new MessageRequest();
+            request.RequestedQueries.Add(new MessageInfo
+            {
+                MessageId = ids.ElementAt(0),
+                MessageTimestamp = 0
+            });
+            request.RequestedQueries.Add(new MessageInfo
+            {
+                MessageId = ids.ElementAt(1),
+                MessageTimestamp = 0
+            });
+
+            // Act
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
+                .PostAsync(request, CancellationToken.None)
+                .Result;
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(OkObjectResult));
+            OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
+            Assert.IsInstanceOfType(castedResult.Value, typeof(List<MatchMessage>));
+            List<MatchMessage> listResult = castedResult.Value as List<MatchMessage>;
+            Assert.AreEqual(toReturn.Count(), listResult.Count());
+        }
+
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="OkObjectResult"/> 
+        /// with partially matched parameters
+        /// </summary>
+        [TestMethod]
+        public void PostAsync_OkObjectResultWithPartiallyMatchedMatchedParameters()
+        {
+            // Arrange
+            IEnumerable<string> ids = new string[]
+            {
+                "00000000-0000-0000-0000-000000000000",
+                "00000000-0000-0000-0000-000000000001"
+            };
+            MatchMessage result1 = new MatchMessage();
+            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
+            {
+                result1
+            };
+
+            this._service
+                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
+                .Returns(Task.FromResult(toReturn));
+
+            MessageRequest request = new MessageRequest();
+            request.RequestedQueries.Add(new MessageInfo
+            {
+                MessageId = ids.ElementAt(0),
+                MessageTimestamp = 0
+            });
+            request.RequestedQueries.Add(new MessageInfo
+            {
+                MessageId = ids.ElementAt(1),
+                MessageTimestamp = 0
+            });
+
+            // Act
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
+                .PostAsync(request, CancellationToken.None)
+                .Result;
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(OkObjectResult));
+            OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
+            Assert.IsInstanceOfType(castedResult.Value, typeof(List<MatchMessage>));
+            List<MatchMessage> listResult = castedResult.Value as List<MatchMessage>;
+            Assert.AreEqual(1, listResult.Count());
+        }
+
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
+        /// with invalid parameters
+        /// </summary>
+        [TestMethod]
+        public void PostAsync_BadRequestResponseWithInvalidParams()
+        {
+            // Arrange
+            IEnumerable<string> ids = new string[]
+            {
+                "00000000-0000-0000-0000-000000000000",
+                "00000000-0000-0000-0000-000000000001"
+            };
+            MatchMessage result1 = new MatchMessage();
+            MatchMessage result2 = new MatchMessage();
+            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
+            {
+                result1,
+                result2
+            };
+
+            this._service
+                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
+                .Returns(Task.FromResult(toReturn));
+
+            MessageRequest request = new MessageRequest(); // Empty request
+            request.RequestedQueries.Add(new MessageInfo
+            {
+                MessageId = "invalidId!", // Invalid format
+                MessageTimestamp = 0
+            });
+
+            // Act
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
+                .PostAsync(request, CancellationToken.None)
+                .Result;
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+        }
+
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
+        /// with null parameters
+        /// </summary>
+        [TestMethod]
+        public void PostAsync_BadRequestResponseWithNullParams()
+        {
+            // Arrange
+            IEnumerable<string> ids = new string[]
+            {
+                "00000000-0000-0000-0000-000000000000",
+                "00000000-0000-0000-0000-000000000001"
+            };
+            MatchMessage result1 = new MatchMessage();
+            MatchMessage result2 = new MatchMessage();
+            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
+            {
+                result1,
+                result2
+            };
+
+            this._service
+                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
+                .Returns(Task.FromResult(toReturn));
+
+            MessageRequest request = new MessageRequest(); // Empty request
+
+            // Act
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
+                .PostAsync(request, CancellationToken.None)
+                .Result;
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
         }
     }
 }
