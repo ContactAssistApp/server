@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
+
 using CovidSafe.API.Swagger;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Repositories.Cosmos;
@@ -22,9 +24,11 @@ namespace CovidSafe.API
     /// Service registration for the web application
     /// </summary>
     /// <remarks>
-    /// Ignores missing documentation warnings.
+    /// CS1591: Ignores missing documentation warnings.
+    /// CodeCoverageExclusion: Required DI injections and core Startup procedures.
     /// </remarks>
 #pragma warning disable CS1591
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         /// <summary>
