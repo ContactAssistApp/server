@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,6 +56,8 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///     }
         ///
         /// </remarks>
+        /// <param name="request"><see cref="SelfReportRequest"/> content</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
         [HttpPut]
@@ -62,34 +65,27 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(SelfReportRequest request)
+        public async Task<ActionResult> PutAsync(SelfReportRequest request, CancellationToken cancellationToken = default)
         {
             // Get server timestamp at request immediately
             long serverTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            CancellationToken ct = new CancellationToken();
-
             // Validate inputs
-            if (request == null)
+            if (request == null || request.ClientTimestamp < 0 || request.Region == null || request.Seeds.Count() == 0)
             {
                 return BadRequest();
             }
-            if (request.Seeds.Count > 0)
+
+            // Validate seed formats (can they parse to Guid?)
+            foreach(BlueToothSeed seed in request.Seeds)
             {
-                // Validate seed formats (can they parse to Guid?)
-                foreach(BlueToothSeed seed in request.Seeds)
+                Guid output;
+                if(!Guid.TryParse(seed.Seed, out output))
                 {
-                    Guid output;
-                    if(!Guid.TryParse(seed.Seed, out output))
-                    {
-                        return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
-                    }
+                    return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
                 }
             }
-            else
-            {
-                return BadRequest();
-            }
+
             //TODO: add proper region validation
             //TODO: remove precision limitation
             if (request.Region.Precision != 4)
@@ -97,7 +93,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 return BadRequest("Only precision 4 is supported for insertion temporarily");
             }
 
-            await this._messageService.PublishAsync(request, serverTimestamp, ct);
+            await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
 
             return Ok();
         }

@@ -54,25 +54,24 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///     }
         ///
         /// </remarks>
+        /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Query matched Trace results</response>
         /// <response code="400">Malformed or invalid query provided</response>
-        /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
         [HttpPut]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(AreaMatch request)
+        public async Task<ActionResult> PutAsync(AreaMatch request, CancellationToken cancellationToken = default)
         {
-            CancellationToken ct = new CancellationToken();
-
             // Validate inputs
             if (request == null || request.Areas.Count() == 0 || String.IsNullOrEmpty(request.UserMessage))
             {
                 return BadRequest();
             }
 
-            await this._messageService.PublishAreaAsync(request, ct);
+            await this._messageService.PublishAreaAsync(request, cancellationToken);
 
             return Ok();
         }
