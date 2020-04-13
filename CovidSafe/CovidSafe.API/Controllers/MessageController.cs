@@ -78,10 +78,11 @@ namespace CovidSafe.API.Controllers
             }
 
             // Get and return results
-            IEnumerable<string> requestedIds = request.RequestedQueries
-                   .Select(r => r.MessageId);
-            return Ok(await this._messageService
-                .GetByIdsAsync(requestedIds, cancellationToken));
+            return Ok(
+                await this._messageService.GetByIdsAsync(
+                    request.RequestedQueries.Select(r => r.MessageId), cancellationToken
+                )
+            );
         }
 
         /// <summary>

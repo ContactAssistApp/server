@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,26 +71,21 @@ namespace CovidSafe.API.Controllers.MessageControllers
             long serverTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             // Validate inputs
-            if (request == null)
+            if (request == null || request.ClientTimestamp < 0 || request.Region == null || request.Seeds.Count() == 0)
             {
                 return BadRequest();
             }
-            if (request.Seeds.Count > 0)
+
+            // Validate seed formats (can they parse to Guid?)
+            foreach(BlueToothSeed seed in request.Seeds)
             {
-                // Validate seed formats (can they parse to Guid?)
-                foreach(BlueToothSeed seed in request.Seeds)
+                Guid output;
+                if(!Guid.TryParse(seed.Seed, out output))
                 {
-                    Guid output;
-                    if(!Guid.TryParse(seed.Seed, out output))
-                    {
-                        return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
-                    }
+                    return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
                 }
             }
-            else
-            {
-                return BadRequest();
-            }
+
             //TODO: add proper region validation
             //TODO: remove precision limitation
             if (request.Region.Precision != 4)

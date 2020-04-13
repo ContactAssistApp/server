@@ -50,7 +50,6 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <response code="404">No results found for request parameters</response>
         /// <returns>Collection of <see cref="MessageInfo"/> objects matching request parameters</returns>
         [HttpGet]
         [Produces("application/x-protobuf", "application/json")]
@@ -84,21 +83,14 @@ namespace CovidSafe.API.Controllers.MessageControllers
             IEnumerable<MessageInfo> results = await this._messageService
                 .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
 
-            if (results != null)
-            {
-                // Convert to response proto
-                MessageListResponse response = new MessageListResponse();
-                response.MessageInfoes.AddRange(results);
-                // Take greatest timestamp
-                // Avoids race condition of new messages becoming available during operation
-                response.AsOf = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            // Convert to response proto
+            MessageListResponse response = new MessageListResponse();
+            response.MessageInfoes.AddRange(results);
 
-                return Ok(response);
-            }
-            else
-            {
-                return NotFound();
-            }
+            // Get current server time
+            response.AsOf = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            return Ok(response);
         }
     }
 }
