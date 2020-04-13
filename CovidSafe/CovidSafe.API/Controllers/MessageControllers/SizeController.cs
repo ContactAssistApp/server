@@ -21,6 +21,10 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <see cref="MatchMessage"/> service layer
         /// </summary>
         private IMessageService _messageService;
+        /// <summary>
+        /// Default response provided when parameters have no matching output
+        /// </summary>
+        public const long NOT_FOUND_RESPONSE = -1;
 
         /// <summary>
         /// Creates a new <see cref="SizeController"/> instance
@@ -44,13 +48,14 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// </remarks>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <response code="404">No results found for request parameters</response>
         /// <param name="lat">Latitude of desired <see cref="Region"/></param>
         /// <param name="lon">Longitude of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="MatchMessage"/>, in ms since UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
-        /// <returns>Total size of target <see cref="MatchMessage"/> objects, in bytes</returns>
+        /// <returns>
+        /// Total size of target <see cref="MatchMessage"/> objects, in bytes, or -1 if parameters are unmatched
+        /// </returns>
         [HttpGet]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(MessageSizeResponse), StatusCodes.Status200OK)]
@@ -83,17 +88,16 @@ namespace CovidSafe.API.Controllers.MessageControllers
             var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
             long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
 
-            if(result > 0)
+            // Return -1 if no results
+            if(result <= 0)
             {
-                return Ok(new MessageSizeResponse
-                {
-                    SizeOfQueryResponse = result
-                });
+                result = NOT_FOUND_RESPONSE;
             }
-            else
+
+            return Ok(new MessageSizeResponse
             {
-                return NotFound();
-            }
+                SizeOfQueryResponse = result
+            });
         }
     }
 }

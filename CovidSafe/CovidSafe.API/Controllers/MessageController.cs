@@ -53,7 +53,6 @@ namespace CovidSafe.API.Controllers
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <response code="404">No results found for request parameters</response>
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
         [HttpPost]
         [Consumes("application/x-protobuf", "application/json")]
@@ -78,20 +77,11 @@ namespace CovidSafe.API.Controllers
                 }
             }
 
-            // Get results
+            // Get and return results
             IEnumerable<string> requestedIds = request.RequestedQueries
                    .Select(r => r.MessageId);
-            IEnumerable<MatchMessage> result = await this._messageService
-                .GetByIdsAsync(requestedIds, cancellationToken);
-
-            if(result.Count() > 0)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
+            return Ok(await this._messageService
+                .GetByIdsAsync(requestedIds, cancellationToken));
         }
 
         /// <summary>

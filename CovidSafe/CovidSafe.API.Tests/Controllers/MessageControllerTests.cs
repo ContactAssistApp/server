@@ -76,30 +76,58 @@ namespace CovidSafe.API.Tests.Controllers
         }
 
         /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="NotFoundResult"/> 
-        /// with unmatched parameters
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
+        /// with invalid parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_NotFoundResponseWithUnmatchedParams()
+        public void PostAsync_BadRequestResultWithInvalidParams()
         {
             // Arrange
-            IEnumerable<string> ids = new string[]
+            MessageRequest request = new MessageRequest();
+            request.RequestedQueries.Add(new MessageInfo
             {
-                "00000000-0000-0000-0000-000000000000",
-                "00000000-0000-0000-0000-000000000001"
-            };
-            MatchMessage result1 = new MatchMessage();
-            MatchMessage result2 = new MatchMessage();
-            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
-            {
-                result1,
-                result2
-            };
+                MessageId = "Not a GUID!", // Invalid format
+                MessageTimestamp = 0
+            });
 
-            this._service
-                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
-                .Returns(Task.FromResult(toReturn));
+            // Act
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
+                .PostAsync(request, CancellationToken.None)
+                .Result;
 
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+        }
+
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
+        /// with null parameters
+        /// </summary>
+        [TestMethod]
+        public void PostAsync_BadRequestResultWithNullParams()
+        {
+            // Arrange
+            MessageRequest request = new MessageRequest(); // Empty request
+
+            // Act
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
+                .PostAsync(request, CancellationToken.None)
+                .Result;
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+        }
+
+        /// <summary>
+        /// <see cref="MessageController.PostAsync()"/> returns empty 
+        /// <see cref="OkObjectResult"/> with unmatched parameters
+        /// </summary>
+        [TestMethod]
+        public void PostAsync_EmptyOkObjectResultWithUnmatchedParams()
+        {
+            // Arrange
             MessageRequest request = new MessageRequest();
             request.RequestedQueries.Add(new MessageInfo
             {
@@ -119,7 +147,11 @@ namespace CovidSafe.API.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(OkObjectResult));
+            OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
+            Assert.IsInstanceOfType(castedResult.Value, typeof(IEnumerable<MatchMessage>));
+            IEnumerable<MatchMessage> listResult = castedResult.Value as IEnumerable<MatchMessage>;
+            Assert.AreEqual(0, listResult.Count());
         }
 
         /// <summary>
@@ -178,7 +210,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with partially matched parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_OkObjectResultWithPartiallyMatchedMatchedParameters()
+        public void PostAsync_OkObjectResultWithPartiallyMatchedParameters()
         {
             // Arrange
             IEnumerable<string> ids = new string[]
@@ -220,85 +252,6 @@ namespace CovidSafe.API.Tests.Controllers
             Assert.IsInstanceOfType(castedResult.Value, typeof(List<MatchMessage>));
             List<MatchMessage> listResult = castedResult.Value as List<MatchMessage>;
             Assert.AreEqual(1, listResult.Count());
-        }
-
-        /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
-        /// with invalid parameters
-        /// </summary>
-        [TestMethod]
-        public void PostAsync_BadRequestResponseWithInvalidParams()
-        {
-            // Arrange
-            IEnumerable<string> ids = new string[]
-            {
-                "00000000-0000-0000-0000-000000000000",
-                "00000000-0000-0000-0000-000000000001"
-            };
-            MatchMessage result1 = new MatchMessage();
-            MatchMessage result2 = new MatchMessage();
-            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
-            {
-                result1,
-                result2
-            };
-
-            this._service
-                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
-                .Returns(Task.FromResult(toReturn));
-
-            MessageRequest request = new MessageRequest(); // Empty request
-            request.RequestedQueries.Add(new MessageInfo
-            {
-                MessageId = "invalidId!", // Invalid format
-                MessageTimestamp = 0
-            });
-
-            // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
-        }
-
-        /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
-        /// with null parameters
-        /// </summary>
-        [TestMethod]
-        public void PostAsync_BadRequestResponseWithNullParams()
-        {
-            // Arrange
-            IEnumerable<string> ids = new string[]
-            {
-                "00000000-0000-0000-0000-000000000000",
-                "00000000-0000-0000-0000-000000000001"
-            };
-            MatchMessage result1 = new MatchMessage();
-            MatchMessage result2 = new MatchMessage();
-            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
-            {
-                result1,
-                result2
-            };
-
-            this._service
-                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
-                .Returns(Task.FromResult(toReturn));
-
-            MessageRequest request = new MessageRequest(); // Empty request
-
-            // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
         }
     }
 }
