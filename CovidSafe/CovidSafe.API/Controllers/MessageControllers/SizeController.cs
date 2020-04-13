@@ -49,15 +49,14 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <param name="lon">Longitude of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Timestamp of client's most recent <see cref="MatchMessage"/>, in ms since UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <returns>Total size of target <see cref="MatchMessage"/> objects, in bytes</returns>
         [HttpGet]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(MessageSizeResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<MessageSizeResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp)
+        public async Task<ActionResult<MessageSizeResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            CancellationToken ct = new CancellationToken();
-
             // Validate inputs
 
             // Latitudes are from -90 to 90
@@ -82,7 +81,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
 
             // Get results
             var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
-            long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, ct);
+            long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
 
             if(result > 0)
             {
