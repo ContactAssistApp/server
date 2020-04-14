@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers.MessageControllers;
 using CovidSafe.DAL.Services;
@@ -58,7 +59,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public void PutAsync_BadResultRequestWithNoAreas()
+        public async Task PutAsync_BadResultRequestWithNoAreas()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch
@@ -67,9 +68,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -81,7 +81,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> when no user message is specified
         /// </summary>
         [TestMethod]
-        public void PutAsync_BadResultRequestWithNoUserMessage()
+        public async Task PutAsync_BadResultRequestWithNoUserMessage()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch();
@@ -98,9 +98,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             });
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -112,7 +111,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkResult"/> with valid input data
         /// </summary>
         [TestMethod]
-        public void PutAsync_OkResultWithValidInputs()
+        public async Task PutAsync_OkResultWithValidInputs()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch
@@ -132,9 +131,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             });
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);

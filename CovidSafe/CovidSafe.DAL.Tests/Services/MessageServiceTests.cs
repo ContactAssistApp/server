@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
@@ -35,6 +35,44 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Create service
             this._service = new MessageService(this._repo.Object);
+        }
+
+        /// <summary>
+        /// <see cref="MessageService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
+        /// throws <see cref="ArgumentNullException"/> with empty 'ids' parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task GetByIdsAsync_ArgumentNullExceptionOnEmptyParameters()
+        {
+            // Arrange
+            IEnumerable<string> ids = new List<string>();
+
+            // Act
+            IEnumerable<MatchMessage> result = await this._service
+                .GetByIdsAsync(ids, CancellationToken.None);
+
+            // Assert
+            // Exception caught by decorator
+        }
+
+        /// <summary>
+        /// <see cref="MessageService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
+        /// throws <see cref="ArgumentNullException"/> with null 'ids' parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task GetByIdsAsync_ArgumentNullExceptionOnNullParameters()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            IEnumerable<MatchMessage> result = await this._service
+                .GetByIdsAsync(null, CancellationToken.None);
+
+            // Assert
+            // Exception caught by decorator
         }
     }
 }

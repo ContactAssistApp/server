@@ -58,16 +58,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with invalid timestamp
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithInvalidTimestamp()
+        public async Task GetAsync_BadRequestResultWithInvalidTimestamp()
         {
             // Arrange
             // N/A
 
             // Act
             // Min Latitude is -90
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, -10.1234, 4, -1, CancellationToken.None)
-                .Result;
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -79,16 +78,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooHighLatitude()
+        public async Task GetAsync_BadRequestResultWithTooHighLatitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Max Latitude is 90
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
-                .GetAsync(91, -10.1234, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
+                .GetAsync(91, -10.1234, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -100,16 +98,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too high Longitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooHighLongitude()
+        public async Task GetAsync_BadRequestResultWithTooHighLongitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Max Longitude is 180
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, 181, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, 181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -121,16 +118,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooLowLatitude()
+        public async Task GetAsync_BadRequestResultWithTooLowLatitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Min Latitude is -90
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
-                .GetAsync(-91, -10.1234, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
+                .GetAsync(-91, -10.1234, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -142,16 +138,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too low Longitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooLowLongitude()
+        public async Task GetAsync_BadRequestResultWithTooLowLongitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Min Longitude is -180
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, -181, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, -181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -163,7 +158,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkObjectResult"/> with matched parameters
         /// </summary>
         [TestMethod]
-        public void GetAsync_OkObjectResultWithMatchedParams()
+        public async Task GetAsync_OkObjectResultWithMatchedParams()
         {
             // Arrange
             Region requestedRegion = new Region
@@ -184,15 +179,14 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                 .Returns(Task.FromResult(expectedSize));
 
             // Act
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
                 .GetAsync(
                     requestedRegion.LatitudePrefix,
                     requestedRegion.LongitudePrefix,
                     requestedRegion.Precision,
                     requestedTimestamp,
                     CancellationToken.None
-                )
-                .Result;
+                );
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -208,15 +202,14 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]
-        public void GetAsync_OkObjectResultWithUnmatchedParams()
+        public async Task GetAsync_OkObjectResultWithUnmatchedParams()
         {
             // Arrange
             // N/A; empty service layer response will produce no results by default
 
             // Act
-            ActionResult<MessageSizeResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, -10.1234, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageSizeResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);

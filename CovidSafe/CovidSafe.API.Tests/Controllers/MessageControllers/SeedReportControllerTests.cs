@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-
+using System.Threading.Tasks;
 using CovidSafe.API.Controllers.MessageControllers;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
@@ -59,7 +59,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public void PutAsync_BadResultRequestWithInvalidClientTimestamp()
+        public async Task PutAsync_BadResultRequestWithInvalidClientTimestamp()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -81,9 +81,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             });
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -96,7 +95,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public void PutAsync_BadResultRequestWithInvalidSeed()
+        public async Task PutAsync_BadResultRequestWithInvalidSeed()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -118,9 +117,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             });
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -133,7 +131,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public void PutAsync_BadResultRequestWithNoRegion()
+        public async Task PutAsync_BadResultRequestWithNoRegion()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -149,9 +147,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             });
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -164,7 +161,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public void PutAsync_BadResultRequestWithNoSeeds()
+        public async Task PutAsync_BadResultRequestWithNoSeeds()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -179,9 +176,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -193,7 +189,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkResult"/> with valid input data
         /// </summary>
         [TestMethod]
-        public void PutAsync_OkResultWithValidInputs()
+        public async Task PutAsync_OkResultWithValidInputs()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -215,9 +211,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             });
 
             // Act
-            ActionResult controllerResponse = this._controller
-                .PutAsync(requestObj, CancellationToken.None)
-                .Result;
+            ActionResult controllerResponse = await this._controller
+                .PutAsync(requestObj, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
