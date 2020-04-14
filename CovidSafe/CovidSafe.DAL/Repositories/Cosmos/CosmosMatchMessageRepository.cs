@@ -43,14 +43,29 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <summary>
-        /// Returns the oldest allowed data timestamp for a Cosmos record
+        /// Returns the most restrictive timestamp filter, based on the application 
+        /// configuration and the one provided by the user
         /// </summary>
-        /// <returns>Oldest allowed timestamp, in ms since UNIX epoch</returns>
-        private long _getMaxDataAge()
+        /// <param name="timestampFilter">Original timestamp filter applied to query</param>
+        /// <returns>Timestamp filter value, in ms since UNIX epoch</returns>
+        private long _getTimestampFilter(long timestampFilter)
         {
-            return DateTimeOffset.UtcNow
+            // Get the default timestamp filter value
+            long defaultFilter = DateTimeOffset.UtcNow
                 .AddDays(-(this.Context.SchemaOptions.MaxDataAgeToReturnDays))
                 .ToUnixTimeMilliseconds();
+
+            // If a timestamp filter was provided for the query, see if that one is more restrictive than ours
+            if(timestampFilter > 0)
+            {
+                // Take most restrictive timestamp filter
+                return Math.Max(defaultFilter, timestampFilter);
+            }
+            else
+            {
+                // Use our filter by default, if none was provided already for the query
+                return defaultFilter;
+            }
         }
 
         /// <inheritdoc/>
@@ -95,8 +110,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Execute query
             var iterator = queryable
                 .Where(r =>
-                    r.Timestamp > lastTimestamp
-                    && r.Timestamp >= this._getMaxDataAge()
+                    r.Timestamp > this._getTimestampFilter(lastTimestamp)
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
@@ -136,8 +150,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Execute query
             var iterator = queryable
                 .Where(r =>
-                    r.Timestamp > lastTimestamp
-                    && r.Timestamp >= this._getMaxDataAge()
+                    r.Timestamp > this._getTimestampFilter(lastTimestamp)
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
