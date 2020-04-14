@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,15 +65,21 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(AreaMatch request, CancellationToken cancellationToken = default)
         {
-            // Validate inputs
-            if (request == null || request.Areas.Count() == 0 || String.IsNullOrEmpty(request.UserMessage))
+            try
+            {
+                // Publish area
+                await this._messageService.PublishAreaAsync(request, cancellationToken);
+                return Ok();
+            }
+            catch (ValidationFailedException ex)
+            {
+                // Only return validation issues
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
             {
                 return BadRequest();
             }
-
-            await this._messageService.PublishAreaAsync(request, cancellationToken);
-
-            return Ok();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers;
+using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
 using Microsoft.AspNetCore.Http;
@@ -29,17 +30,24 @@ namespace CovidSafe.API.Tests.Controllers
         /// </summary>
         private MessageController _controller;
         /// <summary>
-        /// Mock <see cref="IMessageService"/>
+        /// Mock <see cref="IMatchMessageRepository"/>
         /// </summary>
-        private Mock<IMessageService> _service;
+        private Mock<IMatchMessageRepository> _repo;
+        /// <summary>
+        /// <see cref="MessageService"/> instance
+        /// </summary>
+        private MessageService _service;
         
         /// <summary>
         /// Creates a new <see cref="MessageControllerTests"/> instance
         /// </summary>
         public MessageControllerTests()
         {
-            // Configure service object
-            this._service = new Mock<IMessageService>();
+            // Configure repository
+            this._repo = new Mock<IMatchMessageRepository>();
+
+            // Configure Service instance
+            this._service = new MessageService(this._repo.Object);
 
             // Create HttpContext mock
             this._context = new Mock<HttpContext>();
@@ -51,7 +59,7 @@ namespace CovidSafe.API.Tests.Controllers
             };
 
             // Configure controller
-            this._controller = new MessageController(this._service.Object);
+            this._controller = new MessageController(this._service);
             this._controller.ControllerContext = new ControllerContext(actionContext);
         }
 
@@ -60,7 +68,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// returns a <see cref="OkResult"/>
         /// </summary>
         [TestMethod]
-        public void HeadAsync_AlwaysReturnsOkResult()
+        public void HeadAsync_OkResultAlways()
         {
             // Arrange
             // N/A
@@ -76,11 +84,11 @@ namespace CovidSafe.API.Tests.Controllers
         }
 
         /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestObjectResult"/> 
         /// with invalid parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_BadRequestResultWithInvalidParams()
+        public async Task PostAsync_BadRequestObjectWithInvalidParams()
         {
             // Arrange
             MessageRequest request = new MessageRequest();
@@ -91,29 +99,27 @@ namespace CovidSafe.API.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+                .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
-        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestResult"/> 
+        /// <see cref="MessageController.PostAsync()"/> returns <see cref="BadRequestObjectResult"/> 
         /// with null parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_BadRequestResultWithNullParams()
+        public async Task PostAsync_BadRequestWithNullParams()
         {
             // Arrange
             MessageRequest request = new MessageRequest(); // Empty request
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+                .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -125,7 +131,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_EmptyOkObjectResultWithUnmatchedParams()
+        public async Task PostAsync_EmptyOkWithUnmatchedParams()
         {
             // Arrange
             MessageRequest request = new MessageRequest();
@@ -141,9 +147,8 @@ namespace CovidSafe.API.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+                .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -159,7 +164,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with matched parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_OkObjectResultWithMatchedParameters()
+        public async Task PostAsync_OkWithMatchedParameters()
         {
             // Arrange
             IEnumerable<string> ids = new string[]
@@ -175,8 +180,8 @@ namespace CovidSafe.API.Tests.Controllers
                 result2
             };
 
-            this._service
-                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
+            this._repo
+                .Setup(s => s.GetRangeAsync(ids, CancellationToken.None))
                 .Returns(Task.FromResult(toReturn));
 
             MessageRequest request = new MessageRequest();
@@ -192,9 +197,8 @@ namespace CovidSafe.API.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+                .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -210,7 +214,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with partially matched parameters
         /// </summary>
         [TestMethod]
-        public void PostAsync_OkObjectResultWithPartiallyMatchedParameters()
+        public async Task PostAsync_OkWithPartiallyMatchedParameters()
         {
             // Arrange
             IEnumerable<string> ids = new string[]
@@ -224,8 +228,8 @@ namespace CovidSafe.API.Tests.Controllers
                 result1
             };
 
-            this._service
-                .Setup(s => s.GetByIdsAsync(ids, CancellationToken.None))
+            this._repo
+                .Setup(s => s.GetRangeAsync(ids, CancellationToken.None))
                 .Returns(Task.FromResult(toReturn));
 
             MessageRequest request = new MessageRequest();
@@ -241,9 +245,8 @@ namespace CovidSafe.API.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = this._controller
-                .PostAsync(request, CancellationToken.None)
-                .Result;
+            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+                .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);

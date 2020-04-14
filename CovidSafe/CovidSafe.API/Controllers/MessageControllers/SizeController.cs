@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,42 +64,31 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<MessageSizeResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            // Validate inputs
+            try
+            {
+                // Get results
+                var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+                long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
 
-            // Latitudes are from -90 to 90
-            if (lat > 90 || lat < -90)
+                // Return -1 if no results
+                if (result <= 0)
+                {
+                    result = NOT_FOUND_RESPONSE;
+                }
+
+                return Ok(new MessageSizeResponse
+                {
+                    SizeOfQueryResponse = result
+                });
+            }
+            catch (ValidationFailedException ex)
+            {
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
             {
                 return BadRequest();
             }
-            // Longitudes are from -180 to 180
-            if (lon > 180 || lon < -180)
-            {
-                return BadRequest();
-            }
-            // Precision can be max 8
-            if (precision < 0 || precision > 8)
-            {
-                return BadRequest();
-            }
-            if (lastTimestamp < 0)
-            {
-                return BadRequest();
-            }
-
-            // Get results
-            var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
-            long result = await this._messageService.GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
-
-            // Return -1 if no results
-            if(result <= 0)
-            {
-                result = NOT_FOUND_RESPONSE;
-            }
-
-            return Ok(new MessageSizeResponse
-            {
-                SizeOfQueryResponse = result
-            });
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers.MessageControllers;
+using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
 using Microsoft.AspNetCore.Http;
@@ -29,17 +30,24 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// </summary>
         private ListController _controller;
         /// <summary>
-        /// Mock <see cref="IMessageService"/>
+        /// Mock <see cref="IMatchMessageRepository"/> instance
         /// </summary>
-        private Mock<IMessageService> _service;
+        private Mock<IMatchMessageRepository> _repo;
+        /// <summary>
+        /// <see cref="MessageService"/> instance
+        /// </summary>
+        private MessageService _service;
 
         /// <summary>
         /// Creates a new <see cref="ListControllerTests"/> instance
         /// </summary>
         public ListControllerTests()
         {
-            // Configure service object
-            this._service = new Mock<IMessageService>();
+            // Configure repo mock
+            this._repo = new Mock<IMatchMessageRepository>();
+
+            // Configure service
+            this._service = new MessageService(this._repo.Object);
 
             // Create HttpContext mock
             this._context = new Mock<HttpContext>();
@@ -51,113 +59,108 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
 
             // Configure controller
-            this._controller = new ListController(this._service.Object);
+            this._controller = new ListController(this._service);
             this._controller.ControllerContext = new ControllerContext(actionContext);
         }
 
         /// <summary>
         /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with invalid timestamp
+        /// returns <see cref="BadRequestObjectResult"/> with invalid timestamp
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithInvalidTimestamp()
+        public async Task GetAsync_BadRequestObjectWithInvalidTimestamp()
         {
             // Arrange
             // N/A
 
             // Act
             // Min Latitude is -90
-            ActionResult<MessageListResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, -10.1234, 4, -1, CancellationToken.None)
-                .Result;
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too high Latitude
+        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooHighLatitude()
+        public async Task GetAsync_BadRequestObjectWithTooHighLatitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Max Latitude is 90
-            ActionResult<MessageListResponse> controllerResponse = this._controller
-                .GetAsync(91, -10.1234, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
+                .GetAsync(91, -10.1234, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too high Longitude
+        /// returns <see cref="BadRequestObjectResult"/> with too high Longitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooHighLongitude()
+        public async Task GetAsync_BadRequestObjectWithTooHighLongitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Max Longitude is 180
-            ActionResult<MessageListResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, 181, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, 181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too high Latitude
+        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooLowLatitude()
+        public async Task GetAsync_BadRequestObjectWithTooLowLatitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Min Latitude is -90
-            ActionResult<MessageListResponse> controllerResponse = this._controller
-                .GetAsync(-91, -10.1234, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
+                .GetAsync(-91, -10.1234, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too low Longitude
+        /// returns <see cref="BadRequestObjectResult"/> with too low Longitude
         /// </summary>
         [TestMethod]
-        public void GetAsync_BadRequestResultWithTooLowLongitude()
+        public async Task GetAsync_BadRequestObjectWithTooLowLongitude()
         {
             // Arrange
             // N/A
 
             // Act
             // Min Longitude is -180
-            ActionResult<MessageListResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, -181, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, -181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
@@ -165,7 +168,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkObjectResult"/> with matched parameters
         /// </summary>
         [TestMethod]
-        public void GetAsync_OkObjectResultWithMatchedParams()
+        public async Task GetAsync_OkWithMatchedParams()
         {
             // Arrange
             Region requestedRegion = new Region
@@ -185,8 +188,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                 }
             };
 
-            this._service
-                .Setup(s => s.GetLatestInfoAsync(
+            this._repo
+                .Setup(s => s.GetLatestAsync(
                     It.IsAny<Region>(),
                     It.IsAny<long>(),
                     CancellationToken.None
@@ -194,15 +197,14 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                 .Returns(Task.FromResult(response));
 
             // Act
-            ActionResult<MessageListResponse> controllerResponse = this._controller
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
                 .GetAsync(
                     requestedRegion.LatitudePrefix,
                     requestedRegion.LongitudePrefix,
                     requestedRegion.Precision,
                     requestedTimestamp,
                     CancellationToken.None
-                )
-                .Result;
+                );
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -218,15 +220,14 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]
-        public void GetAsync_OkObjectResultWithUnmatchedParams()
+        public async Task GetAsync_EmptyOkWithUnmatchedParams()
         {
             // Arrange
             // N/A; empty service layer response will produce no results by default
 
             // Act
-            ActionResult<MessageListResponse> controllerResponse = this._controller
-                .GetAsync(10.1234, -10.1234, 4, 0, CancellationToken.None)
-                .Result;
+            ActionResult<MessageListResponse> controllerResponse = await this._controller
+                .GetAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
