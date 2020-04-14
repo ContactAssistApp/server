@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,6 +40,17 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             this.Container = this.Context.GetContainer(
                 this.Context.SchemaOptions.MessageContainerName
             );
+        }
+
+        /// <summary>
+        /// Returns the oldest allowed data timestamp for a Cosmos record
+        /// </summary>
+        /// <returns>Oldest allowed timestamp, in ms since UNIX epoch</returns>
+        private long _getMaxDataAge()
+        {
+            return DateTimeOffset.UtcNow
+                .AddDays(-(this.Context.SchemaOptions.MaxDataAgeToReturnDays))
+                .ToUnixTimeMilliseconds();
         }
 
         /// <inheritdoc/>
@@ -86,6 +96,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var iterator = queryable
                 .Where(r =>
                     r.Timestamp > lastTimestamp
+                    && r.Timestamp >= this._getMaxDataAge()
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
@@ -126,6 +137,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var iterator = queryable
                 .Where(r =>
                     r.Timestamp > lastTimestamp
+                    && r.Timestamp >= this._getMaxDataAge()
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
