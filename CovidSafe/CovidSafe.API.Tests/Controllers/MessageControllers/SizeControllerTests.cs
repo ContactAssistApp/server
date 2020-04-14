@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers.MessageControllers;
+using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
 using Microsoft.AspNetCore.Http;
@@ -27,17 +28,24 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// </summary>
         private SizeController _controller;
         /// <summary>
-        /// Mock <see cref="IMessageService"/>
+        /// Mock <see cref="IMatchMessageRepository"/> instance
         /// </summary>
-        private Mock<IMessageService> _service;
-        
+        private Mock<IMatchMessageRepository> _repo;
+        /// <summary>
+        /// <see cref="MessageService"/> instance
+        /// </summary>
+        private MessageService _service;
+
         /// <summary>
         /// Creates a new <see cref="MessageControllerTests"/> instance
         /// </summary>
         public SizeControllerTests()
         {
-            // Configure service object
-            this._service = new Mock<IMessageService>();
+            // Configure repo mock
+            this._repo = new Mock<IMatchMessageRepository>();
+
+            // Configure service
+            this._service = new MessageService(this._repo.Object);
 
             // Create HttpContext mock
             this._context = new Mock<HttpContext>();
@@ -49,16 +57,16 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
 
             // Configure controller
-            this._controller = new SizeController(this._service.Object);
+            this._controller = new SizeController(this._service);
             this._controller.ControllerContext = new ControllerContext(actionContext);
         }
 
         /// <summary>
         /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with invalid timestamp
+        /// returns <see cref="BadRequestObjectResult"/> with invalid timestamp
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestWithInvalidTimestamp()
+        public async Task GetAsync_BadRequestObjectWithInvalidTimestamp()
         {
             // Arrange
             // N/A
@@ -70,15 +78,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too high Latitude
+        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestWithTooHighLatitude()
+        public async Task GetAsync_BadRequestObjectWithTooHighLatitude()
         {
             // Arrange
             // N/A
@@ -90,15 +98,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too high Longitude
+        /// returns <see cref="BadRequestObjectResult"/> with too high Longitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestWithTooHighLongitude()
+        public async Task GetAsync_BadRequestObjectWithTooHighLongitude()
         {
             // Arrange
             // N/A
@@ -110,15 +118,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too high Latitude
+        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestWithTooLowLatitude()
+        public async Task GetAsync_BadRequestObjectWithTooLowLatitude()
         {
             // Arrange
             // N/A
@@ -130,15 +138,15 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> with too low Longitude
+        /// returns <see cref="BadRequestObjectResult"/> with too low Longitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestWithTooLowLongitude()
+        public async Task GetAsync_BadRequestObjectWithTooLowLongitude()
         {
             // Arrange
             // N/A
@@ -150,7 +158,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse.Result, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
@@ -170,8 +178,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             int requestedTimestamp = 0;
             long expectedSize = 1234;
 
-            this._service
-                .Setup(s => s.GetLatestRegionDataSizeAsync(
+            this._repo
+                .Setup(s => s.GetLatestRegionSizeAsync(
                     It.IsAny<Region>(),
                     It.IsAny<long>(),
                     CancellationToken.None

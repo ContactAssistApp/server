@@ -31,28 +31,8 @@ namespace CovidSafe.Entities.Protos
             ValidationResult result = new ValidationResult();
 
             // Ensure lat/lng are within range
-            if(this.Latitude > MAX_LATITUDE || this.Latitude < MIN_LATITUDE)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.Latitude),
-                    ValidationMessages.InvalidLatitude,
-                    this.Latitude.ToString(),
-                    MIN_LATITUDE.ToString(),
-                    MAX_LATITUDE.ToString()
-                );
-            }
-            if(this.Longitude > MAX_LONGITUDE || this.Longitude < MIN_LONGITUDE)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.Longitude),
-                    ValidationMessages.InvalidLongitude,
-                    this.Longitude.ToString(),
-                    MIN_LONGITUDE.ToString(),
-                    MAX_LONGITUDE.ToString()
-                );
-            }
+            result.Combine(Validator.ValidateLatitude(this.Latitude, nameof(this.Latitude)));
+            result.Combine(Validator.ValidateLongitude(this.Longitude, nameof(this.Longitude)));
 
             return result;
         }

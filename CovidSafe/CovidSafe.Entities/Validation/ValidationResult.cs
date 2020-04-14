@@ -11,7 +11,7 @@ namespace CovidSafe.Entities.Validation
         /// <summary>
         /// Tells if the result passed (true if yes, false if no)
         /// </summary>
-        public bool IsValid
+        public bool Passed
         {
             get
             {
@@ -27,7 +27,7 @@ namespace CovidSafe.Entities.Validation
         /// <summary>
         /// Add <see cref="ValidationResult"/> failures to this object
         /// </summary>
-        public void AddRange(ValidationResult other)
+        public void Combine(ValidationResult other)
         {
             this.Failures.AddRange(other.Failures);
         }

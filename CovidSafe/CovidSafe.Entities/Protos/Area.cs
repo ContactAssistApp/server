@@ -25,38 +25,13 @@ namespace CovidSafe.Entities.Protos
             else
             {
                 // Validate using Location.Validate()
-                result.AddRange(this.Location.Validate());
+                result.Combine(this.Location.Validate());
             }
 
             // Validate timestamps
-            if(this.EndTime < 0)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.EndTime),
-                    ValidationMessages.InvalidTimestamp,
-                    this.EndTime.ToString()
-                );
-            }
-            if(this.BeginTime < 0)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.BeginTime),
-                    ValidationMessages.InvalidTimestamp,
-                    this.BeginTime.ToString()
-                );
-            }
-            if(this.BeginTime > this.EndTime)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    ValidationProperty.Multiple,
-                    ValidationMessages.InvalidStartEndTimeSequence,
-                    this.BeginTime.ToString(),
-                    this.EndTime.ToString()
-                );
-            }
+            result.Combine(Validator.ValidateTimestamp(this.BeginTime, nameof(this.BeginTime)));
+            result.Combine(Validator.ValidateTimestamp(this.EndTime, nameof(this.EndTime)));
+            result.Combine(Validator.ValidateTimeRange(this.BeginTime, this.EndTime));
 
             return result;
         }

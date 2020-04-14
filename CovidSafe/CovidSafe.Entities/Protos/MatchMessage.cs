@@ -1,6 +1,4 @@
-﻿using System;
-
-using CovidSafe.Entities.Validation;
+﻿using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 
 namespace CovidSafe.Entities.Protos
@@ -30,7 +28,7 @@ namespace CovidSafe.Entities.Protos
                 foreach(AreaMatch areaMatch in this.AreaMatches)
                 {
                     // Use AreaMatch.Validate()
-                    result.AddRange(areaMatch.Validate());
+                    result.Combine(areaMatch.Validate());
                 }
             }
             if(this.BluetoothMatches.Count > 0)
@@ -39,7 +37,7 @@ namespace CovidSafe.Entities.Protos
                 foreach(BluetoothMatch btMatch in this.BluetoothMatches)
                 {
                     // User BluetoothMatch.Validate()
-                    result.AddRange(btMatch.Validate());
+                    result.Combine(btMatch.Validate());
                 }
             }
 

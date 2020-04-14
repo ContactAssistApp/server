@@ -22,7 +22,7 @@ namespace CovidSafe.Entities.Validation.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ValidationMessages {
+    public class ValidationMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CovidSafe.Entities.Validation.Resources.ValidationMessages", typeof(ValidationMessages).Assembly);
@@ -51,7 +51,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,18 @@ namespace CovidSafe.Entities.Validation.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No areas provided in collection..
+        /// </summary>
+        public static string EmptyAreas {
+            get {
+                return ResourceManager.GetString("EmptyAreas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MatchMessage does not contain any AreaMatches or BluetoothMatches..
         /// </summary>
-        internal static string EmptyMessage {
+        public static string EmptyMessage {
             get {
                 return ResourceManager.GetString("EmptyMessage", resourceCulture);
             }
@@ -72,7 +81,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to No seeds provided in collection..
         /// </summary>
-        internal static string EmptySeeds {
+        public static string EmptySeeds {
             get {
                 return ResourceManager.GetString("EmptySeeds", resourceCulture);
             }
@@ -81,7 +90,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Message identifier (must be a GUID/UUID)..
         /// </summary>
-        internal static string InvalidGuid {
+        public static string InvalidGuid {
             get {
                 return ResourceManager.GetString("InvalidGuid", resourceCulture);
             }
@@ -90,7 +99,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Latitude (must be between {1} and {2})..
         /// </summary>
-        internal static string InvalidLatitude {
+        public static string InvalidLatitude {
             get {
                 return ResourceManager.GetString("InvalidLatitude", resourceCulture);
             }
@@ -99,7 +108,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Longitude (must be between {1} and {2})..
         /// </summary>
-        internal static string InvalidLongitude {
+        public static string InvalidLongitude {
             get {
                 return ResourceManager.GetString("InvalidLongitude", resourceCulture);
             }
@@ -108,7 +117,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Precision &apos;{0}&apos; is outside allowable range ({1} to {2})..
         /// </summary>
-        internal static string InvalidPrecision {
+        public static string InvalidPrecision {
             get {
                 return ResourceManager.GetString("InvalidPrecision", resourceCulture);
             }
@@ -117,7 +126,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid seed (must be a GUID/UUID)..
         /// </summary>
-        internal static string InvalidSeed {
+        public static string InvalidSeed {
             get {
                 return ResourceManager.GetString("InvalidSeed", resourceCulture);
             }
@@ -126,7 +135,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Start time &apos;{0}&apos; occurs after end time &apos;{1}&apos;..
         /// </summary>
-        internal static string InvalidStartEndTimeSequence {
+        public static string InvalidStartEndTimeSequence {
             get {
                 return ResourceManager.GetString("InvalidStartEndTimeSequence", resourceCulture);
             }
@@ -135,7 +144,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid timestamp (must be greater than zero, in UTC, and be reported in milliseconds since the UNIX epoch)..
         /// </summary>
-        internal static string InvalidTimestamp {
+        public static string InvalidTimestamp {
             get {
                 return ResourceManager.GetString("InvalidTimestamp", resourceCulture);
             }
@@ -144,7 +153,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Location property is null or empty..
         /// </summary>
-        internal static string NullLocation {
+        public static string NullLocation {
             get {
                 return ResourceManager.GetString("NullLocation", resourceCulture);
             }
@@ -153,7 +162,7 @@ namespace CovidSafe.Entities.Validation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Region property is null or empty..
         /// </summary>
-        internal static string NullRegion {
+        public static string NullRegion {
             get {
                 return ResourceManager.GetString("NullRegion", resourceCulture);
             }

@@ -18,7 +18,7 @@ namespace CovidSafe.Entities.Protos
                 foreach(MessageInfo info in this.RequestedQueries)
                 {
                     // Use Validate() method in MessageInfo
-                    result.AddRange(info.Validate());
+                    result.Combine(info.Validate());
                 }
             }
 

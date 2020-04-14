@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,32 +70,20 @@ namespace CovidSafe.API.Controllers.MessageControllers
             // Get server timestamp at request immediately
             long serverTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            // Validate inputs
-            if (request == null || request.ClientTimestamp < 0 || request.Region == null || request.Seeds.Count() == 0)
+            try
+            {
+                await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
+                return Ok();
+            }
+            catch (ValidationFailedException ex)
+            {
+                // Only return validation results
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
             {
                 return BadRequest();
             }
-
-            // Validate seed formats (can they parse to Guid?)
-            foreach(BlueToothSeed seed in request.Seeds)
-            {
-                Guid output;
-                if(!Guid.TryParse(seed.Seed, out output))
-                {
-                    return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
-                }
-            }
-
-            //TODO: add proper region validation
-            //TODO: remove precision limitation
-            if (request.Region.Precision != 4)
-            {
-                return BadRequest("Only precision 4 is supported for insertion temporarily");
-            }
-
-            await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
-
-            return Ok();
         }
     }
 }

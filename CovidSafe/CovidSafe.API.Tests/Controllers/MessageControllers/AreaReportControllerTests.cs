@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers.MessageControllers;
+using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
 using Microsoft.AspNetCore.Http;
@@ -27,17 +28,24 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// </summary>
         private AreaReportController _controller;
         /// <summary>
-        /// Mock <see cref="IMessageService"/>
+        /// Mock <see cref="IMatchMessageRepository"/> instance
         /// </summary>
-        private Mock<IMessageService> _service;
+        private Mock<IMatchMessageRepository> _repo;
+        /// <summary>
+        /// <see cref="MessageService"/> instance
+        /// </summary>
+        private MessageService _service;
 
         /// <summary>
         /// Creates a new <see cref="AreaReportControllerTests"/> instance
         /// </summary>
         public AreaReportControllerTests()
         {
-            // Configure service object
-            this._service = new Mock<IMessageService>();
+            // Configure repo mock
+            this._repo = new Mock<IMatchMessageRepository>();
+
+            // Configure service
+            this._service = new MessageService(this._repo.Object);
 
             // Create HttpContext mock
             this._context = new Mock<HttpContext>();
@@ -49,17 +57,17 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
 
             // Configure controller
-            this._controller = new AreaReportController(this._service.Object);
+            this._controller = new AreaReportController(this._service);
             this._controller.ControllerContext = new ControllerContext(actionContext);
         }
 
         /// <summary>
         /// <see cref="AreaReportController.PutAsync(AreaMatch, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> when no <see cref="Area"/> objects are provided 
+        /// returns <see cref="BadRequestObjectResult"/> when no <see cref="Area"/> objects are provided 
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadRequestWithNoAreas()
+        public async Task PutAsync_BadRequestObjectWithNoAreas()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch
@@ -73,12 +81,12 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
         }
 
         /// <summary>
         /// <see cref="AreaReportController.PutAsync(AreaMatch, CancellationToken)"/> 
-        /// returns <see cref="BadRequestResult"/> when no user message is specified
+        /// returns <see cref="BadRequestObjectResult"/> when no user message is specified
         /// </summary>
         [TestMethod]
         public async Task PutAsync_BadRequestWithNoUserMessage()
@@ -103,7 +111,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestResult));
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
         }
 
         /// <summary>

@@ -1,7 +1,4 @@
-﻿using System;
-
-using CovidSafe.Entities.Validation;
-using CovidSafe.Entities.Validation.Resources;
+﻿using CovidSafe.Entities.Validation;
 
 namespace CovidSafe.Entities.Protos
 {
@@ -15,46 +12,13 @@ namespace CovidSafe.Entities.Protos
         {
             ValidationResult result = new ValidationResult();
 
-            // Seed must be GUID/UUID type
-            Guid output;
-            if(!Guid.TryParse(this.Seed, out output))
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.Seed),
-                    ValidationMessages.InvalidSeed,
-                    this.Seed
-                );
-            }
+            // Seed validation
+            result.Combine(Validator.ValidateSeed(this.Seed, nameof(this.Seed)));
+
             // Ensure times are valid
-            if(this.SequenceEndTime < 0)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.SequenceEndTime),
-                    ValidationMessages.InvalidTimestamp,
-                    this.SequenceEndTime.ToString()
-                );
-            }
-            if(this.SequenceStartTime < 0)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.SequenceStartTime),
-                    ValidationMessages.InvalidTimestamp,
-                    this.SequenceStartTime.ToString()
-                );
-            }
-            if(this.SequenceStartTime > this.SequenceEndTime)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    ValidationProperty.Multiple,
-                    ValidationMessages.InvalidStartEndTimeSequence,
-                    this.SequenceStartTime.ToString(),
-                    this.SequenceEndTime.ToString()
-                );
-            }
+            result.Combine(Validator.ValidateTimestamp(this.SequenceStartTime, nameof(this.SequenceStartTime)));
+            result.Combine(Validator.ValidateTimestamp(this.SequenceEndTime, nameof(this.SequenceEndTime)));
+            result.Combine(Validator.ValidateTimeRange(this.SequenceStartTime, this.SequenceEndTime));
 
             return result;
         }

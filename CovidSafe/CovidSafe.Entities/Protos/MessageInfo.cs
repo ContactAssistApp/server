@@ -1,7 +1,4 @@
-﻿using System;
-
-using CovidSafe.Entities.Validation;
-using CovidSafe.Entities.Validation.Resources;
+﻿using CovidSafe.Entities.Validation;
 
 namespace CovidSafe.Entities.Protos
 {
@@ -15,27 +12,11 @@ namespace CovidSafe.Entities.Protos
         {
             ValidationResult result = new ValidationResult();
 
-            // MessageId must be a GUID/UUID
-            Guid output;
-            if(!Guid.TryParse(this.MessageId, out output))
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.MessageId),
-                    ValidationMessages.InvalidGuid,
-                    this.MessageId
-                );
-            }
+            // MessageId validation
+            result.Combine(Validator.ValidateGuid(this.MessageId, nameof(this.MessageId)));
+
             // Timestamp validation
-            if(this.MessageTimestamp < 0)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.MessageTimestamp),
-                    ValidationMessages.InvalidTimestamp,
-                    this.MessageTimestamp.ToString()
-                );
-            }
+            result.Combine(Validator.ValidateTimestamp(this.MessageTimestamp, nameof(this.MessageTimestamp)));
 
             return result;
         }

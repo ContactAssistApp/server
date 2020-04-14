@@ -28,20 +28,12 @@ namespace CovidSafe.Entities.Protos
                 foreach(BlueToothSeed seed in this.Seeds)
                 {
                     // Use BlueToothSeed.Validate()
-                    result.AddRange(seed.Validate());
+                    result.Combine(seed.Validate());
                 }
             }
 
             // Validate timestamp
-            if(this.ClientTimestamp < 0)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.ClientTimestamp),
-                    ValidationMessages.InvalidTimestamp,
-                    this.ClientTimestamp.ToString()
-                );
-            }
+            result.Combine(Validator.ValidateTimestamp(this.ClientTimestamp, nameof(this.ClientTimestamp)));
 
             // Validate Region
             if(this.Region == null)
@@ -55,7 +47,7 @@ namespace CovidSafe.Entities.Protos
             else
             {
                 // Use Region.Validate()
-                result.AddRange(this.Region.Validate());
+                result.Combine(this.Region.Validate());
             }
 
             return result;

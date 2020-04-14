@@ -13,19 +13,23 @@ namespace CovidSafe.Entities.Protos
         {
             ValidationResult result = new ValidationResult();
 
-            // Timestamp must be greater than zero
-            if(this.LastQueryTime < 0)
+            // Validate timestamp
+            result.Combine(Validator.ValidateTimestamp(this.LastQueryTime, nameof(this.LastQueryTime)));
+
+            // Validate region
+            if(this.Region == null)
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.LastQueryTime),
-                    ValidationMessages.InvalidTimestamp,
-                    this.LastQueryTime.ToString()
+                    ValidationIssue.InputNull,
+                    nameof(this.Region),
+                    ValidationMessages.NullRegion
                 );
             }
-
-            // Use validation method from Region
-            result.AddRange(this.Region.Validate());
+            else
+            {
+                // Use Region.Validate()
+                result.Combine(this.Region.Validate());
+            }
 
             return result;
         }

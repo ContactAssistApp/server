@@ -23,28 +23,9 @@ namespace CovidSafe.Entities.Protos
             ValidationResult result = new ValidationResult();
 
             // Check if lat/lng are in expected values
-            if(this.LatitudePrefix > Location.MAX_LATITUDE || this.LatitudePrefix < Location.MIN_LATITUDE)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.LatitudePrefix),
-                    ValidationMessages.InvalidLatitude,
-                    this.LatitudePrefix.ToString(),
-                    Location.MIN_LATITUDE.ToString(),
-                    Location.MAX_LATITUDE.ToString()
-                );
-            }
-            if (this.LongitudePrefix > Location.MAX_LONGITUDE || this.LongitudePrefix < Location.MIN_LONGITUDE)
-            {
-                result.Fail(
-                    ValidationIssue.InputInvalid,
-                    nameof(this.LongitudePrefix),
-                    ValidationMessages.InvalidLongitude,
-                    this.LongitudePrefix.ToString(),
-                    Location.MIN_LONGITUDE.ToString(),
-                    Location.MAX_LONGITUDE.ToString()
-                );
-            }
+            result.Combine(Validator.ValidateLatitude(this.LatitudePrefix, nameof(this.LatitudePrefix)));
+            result.Combine(Validator.ValidateLongitude(this.LongitudePrefix, nameof(this.LongitudePrefix)));
+
             // Validate precision
             if(this.Precision < MIN_PRECISION || this.Precision > MAX_PRECISION)
             {

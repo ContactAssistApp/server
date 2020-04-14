@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EmptyAreas" xml:space="preserve">
+    <value>No areas provided in collection.</value>
+    <comment>Areas collection was empty.</comment>
+  </data>
   <data name="EmptyMessage" xml:space="preserve">
     <value>MatchMessage does not contain any AreaMatches or BluetoothMatches.</value>
     <comment>MatchMessage must have at least one of AreaMatch or BluetoothMatch to be valid.</comment>

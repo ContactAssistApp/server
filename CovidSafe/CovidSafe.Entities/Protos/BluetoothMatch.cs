@@ -18,7 +18,7 @@ namespace CovidSafe.Entities.Protos
                 foreach(BlueToothSeed seed in this.Seeds)
                 {
                     // Use Validate() from BlueToothSeed
-                    result.AddRange(seed.Validate());
+                    result.Combine(seed.Validate());
                 }
             }
 
