@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,28 +62,24 @@ namespace CovidSafe.API.Controllers
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
         {
-            // Validate inputs
-            if(request == null || request.RequestedQueries.Count == 0)
+            try
+            {
+                // Fetch and return results
+                return Ok(
+                    await this._messageService.GetByIdsAsync(
+                        request.RequestedQueries.Select(r => r.MessageId), cancellationToken
+                    )
+                );
+            }
+            catch(ValidationFailedException ex)
+            {
+                // Only return validation results
+                return BadRequest(ex.ValidationResult);
+            }
+            catch(ArgumentNullException)
             {
                 return BadRequest();
             }
-            
-            // Check if query IDs are valid
-            foreach(MessageInfo info in request.RequestedQueries)
-            {
-                Guid output;
-                if(!Guid.TryParse(info.MessageId, out output))
-                {
-                    return BadRequest();
-                }
-            }
-
-            // Get and return results
-            return Ok(
-                await this._messageService.GetByIdsAsync(
-                    request.RequestedQueries.Select(r => r.MessageId), cancellationToken
-                )
-            );
         }
 
         /// <summary>

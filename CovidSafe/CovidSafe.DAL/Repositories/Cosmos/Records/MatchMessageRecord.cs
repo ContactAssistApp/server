@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 
 using CovidSafe.DAL.Helpers;
-using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Protos;
 using Newtonsoft.Json;
 
@@ -58,7 +57,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <summary>
         /// Generates a new Partition Key value for the record
         /// </summary>
-        /// <returns><see cref="PartitionKey"/></returns>
+        /// <returns>Partition Key value</returns>
         public static string GetPartitionKey(Region region)
         {
             int lat = (int)PrecisionHelper.Round(region.LatitudePrefix, 0);
