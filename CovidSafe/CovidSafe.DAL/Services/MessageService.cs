@@ -79,19 +79,28 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
+        public async Task PublishAreaAsync(AreaMatch areaMatch, CancellationToken cancellationToken = default)
         {
-            if (areas == null)
+            // Validate inputs
+            if (areaMatch == null)
             {
-                throw new ArgumentNullException(nameof(areas));
+                throw new ArgumentNullException(nameof(areaMatch));
+            }
+            if (areaMatch.Areas.Count() == 0)
+            {
+                throw new ArgumentNullException(nameof(areaMatch.Areas));
+            }
+            if (String.IsNullOrEmpty(areaMatch.UserMessage))
+            {
+                throw new ArgumentNullException(nameof(areaMatch.UserMessage));
             }
 
             // Build a MatchMessage containing the submitted areas
             MatchMessage message = new MatchMessage();
-            message.AreaMatches.Add(areas);
+            message.AreaMatches.Add(areaMatch);
 
             // Define a regions for the published message
-            IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(areas.Areas, this.RegionPrecision);
+            IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(areaMatch.Areas, this.RegionPrecision);
 
             // Publish
             await this._messageRepo.InsertAsync(message, messageRegions, cancellationToken);
@@ -100,6 +109,7 @@ namespace CovidSafe.DAL.Services
         /// <inheritdoc/>
         public async Task<string> PublishAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
         {
+            // Validate inputs
             if(message == null)
             {
                 throw new ArgumentNullException(nameof(message));
@@ -107,6 +117,10 @@ namespace CovidSafe.DAL.Services
             if (region == null)
             {
                 throw new ArgumentNullException(nameof(region));
+            }
+            if(message.AreaMatches.Count == 0 && message.BluetoothMatches.Count == 0)
+            {
+                throw new ArgumentNullException("Must specify at least one AreaMatch OR BlueToothSeed.");
             }
 
             // Push to upstream data repository
@@ -116,6 +130,7 @@ namespace CovidSafe.DAL.Services
         /// <inheritdoc/>
         public async Task<string> PublishAsync(SelfReportRequest request, long timeAtRequest, CancellationToken cancellationToken = default)
         {
+            // Validate inputs
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
@@ -124,8 +139,6 @@ namespace CovidSafe.DAL.Services
             {
                 throw new ArgumentOutOfRangeException(nameof(timeAtRequest));
             }
-
-            // Validate request data
             foreach(BlueToothSeed seed in request.Seeds)
             {
                 Guid parsedSeed;
