@@ -15,7 +15,10 @@
 
   <ItemGroup>
     <Folder Include="Protos\" />
-    <Folder Include="Validation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CovidSafe.Entities\CovidSafe.Entities.csproj" />
   </ItemGroup>
 
 </Project>

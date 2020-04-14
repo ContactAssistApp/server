@@ -149,30 +149,6 @@ namespace CovidSafe.DAL.Tests.Services
 
         /// <summary>
         /// <see cref="MessageService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentOutOfRangeException"/> with invalid 'lastTimestamp' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public async Task GetLatestInfoAsync_ArgumentOutOfRangeOnInvalidTimestamp()
-        {
-            // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
-
-            // Act
-            IEnumerable<MessageInfo> result = await this._service
-                .GetLatestInfoAsync(region, -1, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with empty 'ids' parameter
         /// </summary>
         [TestMethod]
@@ -252,30 +228,6 @@ namespace CovidSafe.DAL.Tests.Services
 
         /// <summary>
         /// <see cref="MessageService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentOutOfRangeException"/> with invalid 'lastTimestamp' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public async Task GetLatestRegionDataSizeAsync_ArgumentOutOfRangeOnInvalidTimestamp()
-        {
-            // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
-
-            // Act
-            long result = await this._service
-                .GetLatestRegionDataSizeAsync(region, -1, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/> 
         /// returns a size of type <see cref="long"/>
         /// </summary>
         [TestMethod]
@@ -298,56 +250,6 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Assert
             Assert.AreEqual(expectedResult, result);
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAreaAsync(AreaMatch, CancellationToken)"/> 
-        /// throws <see cref="ArgumentNullException"/> with null 'areas' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task PublishAreaAsync_ArgumentNullOnEmptyAreas()
-        {
-            // Arrange
-            AreaMatch request = new AreaMatch();
-            request.UserMessage = "Test user message";
-
-            // Act
-            await this._service
-                .PublishAreaAsync(request, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAreaAsync(AreaMatch, CancellationToken)"/> 
-        /// throws <see cref="ArgumentNullException"/> with null 'UserMessage' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task PublishAreaAsync_ArgumentNullOnEmptyUserMessage()
-        {
-            // Arrange
-            AreaMatch request = new AreaMatch();
-            request.Areas.Add(new Area
-            {
-                BeginTime = 0,
-                EndTime = 1,
-                Location = new Location
-                {
-                    Latitude = 10.1234,
-                    Longitude = -10.1234
-                },
-                RadiusMeters = 100
-            });
-
-            // Act
-            await this._service
-                .PublishAreaAsync(request, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
         }
 
         /// <summary>
@@ -400,78 +302,6 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Assert
             // No exceptions thrown
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAsync(SelfReportRequest, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentException"/> when 'sequenceEndTime' is earlier than 
-        /// 'sequenceStartTime'
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public async Task PublishAsync_ArgumentExceptionOnEndTimeEarlierThanStartTime()
-        {
-            // Arrange
-            SelfReportRequest request = new SelfReportRequest
-            {
-                ClientTimestamp = 0,
-                Region = new Region
-                {
-                    LatitudePrefix = 10.1234,
-                    LongitudePrefix = -10.1234,
-                    Precision = 4
-                }
-            };
-            request.Seeds.Add(new BlueToothSeed
-            {
-                EstimatedSkew = 0,
-                Seed = "00000000-0000-0000-0000-000000000000",
-                SequenceEndTime = 0,
-                SequenceStartTime = 1
-            });
-
-            // Act
-            string result = await this._service
-                .PublishAsync(request, 0, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAsync(SelfReportRequest, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentException"/> when 'sequenceEndTime' is earlier than 
-        /// 'sequenceStartTime'
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public async Task PublishAsync_ArgumentExceptionOnInvalidSeedFormat()
-        {
-            // Arrange
-            SelfReportRequest request = new SelfReportRequest
-            {
-                ClientTimestamp = 0,
-                Region = new Region
-                {
-                    LatitudePrefix = 10.1234,
-                    LongitudePrefix = -10.1234,
-                    Precision = 4
-                }
-            };
-            request.Seeds.Add(new BlueToothSeed
-            {
-                EstimatedSkew = 0,
-                Seed = "Not a valid seed!",
-                SequenceEndTime = 1,
-                SequenceStartTime = 0
-            });
-
-            // Act
-            string result = await this._service
-                .PublishAsync(request, 0, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
         }
 
         /// <summary>
@@ -546,32 +376,6 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="MessageService.PublishAsync(MatchMessage, Region, CancellationToken)"/> 
-        /// throws <see cref="ArgumentNullException"/> when <see cref="BlueToothSeed"/> AND 
-        /// <see cref="AreaMatch"/> are null
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task PublishAsync_ArgumentNullOnNullAreasAndSeeds()
-        {
-            // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
-            MatchMessage request = new MatchMessage();
-
-            // Act
-            string result = await this._service
-                .PublishAsync(request, region, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
         /// <see cref="MessageService.PublishAsync(SelfReportRequest, long, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with null 'request' parameter
         /// </summary>
@@ -585,111 +389,6 @@ namespace CovidSafe.DAL.Tests.Services
             // Act
             string result = await this._service
                 .PublishAsync(null, 0, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAsync(SelfReportRequest, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentOutOfRangeException"/> with invalid 'sequenceEndTime' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public async Task PublishAsync_ArgumentOutOfRangeOnInvalidSequenceEndTime()
-        {
-            // Arrange
-            SelfReportRequest request = new SelfReportRequest
-            {
-                ClientTimestamp = 0,
-                Region = new Region
-                {
-                    LatitudePrefix = 10.1234,
-                    LongitudePrefix = -10.1234,
-                    Precision = 4
-                }
-            };
-            request.Seeds.Add(new BlueToothSeed
-            {
-                EstimatedSkew = 0,
-                Seed = "00000000-0000-0000-0000-000000000000",
-                SequenceEndTime = -1,
-                SequenceStartTime = 0
-            });
-
-            // Act
-            string result = await this._service
-                .PublishAsync(request, 0, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAsync(SelfReportRequest, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentOutOfRangeException"/> with invalid 'sequenceStartTime' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public async Task PublishAsync_ArgumentOutOfRangeOnInvalidSequenceStartTime()
-        {
-            // Arrange
-            SelfReportRequest request = new SelfReportRequest
-            {
-                ClientTimestamp = 0,
-                Region = new Region
-                {
-                    LatitudePrefix = 10.1234,
-                    LongitudePrefix = -10.1234,
-                    Precision = 4
-                }
-            };
-            request.Seeds.Add(new BlueToothSeed
-            {
-                EstimatedSkew = 0,
-                Seed = "00000000-0000-0000-0000-000000000000",
-                SequenceEndTime = 0,
-                SequenceStartTime = -1
-            });
-
-            // Act
-            string result = await this._service
-                .PublishAsync(request, 0, CancellationToken.None);
-
-            // Assert
-            // Exception caught by decorator
-        }
-
-        /// <summary>
-        /// <see cref="MessageService.PublishAsync(SelfReportRequest, long, CancellationToken)"/> 
-        /// throws <see cref="ArgumentOutOfRangeException"/> with invalid 'timeAtRequest' parameter
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public async Task PublishAsync_ArgumentOutOfRangeOnInvalidTimeAtRequest()
-        {
-            // Arrange
-            SelfReportRequest request = new SelfReportRequest
-            {
-                ClientTimestamp = 0,
-                Region = new Region
-                {
-                    LatitudePrefix = 10.1234,
-                    LongitudePrefix = -10.1234,
-                    Precision = 4
-                }
-            };
-            request.Seeds.Add(new BlueToothSeed
-            {
-                EstimatedSkew = 0,
-                Seed = "00000000-0000-0000-0000-000000000000",
-                SequenceEndTime = 1,
-                SequenceStartTime = 0
-            });
-
-            // Act
-            string result = await this._service
-                .PublishAsync(request, -1, CancellationToken.None);
 
             // Assert
             // Exception caught by decorator

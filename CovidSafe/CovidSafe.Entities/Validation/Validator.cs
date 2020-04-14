@@ -71,7 +71,7 @@ namespace CovidSafe.Entities.Validation
             ValidationResult result = new ValidationResult();
 
             // Must be within range
-            if (longitude > Location.MAX_LATITUDE || longitude < Location.MIN_LATITUDE)
+            if (longitude > Location.MAX_LONGITUDE || longitude < Location.MIN_LONGITUDE)
             {
                 result.Fail(
                     ValidationIssue.InputInvalid,
