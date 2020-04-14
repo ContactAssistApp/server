@@ -59,7 +59,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadResultRequestWithInvalidClientTimestamp()
+        public async Task PutAsync_BadResultWithInvalidClientTimestamp()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -95,7 +95,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadResultRequestWithInvalidSeed()
+        public async Task PutAsync_BadResultWithInvalidSeed()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -131,7 +131,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadResultRequestWithNoRegion()
+        public async Task PutAsync_BadResultWithNoRegion()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -161,7 +161,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadResultRequestWithNoSeeds()
+        public async Task PutAsync_BadResultWithNoSeeds()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -189,7 +189,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkResult"/> with valid input data
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_OkResultWithValidInputs()
+        public async Task PutAsync_OkWithValidInputs()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest

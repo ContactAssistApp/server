@@ -60,7 +60,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// returns a <see cref="OkResult"/>
         /// </summary>
         [TestMethod]
-        public void HeadAsync_AlwaysReturnsOkResult()
+        public void HeadAsync_OkResultAlways()
         {
             // Arrange
             // N/A
@@ -80,7 +80,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with invalid parameters
         /// </summary>
         [TestMethod]
-        public async Task PostAsync_BadRequestResultWithInvalidParams()
+        public async Task PostAsync_BadRequestWithInvalidParams()
         {
             // Arrange
             MessageRequest request = new MessageRequest();
@@ -104,7 +104,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with null parameters
         /// </summary>
         [TestMethod]
-        public async Task PostAsync_BadRequestResultWithNullParams()
+        public async Task PostAsync_BadRequestWithNullParams()
         {
             // Arrange
             MessageRequest request = new MessageRequest(); // Empty request
@@ -123,7 +123,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]
-        public async Task PostAsync_EmptyOkObjectResultWithUnmatchedParams()
+        public async Task PostAsync_EmptyOkWithUnmatchedParams()
         {
             // Arrange
             MessageRequest request = new MessageRequest();
@@ -156,7 +156,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with matched parameters
         /// </summary>
         [TestMethod]
-        public async Task PostAsync_OkObjectResultWithMatchedParameters()
+        public async Task PostAsync_OkWithMatchedParameters()
         {
             // Arrange
             IEnumerable<string> ids = new string[]
@@ -206,7 +206,7 @@ namespace CovidSafe.API.Tests.Controllers
         /// with partially matched parameters
         /// </summary>
         [TestMethod]
-        public async Task PostAsync_OkObjectResultWithPartiallyMatchedParameters()
+        public async Task PostAsync_OkWithPartiallyMatchedParameters()
         {
             // Arrange
             IEnumerable<string> ids = new string[]

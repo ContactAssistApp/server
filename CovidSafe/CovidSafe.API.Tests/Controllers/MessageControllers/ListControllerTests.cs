@@ -60,7 +60,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with invalid timestamp
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestResultWithInvalidTimestamp()
+        public async Task GetAsync_BadRequestWithInvalidTimestamp()
         {
             // Arrange
             // N/A
@@ -80,7 +80,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestResultWithTooHighLatitude()
+        public async Task GetAsync_BadRequestWithTooHighLatitude()
         {
             // Arrange
             // N/A
@@ -100,7 +100,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too high Longitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestResultWithTooHighLongitude()
+        public async Task GetAsync_BadRequestWithTooHighLongitude()
         {
             // Arrange
             // N/A
@@ -120,7 +120,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too high Latitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestResultWithTooLowLatitude()
+        public async Task GetAsync_BadRequestWithTooLowLatitude()
         {
             // Arrange
             // N/A
@@ -140,7 +140,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> with too low Longitude
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_BadRequestResultWithTooLowLongitude()
+        public async Task GetAsync_BadRequestWithTooLowLongitude()
         {
             // Arrange
             // N/A
@@ -160,7 +160,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkObjectResult"/> with matched parameters
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_OkObjectResultWithMatchedParams()
+        public async Task GetAsync_OkWithMatchedParams()
         {
             // Arrange
             Region requestedRegion = new Region
@@ -212,7 +212,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]
-        public async Task GetAsync_OkObjectResultWithUnmatchedParams()
+        public async Task GetAsync_EmptyOkWithUnmatchedParams()
         {
             // Arrange
             // N/A; empty service layer response will produce no results by default

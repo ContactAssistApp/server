@@ -59,7 +59,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadResultRequestWithNoAreas()
+        public async Task PutAsync_BadRequestWithNoAreas()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch
@@ -81,7 +81,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="BadRequestResult"/> when no user message is specified
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadResultRequestWithNoUserMessage()
+        public async Task PutAsync_BadRequestWithNoUserMessage()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch();
@@ -111,7 +111,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         /// returns <see cref="OkResult"/> with valid input data
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_OkResultWithValidInputs()
+        public async Task PutAsync_OkWithValidInputs()
         {
             // Arrange
             AreaMatch requestObj = new AreaMatch

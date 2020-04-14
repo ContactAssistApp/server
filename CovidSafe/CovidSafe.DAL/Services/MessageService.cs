@@ -79,22 +79,6 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> PublishAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
-        {
-            if(message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-            if (region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
-
-            // Push to upstream data repository
-            return await this._messageRepo.InsertAsync(message, region, cancellationToken);
-        }
-
-        /// <inheritdoc/>
         public async Task PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
         {
             if (areas == null)
@@ -114,11 +98,60 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
+        public async Task<string> PublishAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
+        {
+            if(message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+
+            // Push to upstream data repository
+            return await this._messageRepo.InsertAsync(message, region, cancellationToken);
+        }
+
+        /// <inheritdoc/>
         public async Task<string> PublishAsync(SelfReportRequest request, long timeAtRequest, CancellationToken cancellationToken = default)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
+            }
+            if(timeAtRequest < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(timeAtRequest));
+            }
+
+            // Validate request data
+            foreach(BlueToothSeed seed in request.Seeds)
+            {
+                Guid parsedSeed;
+                if(!Guid.TryParse(seed.Seed, out parsedSeed))
+                {
+                    throw new ArgumentException(String.Format("{0} is not a valid seed (GUID/UUID).", seed.Seed));
+                }
+                if(seed.SequenceEndTime < 0 || seed.SequenceStartTime < 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        String.Format(
+                            "{0} is not a valid timestamp.",
+                            Math.Min(seed.SequenceEndTime, seed.SequenceStartTime)
+                        )
+                    );
+                }
+                if(seed.SequenceEndTime < seed.SequenceStartTime)
+                {
+                    throw new ArgumentException(
+                        String.Format(
+                            "Sequence end timestamp ({0}) cannot be earlier than Sequence Start timestamp ({1})",
+                            seed.SequenceEndTime,
+                            seed.SequenceStartTime
+                        )
+                    );
+                }
             }
 
             // Determine estimated skew
