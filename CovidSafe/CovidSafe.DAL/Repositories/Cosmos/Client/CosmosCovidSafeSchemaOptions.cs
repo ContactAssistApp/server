@@ -13,6 +13,10 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
         /// </summary>
         public string DatabaseName { get; set; }
         /// <summary>
+        /// Maximum age of data to return in queries, in number of days
+        /// </summary>
+        public int MaxDataAgeToReturnDays { get; set; }
+        /// <summary>
         /// Name of <see cref="Container"/> used to store <see cref="MatchMessage"/> objects
         /// </summary>
         public string MessageContainerName { get; set; }
