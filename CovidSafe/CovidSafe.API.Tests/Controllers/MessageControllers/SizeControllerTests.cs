@@ -1,14 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using CovidSafe.API.v1.Controllers.MessageControllers;
+using CovidSafe.API.Controllers.MessageControllers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
-using CovidSafe.Entities.Protos.Deprecated.v1;
+using CovidSafe.Entities.Protos.Deprecated;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

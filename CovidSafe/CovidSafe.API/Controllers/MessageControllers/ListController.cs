@@ -11,15 +11,15 @@ using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.v1.Controllers.MessageControllers
+namespace CovidSafe.API.Controllers.MessageControllers
 {
     /// <summary>
     /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
     [ApiController]
-    [ApiVersion("1", Deprecated = true)]
-    [ApiVersion("1.1")]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
+    [Route("api/Messages/[controller]")]
     public class ListController : ControllerBase
     {
         /// <summary>
@@ -111,7 +111,7 @@ namespace CovidSafe.API.v1.Controllers.MessageControllers
         /// Total size of matching <see cref="MatchMessage"/> objects (via Content-Type header), in bytes, based 
         /// on their size when converted to the Protobuf format
         /// </returns>
-        [ApiVersion("1.1")]
+        [ApiVersion("2020-04-15")]
         [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]

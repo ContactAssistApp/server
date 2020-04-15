@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,16 +8,16 @@ using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.v1.Controllers.MessageControllers
+namespace CovidSafe.API.Controllers.MessageControllers
 {
     /// <summary>
-    /// Handles requests for infected clients volunteering <see cref="AreaMatch"/> identifiers
+    /// Handles requests for infected clients volunteering <see cref="BlueToothSeed"/> identifiers
     /// </summary>
-    [ApiVersion("1", Deprecated = true)]
-    [ApiVersion("1.1")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
-    public class AreaReportController : ControllerBase
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
+    [Route("api/Messages/[controller]")]
+    public class SeedReportController : ControllerBase
     {
         /// <summary>
         /// <see cref="MatchMessage"/> service layer
@@ -26,37 +25,39 @@ namespace CovidSafe.API.v1.Controllers.MessageControllers
         private IMessageService _messageService;
 
         /// <summary>
-        /// Creates a new <see cref="AreaReportController"/> instance
+        /// Creates a new <see cref="SeedReportController"/> instance
         /// </summary>
         /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
-        public AreaReportController(IMessageService messageService)
+        public SeedReportController(IMessageService messageService)
         {
             // Assign local values
             this._messageService = messageService;
         }
 
         /// <summary>
-        /// Publish a <see cref="AreaMatch"/> for distribution among devices
+        /// Publish a <see cref="SelfReportRequest"/> for distribution among devices relevant to 
+        /// <see cref="Region"/>
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /Messages/AreaReport
+        ///     PUT /Messages/SeedReport
         ///     {
-        ///         "userMessage": "Monitor symptoms for one week.",
-        ///         "areas": [{
-        ///             "location": {
-        ///                 "latitude": 74.12345,
-        ///                 "longitude": -39.12345
-        ///             },
-        ///             "radiusMeters": 100,
-        ///             "beginTime": 1586083599,
-        ///             "endTime": 1586085189
-        ///         }]
+        ///         "seeds": [{
+        ///             "seed": "00000000-0000-0000-0000-000000000000",
+        ///             "sequenceStartTime": 1586406048649,
+        ///             "sequenceEndTime": 1586408048649
+        ///         }],
+        ///         "region": {
+        ///             "latitudePrefix": 74.12,
+        ///             "longitudePrefix": -39.12,
+        ///             "precision": 2
+        ///         },
+        ///         "clientTimestamp": 1586409048649
         ///     }
         ///
         /// </remarks>
-        /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
+        /// <param name="request"><see cref="SelfReportRequest"/> content</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Submission successful</response>
         /// <response code="400">Malformed or invalid request</response>
@@ -65,17 +66,19 @@ namespace CovidSafe.API.v1.Controllers.MessageControllers
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync([Required] AreaMatch request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> PutAsync(SelfReportRequest request, CancellationToken cancellationToken = default)
         {
+            // Get server timestamp at request immediately
+            long serverTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
             try
             {
-                // Publish area
-                await this._messageService.PublishAreaAsync(request, cancellationToken);
+                await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
                 return Ok();
             }
             catch (ValidationFailedException ex)
             {
-                // Only return validation issues
+                // Only return validation results
                 return BadRequest(ex.ValidationResult);
             }
             catch (ArgumentNullException)

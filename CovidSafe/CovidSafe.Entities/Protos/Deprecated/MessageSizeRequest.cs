@@ -2,7 +2,7 @@
 using CovidSafe.Entities.Validation.Resources;
 
 #pragma warning disable CS1591, CS0612, CS3021, IDE1006
-namespace CovidSafe.Entities.Protos.Deprecated.v1
+namespace CovidSafe.Entities.Protos.Deprecated
 {
     [global::ProtoBuf.ProtoContract()]
     public partial class MessageSizeRequest : global::ProtoBuf.IExtensible
