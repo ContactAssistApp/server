@@ -164,7 +164,7 @@ namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
         /// returns <see cref="OkObjectResult"/> with matched parameters
         /// </summary>
         [TestMethod]
@@ -216,7 +216,7 @@ namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// <see cref="SizeController.GetAsync(double, double, int, long, CancellationToken)"/> 
+        /// <see cref="ListController.GetAsync(double, double, int, long, CancellationToken)"/> 
         /// returns <see cref="OkObjectResult"/> with unmatched parameters
         /// </summary>
         [TestMethod]

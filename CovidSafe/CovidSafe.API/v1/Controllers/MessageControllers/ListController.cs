@@ -89,5 +89,54 @@ namespace CovidSafe.API.v1.Controllers.MessageControllers
                 return BadRequest();
             }
         }
+
+        /// <summary>
+        /// Get total size of <see cref="MatchMessage"/> objects for a <see cref="Region"/> based 
+        /// on the provided parameters when using application/x-protobuf
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     HEAD /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0
+        ///     
+        /// </remarks>
+        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
+        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
+        /// <param name="precision">Precision of desired <see cref="Region"/></param>
+        /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
+        /// <response code="200">Successful request</response>
+        /// <response code="400">Malformed or invalid request provided</response>
+        /// <returns>
+        /// Total size of matching <see cref="MatchMessage"/> objects (via Content-Type header), in bytes, based 
+        /// on their size when converted to the Protobuf format
+        /// </returns>
+        [ApiVersion("1.1")]
+        [HttpHead]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<ActionResult> HeadAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // Pull queries matching parameters
+                var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+                long size = await this._messageService
+                    .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
+
+                // Set Content-Length header with calculated size
+                Response.ContentLength = size;
+
+                return Ok();
+            }
+            catch (ValidationFailedException ex)
+            {
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
