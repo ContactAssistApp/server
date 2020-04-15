@@ -362,8 +362,7 @@ namespace CovidSafe.DAL.Tests.Services
             {
                 Seed = "00000000-0000-0000-0000-000000000000",
                 SequenceEndTime = 1,
-                SequenceStartTime = 0,
-                EstimatedSkew = 1
+                SequenceStartTime = 0
             });
             request.BluetoothMatches.Add(btMatch);
 
@@ -434,8 +433,7 @@ namespace CovidSafe.DAL.Tests.Services
             {
                 Seed = "00000000-0000-0000-0000-000000000000",
                 SequenceEndTime = 1,
-                SequenceStartTime = 0,
-                EstimatedSkew = 1
+                SequenceStartTime = 0
             });
             request.BluetoothMatches.Add(btMatch);
 

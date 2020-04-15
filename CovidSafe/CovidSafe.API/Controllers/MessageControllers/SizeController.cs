@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Protos.Deprecated;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +16,8 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// Handles <see cref="MatchMessage"/> size requests
     /// </summary>
     [ApiController]
-    [ApiVersion("1")]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [Route("api/Messages/[controller]")]
     public class SizeController : ControllerBase
     {
         /// <summary>

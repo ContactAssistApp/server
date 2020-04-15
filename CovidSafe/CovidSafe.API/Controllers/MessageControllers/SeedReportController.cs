@@ -14,8 +14,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// Handles requests for infected clients volunteering <see cref="BlueToothSeed"/> identifiers
     /// </summary>
     [ApiController]
-    [ApiVersion("1")]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
+    [Route("api/Messages/[controller]")]
     public class SeedReportController : ControllerBase
     {
         /// <summary>

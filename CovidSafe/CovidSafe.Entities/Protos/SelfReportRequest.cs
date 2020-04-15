@@ -32,9 +32,6 @@ namespace CovidSafe.Entities.Protos
                 }
             }
 
-            // Validate timestamp
-            result.Combine(Validator.ValidateTimestamp(this.ClientTimestamp, nameof(this.ClientTimestamp)));
-
             // Validate Region
             if(this.Region == null)
             {
