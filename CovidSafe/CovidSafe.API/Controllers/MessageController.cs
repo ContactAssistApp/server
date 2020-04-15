@@ -55,6 +55,7 @@ namespace CovidSafe.API.Controllers
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]

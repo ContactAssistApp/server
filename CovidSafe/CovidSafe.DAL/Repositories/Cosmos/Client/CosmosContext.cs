@@ -9,12 +9,12 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
     public class CosmosContext
     {
         /// <summary>
-        /// <see cref="IOptionsMonitor{T}"/> reference for <see cref="CosmosCovidSafeSchemaOptions"/>
+        /// <see cref="IOptionsMonitor{T}"/> reference for <see cref="CosmosSchemaConfigurationSection"/>
         /// </summary>
         /// <remarks>
         /// Enables configuration change detection without restarting service
         /// </remarks>
-        private IOptionsMonitor<CosmosCovidSafeSchemaOptions> _schemaConfig { get; set; }
+        private IOptionsMonitor<CosmosSchemaConfigurationSection> _schemaConfig { get; set; }
         /// <summary>
         /// <see cref="CosmosClient"/> instance
         /// </summary>
@@ -24,9 +24,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
         /// </summary>
         public Database Database { get; private set; }
         /// <summary>
-        /// <see cref="CosmosCovidSafeSchemaOptions"/> instance
+        /// <see cref="CosmosSchemaConfigurationSection"/> instance
         /// </summary>
-        public CosmosCovidSafeSchemaOptions SchemaOptions
+        public CosmosSchemaConfigurationSection SchemaOptions
         {
             get
             {
@@ -39,7 +39,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
         /// </summary>
         /// <param name="connectionFactory">Database connection factory instance</param>
         /// <param name="schemaConfig">Schema configuration provider</param>
-        public CosmosContext(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosCovidSafeSchemaOptions> schemaConfig)
+        public CosmosContext(CosmosConnectionFactory connectionFactory, IOptionsMonitor<CosmosSchemaConfigurationSection> schemaConfig)
         {
             // Set local variables
             this._schemaConfig = schemaConfig;
@@ -51,7 +51,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
 
         /// <summary>
         /// Gets a reference to the specified <see cref="Container"/> from the 
-        /// local <see cref="CosmosCovidSafeSchemaOptions"/> instance
+        /// local <see cref="CosmosSchemaConfigurationSection"/> instance
         /// </summary>
         /// <param name="containerName">Target <see cref="Container"/> name</param>
         /// <returns><see cref="Container"/> reference</returns>

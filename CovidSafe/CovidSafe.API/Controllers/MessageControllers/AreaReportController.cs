@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,14 +57,14 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// </remarks>
         /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
+        /// <response code="200">Submission successful</response>
+        /// <response code="400">Malformed or invalid request</response>
         [HttpPut]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(AreaMatch request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> PutAsync([Required] AreaMatch request, CancellationToken cancellationToken = default)
         {
             try
             {
