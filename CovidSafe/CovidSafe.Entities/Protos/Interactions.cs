@@ -7,33 +7,6 @@ namespace CovidSafe.Entities.Protos
 {
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class MessageSizeRequest : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"region")]
-        public Region Region { get; set; }
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"last_query_time")]
-        public long LastQueryTime { get; set; }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class MessageSizeResponse : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"size_of_query_response")]
-        public long SizeOfQueryResponse { get; set; }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
     public partial class MessageListRequest : global::ProtoBuf.IExtensible
     {
         private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -58,8 +31,8 @@ namespace CovidSafe.Entities.Protos
         [global::ProtoBuf.ProtoMember(1, Name = @"message_info")]
         public global::System.Collections.Generic.List<MessageInfo> MessageInfoes { get; } = new global::System.Collections.Generic.List<MessageInfo>();
 
-        [global::ProtoBuf.ProtoMember(2, Name = @"as_of")]
-        public long AsOf { get; set; }
+        [global::ProtoBuf.ProtoMember(2, Name = @"max_response_timestamp")]
+        public long MaxResponseTimestamp { get; set; }
 
     }
 
@@ -122,9 +95,6 @@ namespace CovidSafe.Entities.Protos
 
         [global::ProtoBuf.ProtoMember(2, Name = @"region")]
         public Region Region { get; set; }
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"client_timestamp")]
-        public long ClientTimestamp { get; set; }
 
     }
 
@@ -210,9 +180,6 @@ namespace CovidSafe.Entities.Protos
 
         [global::ProtoBuf.ProtoMember(3, Name = @"sequence_end_time")]
         public long SequenceEndTime { get; set; }
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"estimated_skew")]
-        public long EstimatedSkew { get; set; }
 
     }
 

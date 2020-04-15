@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CovidSafe.API.Controllers.MessageControllers;
+using CovidSafe.API.v1.Controllers.MessageControllers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CovidSafe.API.Tests.Controllers.MessageControllers
+namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
 {
     /// <summary>
     /// Unit Tests for the <see cref="ListController"/> class

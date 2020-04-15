@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using CovidSafe.API.Controllers.MessageControllers;
+using CovidSafe.API.v1.Controllers.MessageControllers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CovidSafe.API.Tests.Controllers.MessageControllers
+namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
 {
     /// <summary>
     /// Unit tests for the <see cref="SeedReportController"/> class
@@ -63,42 +63,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
         /// <summary>
         /// <see cref="SeedReportController.PutAsync(SelfReportRequest, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with invalid Client Timestamp provided 
-        /// with request
-        /// </summary>
-        [TestMethod]
-        public async Task PutAsync_BadRequestObjectWithInvalidClientTimestamp()
-        {
-            // Arrange
-            SelfReportRequest requestObj = new SelfReportRequest
-            {
-                ClientTimestamp = -1,
-                Region = new Region
-                {
-                    LatitudePrefix = 10.1234,
-                    LongitudePrefix = 10.1234,
-                    Precision = 4
-                }
-            };
-            requestObj.Seeds.Add(new BlueToothSeed
-            {
-                EstimatedSkew = 1,
-                Seed = "00000000-0000-0000-0000-000000000000",
-                SequenceEndTime = 1,
-                SequenceStartTime = 0
-            });
-
-            // Act
-            ActionResult controllerResponse = await this._controller
-                .PutAsync(requestObj, CancellationToken.None);
-
-            // Assert
-            Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
-        }
-
-        /// <summary>
-        /// <see cref="SeedReportController.PutAsync(SelfReportRequest, CancellationToken)"/> 
         /// returns <see cref="BadRequestResult"/> with invalid <see cref="BlueToothSeed"/> provided  
         /// with request
         /// </summary>
@@ -108,7 +72,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
             {
-                ClientTimestamp = 0,
                 Region = new Region
                 {
                     LatitudePrefix = 10.1234,
@@ -118,7 +81,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
             requestObj.Seeds.Add(new BlueToothSeed
             {
-                EstimatedSkew = 1,
                 Seed = "Invalid seed format!",
                 SequenceEndTime = 1,
                 SequenceStartTime = 0
@@ -142,13 +104,9 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
         public async Task PutAsync_BadRequestObjectWithNoRegion()
         {
             // Arrange
-            SelfReportRequest requestObj = new SelfReportRequest
-            {
-                ClientTimestamp = 0
-            };
+            SelfReportRequest requestObj = new SelfReportRequest();
             requestObj.Seeds.Add(new BlueToothSeed
             {
-                EstimatedSkew = 1,
                 Seed = "00000000-0000-0000-0000-000000000000",
                 SequenceEndTime = 1,
                 SequenceStartTime = 0
@@ -174,7 +132,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
             {
-                ClientTimestamp = 0,
                 Region = new Region
                 {
                     LatitudePrefix = 10.1234,
@@ -202,7 +159,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
             {
-                ClientTimestamp = 0,
                 Region = new Region
                 {
                     LatitudePrefix = 10.1234,
@@ -212,7 +168,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
             requestObj.Seeds.Add(new BlueToothSeed
             {
-                EstimatedSkew = 10,
                 SequenceEndTime = 1,
                 SequenceStartTime = 0,
                 Seed = "00000000-0000-0000-0000-000000000000"

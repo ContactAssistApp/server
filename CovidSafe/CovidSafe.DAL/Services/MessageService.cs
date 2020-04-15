@@ -182,19 +182,10 @@ namespace CovidSafe.DAL.Services
 
             if(validationResult.Passed)
             {
-                // Determine estimated skew
-                long estSkew = timeAtRequest - request.ClientTimestamp;
-
                 // Build MatchMessage from submitted content
                 MatchMessage message = new MatchMessage();
                 BluetoothMatch matches = new BluetoothMatch();
-
-                // Calculate possible offset for each seed
-                foreach (BlueToothSeed seed in request.Seeds)
-                {
-                    seed.EstimatedSkew = estSkew;
-                    matches.Seeds.Add(seed);
-                }
+                matches.Seeds.AddRange(request.Seeds);
 
                 // Store in data repository
                 message.BluetoothMatches.Add(matches);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,13 +11,14 @@ using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.Controllers.MessageControllers
+namespace CovidSafe.API.v1.Controllers.MessageControllers
 {
     /// <summary>
     /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
     [ApiController]
-    [ApiVersion("1")]
+    [ApiVersion("1", Deprecated = true)]
+    [ApiVersion("1.1")]
     [Route("api/v{version:apiVersion}/Messages/[controller]")]
     public class ListController : ControllerBase
     {
@@ -67,10 +69,14 @@ namespace CovidSafe.API.Controllers.MessageControllers
 
                 // Convert to response proto
                 MessageListResponse response = new MessageListResponse();
-                response.MessageInfoes.AddRange(results);
 
-                // Get current server time
-                response.AsOf = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if(results.Count() > 0)
+                {
+                    response.MessageInfoes.AddRange(results);
+
+                    // Get maximum timestamp from resultset
+                    response.MaxResponseTimestamp = response.MessageInfoes.Max(m => m.MessageTimestamp);
+                }
 
                 return Ok(response);
             }
