@@ -6,7 +6,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
     /// <summary>
     /// Settings object for using Cosmos with the CovidSafe schema
     /// </summary>
-    public class CosmosCovidSafeSchemaOptions
+    public class CosmosSchemaConfigurationSection
     {
         /// <summary>
         /// Cosmos target database name
@@ -22,9 +22,9 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
         public string MessageContainerName { get; set; }
 
         /// <summary>
-        /// Creates a new <see cref="CosmosCovidSafeSchemaOptions"/> instance
+        /// Creates a new <see cref="CosmosSchemaConfigurationSection"/> instance
         /// </summary>
-        public CosmosCovidSafeSchemaOptions()
+        public CosmosSchemaConfigurationSection()
         {
         }
     }

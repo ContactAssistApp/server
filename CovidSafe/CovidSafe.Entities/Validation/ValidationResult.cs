@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
 namespace CovidSafe.Entities.Validation
 {
     /// <summary>
     /// Object validation summary
     /// </summary>
+    [JsonObject]
     public class ValidationResult
     {
         /// <summary>
         /// Tells if the result passed (true if yes, false if no)
         /// </summary>
+        [JsonIgnore]
         public bool Passed
         {
             get
@@ -22,6 +26,7 @@ namespace CovidSafe.Entities.Validation
         /// <summary>
         /// Collection of <see cref="ValidationFailure"/> objects
         /// </summary>
+        [JsonProperty("validationFailures")]
         public List<ValidationFailure> Failures { get; set; } = new List<ValidationFailure>();
 
         /// <summary>

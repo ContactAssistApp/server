@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using CovidSafe.API.Swagger;
@@ -11,10 +13,12 @@ using CovidSafe.DAL.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiContrib.Core.Formatter.Protobuf;
 
@@ -68,8 +72,8 @@ namespace CovidSafe.API
                 )
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Get configuration for data repository
-            services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));
+            // Get configuration sections
+            services.Configure<CosmosSchemaConfigurationSection>(this.Configuration.GetSection("CosmosSchema"));
 
             // Configure data repository implementations
             services.AddTransient(cf => new CosmosConnectionFactory(this.Configuration["CosmosConnection"]));
@@ -96,7 +100,7 @@ namespace CovidSafe.API
             );
 
             // Add Swagger generator
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
             services.AddSwaggerGen(c =>
             {
                 // Set the comments path for the Swagger JSON
@@ -107,7 +111,7 @@ namespace CovidSafe.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -122,7 +126,37 @@ namespace CovidSafe.API
             app.UseMvc();
 
             // Add Swagger
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                // Add API hosts
+                c.PreSerializeFilters.Add((swagger, httpRequest) =>
+                {
+                    // Parse host list from configuration
+                    List<OpenApiServer> servers = this.Configuration["SwaggerHosts"]
+                        .Split(';')
+                        .Select(s => new OpenApiServer
+                        {
+                            Url = s
+                        })
+                        .ToList();
+
+                    // Set servers (hosts) property
+                    swagger.Servers = servers;
+                });
+            });
+
+            // Add SwaggerUI
+            app.UseSwaggerUI(c =>
+            {
+                // Enable UI for multiple API versions
+                foreach(ApiVersionDescription description in provider.ApiVersionDescriptions)
+                {
+                    c.SwaggerEndpoint(
+                        $"/swagger/{description.GroupName}/swagger.json",
+                        description.GroupName.ToUpperInvariant()
+                    );
+                }
+            });
         }
     }
 #pragma warning restore CS1591
