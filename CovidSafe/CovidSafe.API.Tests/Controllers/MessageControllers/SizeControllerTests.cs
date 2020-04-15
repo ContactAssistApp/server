@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
+namespace CovidSafe.API.Tests.Controllers.MessageControllers
 {
     /// <summary>
     /// Unit Tests for the <see cref="SizeController"/> class
