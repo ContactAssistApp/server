@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using CovidSafe.API.Swagger;
@@ -15,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiContrib.Core.Formatter.Protobuf;
 
@@ -68,8 +71,8 @@ namespace CovidSafe.API
                 )
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Get configuration for data repository
-            services.Configure<CosmosCovidSafeSchemaOptions>(this.Configuration.GetSection("CosmosCovidSafeSchema"));
+            // Get configuration sections
+            services.Configure<CosmosSchemaConfigurationSection>(this.Configuration.GetSection("CosmosSchema"));
 
             // Configure data repository implementations
             services.AddTransient(cf => new CosmosConnectionFactory(this.Configuration["CosmosConnection"]));
@@ -96,7 +99,7 @@ namespace CovidSafe.API
             );
 
             // Add Swagger generator
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
             services.AddSwaggerGen(c =>
             {
                 // Set the comments path for the Swagger JSON
@@ -122,7 +125,24 @@ namespace CovidSafe.API
             app.UseMvc();
 
             // Add Swagger
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                // Add API hosts
+                c.PreSerializeFilters.Add((swagger, httpRequest) =>
+                {
+                    // Parse host list from configuration
+                    List<OpenApiServer> servers = this.Configuration["SwaggerHosts"]
+                        .Split(';')
+                        .Select(s => new OpenApiServer
+                        {
+                            Url = s
+                        })
+                        .ToList();
+
+                    // Set servers (hosts) property
+                    swagger.Servers = servers;
+                });
+            });
         }
     }
 #pragma warning restore CS1591

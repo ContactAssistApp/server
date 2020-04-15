@@ -15,7 +15,7 @@ namespace CovidSafe.API.Swagger
     /// CodeCoverageExclusion: Does not provide core functionality.
     /// </remarks>
     [ExcludeFromCodeCoverage]
-    public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
+    public class SwaggerConfigureOptions : IConfigureOptions<SwaggerGenOptions>
     {
         /// <summary>
         /// Configures API version description handling
@@ -23,10 +23,10 @@ namespace CovidSafe.API.Swagger
         readonly IApiVersionDescriptionProvider _provider;
 
         /// <summary>
-        /// Creates a new <see cref="SwaggerConfiguration"/> instance
+        /// Creates a new <see cref="SwaggerConfigureOptions"/> instance
         /// </summary>
         /// <param name="provider">API Version Description provider implementation</param>
-        public SwaggerConfiguration(IApiVersionDescriptionProvider provider) => this._provider = provider;
+        public SwaggerConfigureOptions(IApiVersionDescriptionProvider provider) => this._provider = provider;
 
         /// <inheritdoc/>
         public void Configure(SwaggerGenOptions options)
