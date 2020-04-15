@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,58 +48,39 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <param name="lon">Longitude of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <response code="404">No results found for request parameters</response>
         /// <returns>Collection of <see cref="MessageInfo"/> objects matching request parameters</returns>
         [HttpGet]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<MessageListResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp)
+        public async Task<ActionResult<MessageListResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            CancellationToken ct = new CancellationToken();
+            try
+            {
+                // Pull queries matching parameters
+                var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+                IEnumerable<MessageInfo> results = await this._messageService
+                    .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
 
-            // Validate inputs
-            // Latitudes are from -90 to 90
-            if(lat > 90 || lat < -90)
-            {
-                return BadRequest();
-            }
-            // Longitudes are from -180 to 180
-            if(lon > 180 || lon < -180)
-            {
-                return BadRequest();
-            }
-            // Precision can be max 8
-            if(precision < 0 || precision > 8)
-            {
-                return BadRequest();
-            }
-            if(lastTimestamp < 0)
-            {
-                return BadRequest();
-            }
-
-            // Pull queries matching parameters
-            var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
-            IEnumerable<MessageInfo> results = await this._messageService
-                .GetLatestInfoAsync(region, lastTimestamp, ct);
-
-            if (results != null)
-            {
                 // Convert to response proto
                 MessageListResponse response = new MessageListResponse();
                 response.MessageInfoes.AddRange(results);
-                // Take greatest timestamp
-                // Avoids race condition of new messages becoming available during operation
+
+                // Get current server time
                 response.AsOf = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
                 return Ok(response);
             }
-            else
+            catch (ValidationFailedException ex)
             {
-                return NotFound();
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest();
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -9,6 +11,10 @@ namespace CovidSafe.API.Swagger
     /// <summary>
     /// Configures Swagger generation options
     /// </summary>
+    /// <remarks>
+    /// CodeCoverageExclusion: Does not provide core functionality.
+    /// </remarks>
+    [ExcludeFromCodeCoverage]
     public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
     {
         /// <summary>

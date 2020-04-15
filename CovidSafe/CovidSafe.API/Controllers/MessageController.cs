@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,39 +50,35 @@ namespace CovidSafe.API.Controllers
         ///     }
         ///     
         /// </remarks>
+        /// <param name="request"><see cref="MessageRequest"/> parameters</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <response code="404">No results found for request parameters</response>
-        /// <param name="request"><see cref="MessageRequest"/> parameters</param>
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
         [HttpPost]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request)
+        public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
         {
-            CancellationToken ct = new CancellationToken();
-
-            // Validate inputs
-            if(request == null || request.RequestedQueries.Count == 0)
+            try
+            {
+                // Fetch and return results
+                return Ok(
+                    await this._messageService.GetByIdsAsync(
+                        request.RequestedQueries.Select(r => r.MessageId), cancellationToken
+                    )
+                );
+            }
+            catch(ValidationFailedException ex)
+            {
+                // Only return validation results
+                return BadRequest(ex.ValidationResult);
+            }
+            catch(ArgumentNullException)
             {
                 return BadRequest();
-            }
-
-            // Get results
-            IEnumerable<string> requestedIds = request.RequestedQueries
-                   .Select(r => r.MessageId);
-            IEnumerable<MatchMessage> result = await this._messageService
-                .GetByIdsAsync(requestedIds, ct);
-
-            if(result.Count() > 0)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
             }
         }
 
@@ -90,11 +88,12 @@ namespace CovidSafe.API.Controllers
         /// <remarks>
         /// Used by Azure App Services to check if service is alive.
         /// </remarks>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <response code="200">Successful request with results</response>
         [HttpHead]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public Task<OkResult> HeadAsync()
+        public Task<OkResult> HeadAsync(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(Ok());
         }

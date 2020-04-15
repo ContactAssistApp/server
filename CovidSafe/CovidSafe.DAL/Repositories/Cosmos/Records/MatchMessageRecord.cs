@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Protos;
@@ -51,6 +52,18 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
             this.Size = PayloadSizeHelper.GetSize(message);
             this.Value = message;
             this.Version = CURRENT_RECORD_VERSION;
+        }
+
+        /// <summary>
+        /// Generates a new Partition Key value for the record
+        /// </summary>
+        /// <returns>Partition Key value</returns>
+        public static string GetPartitionKey(Region region)
+        {
+            int lat = (int)PrecisionHelper.Round(region.LatitudePrefix, 0);
+            int lon = (int)PrecisionHelper.Round(region.LongitudePrefix, 0);
+            
+            return $"{lat},{lon}";
         }
     }
 }
