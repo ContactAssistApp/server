@@ -22,10 +22,6 @@ namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
     public class ListControllerTests
     {
         /// <summary>
-        /// Test <see cref="HttpContext"/> instance
-        /// </summary>
-        private Mock<HttpContext> _context;
-        /// <summary>
         /// Test <see cref="ListController"/> instance
         /// </summary>
         private ListController _controller;
@@ -49,18 +45,10 @@ namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
             // Configure service
             this._service = new MessageService(this._repo.Object);
 
-            // Create HttpContext mock
-            this._context = new Mock<HttpContext>();
-            ActionContext actionContext = new ActionContext
-            {
-                HttpContext = this._context.Object,
-                RouteData = new Microsoft.AspNetCore.Routing.RouteData(),
-                ActionDescriptor = new ControllerActionDescriptor()
-            };
-
             // Configure controller
             this._controller = new ListController(this._service);
-            this._controller.ControllerContext = new ControllerContext(actionContext);
+            this._controller.ControllerContext = new ControllerContext();
+            this._controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
 
         /// <summary>
@@ -236,6 +224,149 @@ namespace CovidSafe.API.Tests.v1.Controllers.MessageControllers
             Assert.IsInstanceOfType(castedResult.Value, typeof(MessageListResponse));
             MessageListResponse responseResult = castedResult.Value as MessageListResponse;
             Assert.AreEqual(responseResult.MessageInfoes.Count, 0);
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> with invalid timestamp
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_BadRequestObjectWithInvalidTimestamp()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            // Min Latitude is -90
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_BadRequestObjectWithTooHighLatitude()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            // Max Latitude is 90
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(91, -10.1234, 4, 0, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> with too high Longitude
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_BadRequestObjectWithTooHighLongitude()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            // Max Longitude is 180
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(10.1234, 181, 4, 0, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> with too high Latitude
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_BadRequestObjectWithTooLowLatitude()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            // Min Latitude is -90
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(-91, -10.1234, 4, 0, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> with too low Longitude
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_BadRequestObjectWithTooLowLongitude()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            // Min Longitude is -180
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(10.1234, -181, 4, 0, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns Content-Length header of appropriate size when parameters match
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_ContentLengthHeaderSetWithValidParams()
+        {
+            // Arrange
+            long repoResponse = 1024;
+            this._repo
+                .Setup(r => r.GetLatestRegionSizeAsync(It.IsAny<Region>(), It.IsAny<long>(), CancellationToken.None))
+                .Returns(Task.FromResult(repoResponse));
+
+            // Act
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsNotNull(this._controller.HttpContext.Response.ContentLength);
+            Assert.AreEqual(repoResponse, this._controller.HttpContext.Response.ContentLength);
+        }
+
+        /// <summary>
+        /// <see cref="ListController.HeadAsync(double, double, int, long, CancellationToken)"/> 
+        /// returns Content-Length header of '0' when parameters do not return results
+        /// </summary>
+        [TestMethod]
+        public async Task HeadAsync_ContentLengthHeaderZeroWithInvalidParams()
+        {
+            // Arrange
+            long repoResponse = 0;
+
+            // Act
+            ActionResult controllerResponse = await this._controller
+                .HeadAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsNotNull(this._controller.HttpContext.Response.ContentLength);
+            Assert.AreEqual(repoResponse, this._controller.HttpContext.Response.ContentLength);
         }
     }
 }
