@@ -14,7 +14,7 @@ namespace CovidSafe.Entities.Validation
         /// <summary>
         /// Tells if the result passed (true if yes, false if no)
         /// </summary>
-        [JsonProperty("passed", Required = Required.Always)]
+        [JsonIgnore]
         public bool Passed
         {
             get
@@ -26,7 +26,7 @@ namespace CovidSafe.Entities.Validation
         /// <summary>
         /// Collection of <see cref="ValidationFailure"/> objects
         /// </summary>
-        [JsonProperty("Failures")]
+        [JsonProperty("validationFailures")]
         public List<ValidationFailure> Failures { get; set; } = new List<ValidationFailure>();
 
         /// <summary>
