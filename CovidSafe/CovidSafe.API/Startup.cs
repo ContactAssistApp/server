@@ -20,7 +20,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
 using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace CovidSafe.API

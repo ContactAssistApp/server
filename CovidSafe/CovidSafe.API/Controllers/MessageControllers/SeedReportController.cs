@@ -58,8 +58,8 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// </remarks>
         /// <param name="request"><see cref="SelfReportRequest"/> content</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
+        /// <response code="200">Submission successful</response>
+        /// <response code="400">Malformed or invalid request</response>
         [HttpPut]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
