@@ -13,12 +13,14 @@ using CovidSafe.DAL.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace CovidSafe.API
@@ -110,7 +112,7 @@ namespace CovidSafe.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -142,6 +144,19 @@ namespace CovidSafe.API
                     // Set servers (hosts) property
                     swagger.Servers = servers;
                 });
+            });
+
+            // Add SwaggerUI
+            app.UseSwaggerUI(c =>
+            {
+                // Enable UI for multiple API versions
+                foreach(ApiVersionDescription description in provider.ApiVersionDescriptions)
+                {
+                    c.SwaggerEndpoint(
+                        $"/swagger/{description.GroupName}/swagger.json",
+                        description.GroupName.ToUpperInvariant()
+                    );
+                }
             });
         }
     }
