@@ -9,9 +9,9 @@ namespace CovidSafe.Entities.Protos
     public partial class MessageListRequest : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Validate timestamp
             result.Combine(Validator.ValidateTimestamp(this.LastQueryTime, nameof(this.LastQueryTime)));
@@ -20,7 +20,7 @@ namespace CovidSafe.Entities.Protos
             if(this.Region == null)
             {
                 result.Fail(
-                    ValidationIssue.InputNull,
+                    RequestValidationIssue.InputNull,
                     nameof(this.Region),
                     ValidationMessages.NullRegion
                 );

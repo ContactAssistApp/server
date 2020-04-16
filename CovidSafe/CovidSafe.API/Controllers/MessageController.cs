@@ -42,11 +42,11 @@ namespace CovidSafe.API.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /Message
+        ///     POST /api/Message&amp;api-version={current_version}
         ///     {
         ///         "RequestedQueries": [{
-        ///             "MessageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
-        ///             "MessageTimestamp": 1586199635012
+        ///             "messageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
+        ///             "messageTimestamp": 1586199635012
         ///         }]
         ///     }
         ///     
@@ -60,6 +60,7 @@ namespace CovidSafe.API.Controllers
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RequestValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
         {
@@ -72,7 +73,7 @@ namespace CovidSafe.API.Controllers
                     )
                 );
             }
-            catch(ValidationFailedException ex)
+            catch(RequestValidationFailedException ex)
             {
                 // Only return validation results
                 return BadRequest(ex.ValidationResult);
@@ -84,13 +85,17 @@ namespace CovidSafe.API.Controllers
         }
 
         /// <summary>
-        /// Service status request endpoint
+        /// Service status request endpoint, used mostly by Azure services to determine if 
+        /// an endpoint is alive
         /// </summary>
         /// <remarks>
-        /// Used by Azure App Services to check if service is alive.
+        /// Sample request:
+        /// 
+        ///     HEAD /api/Message
+        /// 
         /// </remarks>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <response code="200">Successful request with results</response>
+        /// <response code="200">Successful request</response>
         [ApiExplorerSettings(IgnoreApi = true)]
         [ApiVersionNeutral]
         [HttpHead]

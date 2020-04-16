@@ -8,9 +8,9 @@ namespace CovidSafe.Entities.Protos
     public partial class MessageInfo : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // MessageId validation
             result.Combine(Validator.ValidateGuid(this.MessageId, nameof(this.MessageId)));

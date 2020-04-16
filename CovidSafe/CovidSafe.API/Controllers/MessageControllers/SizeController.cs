@@ -46,7 +46,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Messages/Size?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0
+        ///     GET /api/Messages/Size?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-04-14
         ///     
         /// </remarks>
         /// <response code="200">Successful request with results</response>
@@ -62,6 +62,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [HttpGet]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(MessageSizeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<MessageSizeResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
@@ -82,7 +83,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                     SizeOfQueryResponse = result
                 });
             }
-            catch (ValidationFailedException ex)
+            catch (RequestValidationFailedException ex)
             {
                 return BadRequest(ex.ValidationResult);
             }

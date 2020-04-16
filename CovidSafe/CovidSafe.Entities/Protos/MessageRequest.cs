@@ -8,9 +8,9 @@ namespace CovidSafe.Entities.Protos
     public partial class MessageRequest : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Only validate if collection contains message information
             if(this.RequestedQueries.Count > 0)
