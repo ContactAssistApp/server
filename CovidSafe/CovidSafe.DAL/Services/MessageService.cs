@@ -45,7 +45,7 @@ namespace CovidSafe.DAL.Services
             }
 
             // Confirm IDs are valid
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             foreach(string messageId in ids)
             {
@@ -59,7 +59,7 @@ namespace CovidSafe.DAL.Services
             }
             else
             {
-                throw new ValidationFailedException(result);
+                throw new RequestValidationFailedException(result);
             }
         }
 
@@ -73,7 +73,7 @@ namespace CovidSafe.DAL.Services
             else
             {
                 // Validate region
-                ValidationResult validationResult = region.Validate();
+                RequestValidationResult validationResult = region.Validate();
 
                 // Validate timestamp
                 validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp));
@@ -85,7 +85,7 @@ namespace CovidSafe.DAL.Services
                 }
                 else
                 {
-                    throw new ValidationFailedException(validationResult);
+                    throw new RequestValidationFailedException(validationResult);
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(region));
             }
 
-            ValidationResult validationResult = region.Validate();
+            RequestValidationResult validationResult = region.Validate();
             validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, nameof(lastTimestamp)));
 
             if(validationResult.Passed)
@@ -108,7 +108,7 @@ namespace CovidSafe.DAL.Services
             }
             else
             {
-                throw new ValidationFailedException(validationResult);
+                throw new RequestValidationFailedException(validationResult);
             }
         }
 
@@ -121,7 +121,7 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(areaMatch));
             }
 
-            ValidationResult validationResult = areaMatch.Validate();
+            RequestValidationResult validationResult = areaMatch.Validate();
 
             if(validationResult.Passed)
             {
@@ -137,7 +137,7 @@ namespace CovidSafe.DAL.Services
             }
             else
             {
-                throw new ValidationFailedException(validationResult);
+                throw new RequestValidationFailedException(validationResult);
             }
         }
 
@@ -154,7 +154,7 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(region));
             }
 
-            ValidationResult validationResult = message.Validate();
+            RequestValidationResult validationResult = message.Validate();
             validationResult.Combine(region.Validate());
 
             if(validationResult.Passed)
@@ -164,7 +164,7 @@ namespace CovidSafe.DAL.Services
             }
             else
             {
-                throw new ValidationFailedException(validationResult);
+                throw new RequestValidationFailedException(validationResult);
             }
         }
 
@@ -177,7 +177,7 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(request));
             }
 
-            ValidationResult validationResult = request.Validate();
+            RequestValidationResult validationResult = request.Validate();
             validationResult.Combine(Validator.ValidateTimestamp(timeAtRequest));
 
             if(validationResult.Passed)
@@ -193,7 +193,7 @@ namespace CovidSafe.DAL.Services
             }
             else
             {
-                throw new ValidationFailedException(validationResult);
+                throw new RequestValidationFailedException(validationResult);
             }
         }
     }

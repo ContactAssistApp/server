@@ -18,9 +18,9 @@ namespace CovidSafe.Entities.Protos
         public const int MIN_PRECISION = 0;
 
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Check if lat/lng are in expected values
             result.Combine(Validator.ValidateLatitude(this.LatitudePrefix, nameof(this.LatitudePrefix)));
@@ -30,7 +30,7 @@ namespace CovidSafe.Entities.Protos
             if(this.Precision < MIN_PRECISION || this.Precision > MAX_PRECISION)
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
+                    RequestValidationIssue.InputInvalid,
                     nameof(this.Precision),
                     ValidationMessages.InvalidPrecision,
                     this.Precision.ToString(),

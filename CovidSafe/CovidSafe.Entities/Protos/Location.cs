@@ -26,9 +26,9 @@ namespace CovidSafe.Entities.Protos
         public const double MIN_LONGITUDE = -180;
 
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Ensure lat/lng are within range
             result.Combine(Validator.ValidateLatitude(this.Latitude, nameof(this.Latitude)));

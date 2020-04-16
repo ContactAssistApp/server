@@ -9,16 +9,16 @@ namespace CovidSafe.Entities.Protos
     public partial class MatchMessage
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Must contain at least one of either BluetoothSeeds or AreaMatches
             if(this.AreaMatches.Count == 0 && this.BluetoothMatches.Count == 0)
             {
                 result.Fail(
-                    ValidationIssue.InputEmpty,
-                    ValidationProperty.Multiple,
+                    RequestValidationIssue.InputEmpty,
+                    RequestValidationProperty.Multiple,
                     ValidationMessages.EmptyMessage
                 );
             }

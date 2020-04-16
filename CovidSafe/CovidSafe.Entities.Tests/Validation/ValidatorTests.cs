@@ -23,8 +23,8 @@ namespace CovidSafe.Entities.Tests.Validation
             string input2 = "00000000000000000000000000000000";
 
             // Act
-            ValidationResult result1 = Validator.ValidateGuid(input1);
-            ValidationResult result2 = Validator.ValidateGuid(input2);
+            RequestValidationResult result1 = Validator.ValidateGuid(input1);
+            RequestValidationResult result2 = Validator.ValidateGuid(input2);
 
             // Assert
             Assert.IsTrue(result1.Passed);
@@ -44,9 +44,9 @@ namespace CovidSafe.Entities.Tests.Validation
             string input3 = "Not a guid!"; // Invalid format
 
             // Act
-            ValidationResult result1 = Validator.ValidateGuid(input1);
-            ValidationResult result2 = Validator.ValidateGuid(input2);
-            ValidationResult result3 = Validator.ValidateGuid(input3);
+            RequestValidationResult result1 = Validator.ValidateGuid(input1);
+            RequestValidationResult result2 = Validator.ValidateGuid(input2);
+            RequestValidationResult result3 = Validator.ValidateGuid(input3);
 
             // Assert
             Assert.IsFalse(result1.Passed);
@@ -67,9 +67,9 @@ namespace CovidSafe.Entities.Tests.Validation
             long input3 = -90;
 
             // Act
-            ValidationResult result1 = Validator.ValidateLatitude(input1);
-            ValidationResult result2 = Validator.ValidateLatitude(input2);
-            ValidationResult result3 = Validator.ValidateLatitude(input3);
+            RequestValidationResult result1 = Validator.ValidateLatitude(input1);
+            RequestValidationResult result2 = Validator.ValidateLatitude(input2);
+            RequestValidationResult result3 = Validator.ValidateLatitude(input3);
 
             // Assert
             Assert.IsTrue(result1.Passed);
@@ -89,8 +89,8 @@ namespace CovidSafe.Entities.Tests.Validation
             long input2 = -91; // Too low
 
             // Act
-            ValidationResult result1 = Validator.ValidateLatitude(input1);
-            ValidationResult result2 = Validator.ValidateLatitude(input2);
+            RequestValidationResult result1 = Validator.ValidateLatitude(input1);
+            RequestValidationResult result2 = Validator.ValidateLatitude(input2);
 
             // Assert
             Assert.IsFalse(result1.Passed);
@@ -110,9 +110,9 @@ namespace CovidSafe.Entities.Tests.Validation
             long input3 = -180;
 
             // Act
-            ValidationResult result1 = Validator.ValidateLongitude(input1);
-            ValidationResult result2 = Validator.ValidateLongitude(input2);
-            ValidationResult result3 = Validator.ValidateLongitude(input3);
+            RequestValidationResult result1 = Validator.ValidateLongitude(input1);
+            RequestValidationResult result2 = Validator.ValidateLongitude(input2);
+            RequestValidationResult result3 = Validator.ValidateLongitude(input3);
 
             // Assert
             Assert.IsTrue(result1.Passed);
@@ -132,8 +132,8 @@ namespace CovidSafe.Entities.Tests.Validation
             long input2 = -181; // Too low
 
             // Act
-            ValidationResult result1 = Validator.ValidateLongitude(input1);
-            ValidationResult result2 = Validator.ValidateLongitude(input2);
+            RequestValidationResult result1 = Validator.ValidateLongitude(input1);
+            RequestValidationResult result2 = Validator.ValidateLongitude(input2);
 
             // Assert
             Assert.IsFalse(result1.Passed);
@@ -152,8 +152,8 @@ namespace CovidSafe.Entities.Tests.Validation
             string input2 = "00000000000000000000000000000000";
 
             // Act
-            ValidationResult result1 = Validator.ValidateGuid(input1);
-            ValidationResult result2 = Validator.ValidateGuid(input2);
+            RequestValidationResult result1 = Validator.ValidateGuid(input1);
+            RequestValidationResult result2 = Validator.ValidateGuid(input2);
 
             // Assert
             Assert.IsTrue(result1.Passed);
@@ -173,9 +173,9 @@ namespace CovidSafe.Entities.Tests.Validation
             string input3 = "Not a guid!"; // Invalid format
 
             // Act
-            ValidationResult result1 = Validator.ValidateGuid(input1);
-            ValidationResult result2 = Validator.ValidateGuid(input2);
-            ValidationResult result3 = Validator.ValidateGuid(input3);
+            RequestValidationResult result1 = Validator.ValidateGuid(input1);
+            RequestValidationResult result2 = Validator.ValidateGuid(input2);
+            RequestValidationResult result3 = Validator.ValidateGuid(input3);
 
             // Assert
             Assert.IsFalse(result1.Passed);
@@ -198,8 +198,8 @@ namespace CovidSafe.Entities.Tests.Validation
             long endTime2 = 1;
 
             // Act
-            ValidationResult result1 = Validator.ValidateTimeRange(startTime1, endTime1);
-            ValidationResult result2 = Validator.ValidateTimeRange(startTime2, endTime2);
+            RequestValidationResult result1 = Validator.ValidateTimeRange(startTime1, endTime1);
+            RequestValidationResult result2 = Validator.ValidateTimeRange(startTime2, endTime2);
 
             // Assert
             Assert.IsTrue(result1.Passed);
@@ -221,8 +221,8 @@ namespace CovidSafe.Entities.Tests.Validation
             long endTime2 = Int64.MinValue;
 
             // Act
-            ValidationResult result1 = Validator.ValidateTimeRange(startTime1, endTime1);
-            ValidationResult result2 = Validator.ValidateTimeRange(startTime2, endTime2);
+            RequestValidationResult result1 = Validator.ValidateTimeRange(startTime1, endTime1);
+            RequestValidationResult result2 = Validator.ValidateTimeRange(startTime2, endTime2);
 
             // Assert
             Assert.IsFalse(result1.Passed);
@@ -241,8 +241,8 @@ namespace CovidSafe.Entities.Tests.Validation
             long timestamp2 = Int64.MaxValue;
 
             // Act
-            ValidationResult result1 = Validator.ValidateTimestamp(timestamp1);
-            ValidationResult result2 = Validator.ValidateTimestamp(timestamp2);
+            RequestValidationResult result1 = Validator.ValidateTimestamp(timestamp1);
+            RequestValidationResult result2 = Validator.ValidateTimestamp(timestamp2);
 
             // Assert
             Assert.IsTrue(result1.Passed);
@@ -261,8 +261,8 @@ namespace CovidSafe.Entities.Tests.Validation
             long timestamp2 = Int64.MinValue;
 
             // Act
-            ValidationResult result1 = Validator.ValidateTimestamp(timestamp1);
-            ValidationResult result2 = Validator.ValidateTimestamp(timestamp2);
+            RequestValidationResult result1 = Validator.ValidateTimestamp(timestamp1);
+            RequestValidationResult result2 = Validator.ValidateTimestamp(timestamp2);
 
             // Assert
             Assert.IsFalse(result1.Passed);

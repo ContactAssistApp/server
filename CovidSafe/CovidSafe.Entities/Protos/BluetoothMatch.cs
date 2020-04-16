@@ -8,9 +8,9 @@ namespace CovidSafe.Entities.Protos
     public partial class BluetoothMatch : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Only validate if collection contains seeds
             if(this.Seeds.Count > 0)

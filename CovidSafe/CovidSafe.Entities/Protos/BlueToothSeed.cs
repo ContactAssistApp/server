@@ -8,9 +8,9 @@ namespace CovidSafe.Entities.Protos
     public partial class BlueToothSeed
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Seed validation
             result.Combine(Validator.ValidateSeed(this.Seed, nameof(this.Seed)));

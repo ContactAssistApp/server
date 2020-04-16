@@ -43,7 +43,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0
+        ///     GET /api/Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version={current_version}
         ///     
         /// </remarks>
         /// <param name="lat">Latitude of desired <see cref="Region"/></param>
@@ -57,6 +57,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [HttpGet]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<MessageListResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
@@ -80,7 +81,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
 
                 return Ok(response);
             }
-            catch (ValidationFailedException ex)
+            catch (RequestValidationFailedException ex)
             {
                 return BadRequest(ex.ValidationResult);
             }
@@ -129,7 +130,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
 
                 return Ok();
             }
-            catch (ValidationFailedException ex)
+            catch (RequestValidationFailedException ex)
             {
                 return BadRequest(ex.ValidationResult);
             }

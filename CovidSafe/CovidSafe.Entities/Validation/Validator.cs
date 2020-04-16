@@ -14,17 +14,17 @@ namespace CovidSafe.Entities.Validation
         /// </summary>
         /// <param name="guid">String to validate</param>
         /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
-        /// <returns><see cref="ValidationResult"/></returns>
-        public static ValidationResult ValidateGuid(string guid, string parameterName = null)
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateGuid(string guid, string parameterName = null)
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Seeds must parse to GUID
             Guid output;
             if (!Guid.TryParse(guid, out output))
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
+                    RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(guid),
                     ValidationMessages.InvalidSeed,
                     guid
@@ -39,16 +39,16 @@ namespace CovidSafe.Entities.Validation
         /// </summary>
         /// <param name="latitude">Latitude to validate</param>
         /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
-        /// <returns><see cref="ValidationResult"/></returns>
-        public static ValidationResult ValidateLatitude(double latitude, string parameterName = null)
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateLatitude(double latitude, string parameterName = null)
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Must be within range
             if(latitude > Location.MAX_LATITUDE || latitude < Location.MIN_LATITUDE)
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
+                    RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(latitude),
                     ValidationMessages.InvalidLatitude,
                     latitude.ToString(),
@@ -65,16 +65,16 @@ namespace CovidSafe.Entities.Validation
         /// </summary>
         /// <param name="longitude">Longitude to validate</param>
         /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
-        /// <returns><see cref="ValidationResult"/></returns>
-        public static ValidationResult ValidateLongitude(double longitude, string parameterName = null)
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateLongitude(double longitude, string parameterName = null)
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Must be within range
             if (longitude > Location.MAX_LONGITUDE || longitude < Location.MIN_LONGITUDE)
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
+                    RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(longitude),
                     ValidationMessages.InvalidLongitude,
                     longitude.ToString(),
@@ -91,8 +91,8 @@ namespace CovidSafe.Entities.Validation
         /// </summary>
         /// <param name="seed">Seed to validate</param>
         /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
-        /// <returns><see cref="ValidationResult"/></returns>
-        public static ValidationResult ValidateSeed(string seed, string parameterName = null)
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateSeed(string seed, string parameterName = null)
         {
             // Use ValidateGuid() given seeds are just GUID/UUIDs
             return ValidateGuid(seed, parameterName ?? nameof(seed));
@@ -103,17 +103,17 @@ namespace CovidSafe.Entities.Validation
         /// </summary>
         /// <param name="startTime">Starting timestamp, in ms since UNIX epoch</param>
         /// <param name="endTime">Ending timestamp, in ms since UNIX epoch</param>
-        /// <returns><see cref="ValidationResult"/></returns>
-        public static ValidationResult ValidateTimeRange(long startTime, long endTime)
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateTimeRange(long startTime, long endTime)
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Start time must be earlier than end time
             if (startTime > endTime)
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
-                    ValidationProperty.Multiple,
+                    RequestValidationIssue.InputInvalid,
+                    RequestValidationProperty.Multiple,
                     ValidationMessages.InvalidStartEndTimeSequence,
                     startTime.ToString(),
                     endTime.ToString()
@@ -128,16 +128,16 @@ namespace CovidSafe.Entities.Validation
         /// </summary>
         /// <param name="timestamp">Timestamp to validate, in ms since UNIX epoch</param>
         /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
-        /// <returns><see cref="ValidationResult"/></returns>
-        public static ValidationResult ValidateTimestamp(long timestamp, string parameterName = null)
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateTimestamp(long timestamp, string parameterName = null)
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Timestamps must be zero or greater
             if(timestamp < 0)
             {
                 result.Fail(
-                    ValidationIssue.InputInvalid,
+                    RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(timestamp),
                     ValidationMessages.InvalidTimestamp,
                     timestamp.ToString()
