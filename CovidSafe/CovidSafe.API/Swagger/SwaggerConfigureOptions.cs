@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -9,7 +12,11 @@ namespace CovidSafe.API.Swagger
     /// <summary>
     /// Configures Swagger generation options
     /// </summary>
-    public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
+    /// <remarks>
+    /// CodeCoverageExclusion: Does not provide core functionality.
+    /// </remarks>
+    [ExcludeFromCodeCoverage]
+    public class SwaggerConfigureOptions : IConfigureOptions<SwaggerGenOptions>
     {
         /// <summary>
         /// Configures API version description handling
@@ -17,10 +24,10 @@ namespace CovidSafe.API.Swagger
         readonly IApiVersionDescriptionProvider _provider;
 
         /// <summary>
-        /// Creates a new <see cref="SwaggerConfiguration"/> instance
+        /// Creates a new <see cref="SwaggerConfigureOptions"/> instance
         /// </summary>
         /// <param name="provider">API Version Description provider implementation</param>
-        public SwaggerConfiguration(IApiVersionDescriptionProvider provider) => this._provider = provider;
+        public SwaggerConfigureOptions(IApiVersionDescriptionProvider provider) => this._provider = provider;
 
         /// <inheritdoc/>
         public void Configure(SwaggerGenOptions options)

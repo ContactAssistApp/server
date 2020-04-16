@@ -20,6 +20,19 @@ namespace CovidSafe.DAL.Helpers
 			return precision < 0 ? (double)(1 << (-precision)) : 1.0 / (double)(1 << precision);
 		}
 
+		private static double RoundSymmetric(double d, int precision)
+		{
+			if (precision >= 0)
+			{
+				int exp = 1 << precision;
+				return ((double)(int)(d * exp)) / exp;
+			}
+			else
+			{
+				int exp = 1 << (-precision);
+				return (double)(((int)(d / exp)) * exp);
+			}
+		}
 		/// <summary>
 		/// Rounds given number and precision parameter.
 		/// </summary>
@@ -32,16 +45,8 @@ namespace CovidSafe.DAL.Helpers
 		/// </remarks>
 		public static double Round(double d, int precision)
 		{
-			if (precision >= 0)
-			{
-				int exp = 1 << precision;
-				return ((double)(int)(d * exp)) / exp;
-			}
-			else
-			{
-				int exp = 1 << (-precision);
-				return (double)(((int)(d / exp)) * exp);
-			}
+			double shift = (double)(1 << 16);   //16 is some number that 1 << 16 > 180 and bigger than maximum precision value that we are using
+			return (RoundSymmetric(d + shift, precision) - shift);
 		}
 
 		/// <summary>
@@ -56,7 +61,7 @@ namespace CovidSafe.DAL.Helpers
 			double rounded = Round(d, precision);
 			double step = GetStep(precision);
 
-			return rounded < 0 ? Tuple.Create(rounded - step, rounded) : Tuple.Create(rounded, rounded + step);
+			return Tuple.Create(rounded, rounded + step);
 		}
 	}
 }

@@ -4,6 +4,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>ca6741f8-30f9-472c-a5c3-c6e0a78d1961</UserSecretsId>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,11 +21,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
     <PackageReference Include="protobuf-net" Version="2.4.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.3.1" />
     <PackageReference Include="WebApiContrib.Core.Formatter.Protobuf" Version="2.1.3" />
   </ItemGroup>
 

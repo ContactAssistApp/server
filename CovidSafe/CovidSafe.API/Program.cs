@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
@@ -11,8 +13,10 @@ namespace CovidSafe.API
     /// Main application class
     /// </summary>
     /// <remarks>
-    /// Ignores missing documentation warnings.
+    /// CS1591: Ignores missing documentation warnings.
+    /// CodeCoverageExclusion: Generic program entry point.
     /// </remarks>
+    [ExcludeFromCodeCoverage]
 #pragma warning disable CS1591
     public class Program
     {

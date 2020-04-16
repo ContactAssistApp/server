@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,6 +40,32 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             this.Container = this.Context.GetContainer(
                 this.Context.SchemaOptions.MessageContainerName
             );
+        }
+
+        /// <summary>
+        /// Returns the most restrictive timestamp filter, based on the application 
+        /// configuration and the one provided by the user
+        /// </summary>
+        /// <param name="timestampFilter">Original timestamp filter applied to query</param>
+        /// <returns>Timestamp filter value, in ms since UNIX epoch</returns>
+        private long _getTimestampFilter(long timestampFilter)
+        {
+            // Get the default timestamp filter value
+            long defaultFilter = DateTimeOffset.UtcNow
+                .AddDays(-(this.Context.SchemaOptions.MaxDataAgeToReturnDays))
+                .ToUnixTimeMilliseconds();
+
+            // If a timestamp filter was provided for the query, see if that one is more restrictive than ours
+            if(timestampFilter > 0)
+            {
+                // Take most restrictive timestamp filter
+                return Math.Max(defaultFilter, timestampFilter);
+            }
+            else
+            {
+                // Use our filter by default, if none was provided already for the query
+                return defaultFilter;
+            }
         }
 
         /// <inheritdoc/>
@@ -85,7 +110,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Execute query
             var iterator = queryable
                 .Where(r =>
-                    r.Timestamp > lastTimestamp
+                    r.Timestamp > this._getTimestampFilter(lastTimestamp)
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
@@ -125,7 +150,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Execute query
             var iterator = queryable
                 .Where(r =>
-                    r.Timestamp > lastTimestamp
+                    r.Timestamp > this._getTimestampFilter(lastTimestamp)
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
@@ -197,7 +222,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var record = new MatchMessageRecord(message)
             {
                 RegionBoundary = new RegionBoundaryProperty(boundary),
-                Region = new RegionProperty(region)
+                Region = new RegionProperty(region),
+                PartitionKey = MatchMessageRecord.GetPartitionKey(region)
             };
 
             ItemResponse<MatchMessageRecord> response = await this.Container
@@ -224,7 +250,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 {
                     RegionBoundary = new RegionBoundaryProperty(
                         RegionHelper.GetRegionBoundary(r)),
-                    Region = new RegionProperty(r)
+                    Region = new RegionProperty(r),
+                    PartitionKey = MatchMessageRecord.GetPartitionKey(r)
                 }).GroupBy(r => r.PartitionKey);
 
             // Begin batch operation

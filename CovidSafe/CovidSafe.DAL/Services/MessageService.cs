@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using CovidSafe.DAL.Helpers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
+using CovidSafe.Entities.Validation.Resources;
 
 namespace CovidSafe.DAL.Services
 {
@@ -42,8 +44,23 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(ids));
             }
 
-            // Pass-through call, no additional processing required
-            return await this._messageRepo.GetRangeAsync(ids, cancellationToken);
+            // Confirm IDs are valid
+            ValidationResult result = new ValidationResult();
+
+            foreach(string messageId in ids)
+            {
+                result.Combine(Validator.ValidateGuid(messageId, nameof(messageId)));
+            }
+
+            // Verify results were validated
+            if(result.Passed)
+            {
+                return await this._messageRepo.GetRangeAsync(ids, cancellationToken);
+            }
+            else
+            {
+                throw new ValidationFailedException(result);
+            }
         }
 
         /// <inheritdoc/>
@@ -53,13 +70,24 @@ namespace CovidSafe.DAL.Services
             {
                 throw new ArgumentNullException(nameof(region));
             }
-            if (lastTimestamp < 0)
+            else
             {
-                throw new ArgumentOutOfRangeException(nameof(lastTimestamp));
-            }
+                // Validate region
+                ValidationResult validationResult = region.Validate();
 
-            // Get message information from database
-            return await this._messageRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
+                // Validate timestamp
+                validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp));
+
+                if(validationResult.Passed)
+                {
+                    // Get message information from database
+                    return await this._messageRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
+                }
+                else
+                {
+                    throw new ValidationFailedException(validationResult);
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -69,18 +97,54 @@ namespace CovidSafe.DAL.Services
             {
                 throw new ArgumentNullException(nameof(region));
             }
-            if(lastTimestamp < 0)
+
+            ValidationResult validationResult = region.Validate();
+            validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, nameof(lastTimestamp)));
+
+            if(validationResult.Passed)
             {
-                throw new ArgumentOutOfRangeException(nameof(lastTimestamp));
+                // Get messages from database
+                return await this._messageRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
+            }
+            else
+            {
+                throw new ValidationFailedException(validationResult);
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task PublishAreaAsync(AreaMatch areaMatch, CancellationToken cancellationToken = default)
+        {
+            // Validate inputs
+            if (areaMatch == null)
+            {
+                throw new ArgumentNullException(nameof(areaMatch));
             }
 
-            // Get messages from database
-            return await this._messageRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
+            ValidationResult validationResult = areaMatch.Validate();
+
+            if(validationResult.Passed)
+            {
+                // Build a MatchMessage containing the submitted areas
+                MatchMessage message = new MatchMessage();
+                message.AreaMatches.Add(areaMatch);
+
+                // Define a regions for the published message
+                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(areaMatch.Areas, this.RegionPrecision);
+
+                // Publish
+                await this._messageRepo.InsertAsync(message, messageRegions, cancellationToken);
+            }
+            else
+            {
+                throw new ValidationFailedException(validationResult);
+            }
         }
 
         /// <inheritdoc/>
         public async Task<string> PublishAsync(MatchMessage message, Region region, CancellationToken cancellationToken = default)
         {
+            // Validate inputs
             if(message == null)
             {
                 throw new ArgumentNullException(nameof(message));
@@ -90,54 +154,47 @@ namespace CovidSafe.DAL.Services
                 throw new ArgumentNullException(nameof(region));
             }
 
-            // Push to upstream data repository
-            return await this._messageRepo.InsertAsync(message, region, cancellationToken);
-        }
+            ValidationResult validationResult = message.Validate();
+            validationResult.Combine(region.Validate());
 
-        /// <inheritdoc/>
-        public async Task PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default)
-        {
-            if (areas == null)
+            if(validationResult.Passed)
             {
-                throw new ArgumentNullException(nameof(areas));
+                // Push to upstream data repository
+                return await this._messageRepo.InsertAsync(message, region, cancellationToken);
             }
-
-            // Build a MatchMessage containing the submitted areas
-            MatchMessage message = new MatchMessage();
-            message.AreaMatches.Add(areas);
-
-            // Define a regions for the published message
-            IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(areas.Areas, this.RegionPrecision);
-
-            // Publish
-            await this._messageRepo.InsertAsync(message, messageRegions, cancellationToken);
+            else
+            {
+                throw new ValidationFailedException(validationResult);
+            }
         }
 
         /// <inheritdoc/>
         public async Task<string> PublishAsync(SelfReportRequest request, long timeAtRequest, CancellationToken cancellationToken = default)
         {
+            // Validate inputs
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
-            // Determine estimated skew
-            long estSkew = timeAtRequest - request.ClientTimestamp;
+            ValidationResult validationResult = request.Validate();
+            validationResult.Combine(Validator.ValidateTimestamp(timeAtRequest));
 
-            // Build MatchMessage from submitted content
-            MatchMessage message = new MatchMessage();
-            BluetoothMatch matches = new BluetoothMatch();
-
-            // Calculate possible offset for each seed
-            foreach(BlueToothSeed seed in request.Seeds)
+            if(validationResult.Passed)
             {
-                seed.EstimatedSkew = estSkew;
-                matches.Seeds.Add(seed);
-            }
+                // Build MatchMessage from submitted content
+                MatchMessage message = new MatchMessage();
+                BluetoothMatch matches = new BluetoothMatch();
+                matches.Seeds.AddRange(request.Seeds);
 
-            // Store in data repository
-            message.BluetoothMatches.Add(matches);
-            return await this._messageRepo.InsertAsync(message, request.Region, cancellationToken);
+                // Store in data repository
+                message.BluetoothMatches.Add(matches);
+                return await this._messageRepo.InsertAsync(message, request.Region, cancellationToken);
+            }
+            else
+            {
+                throw new ValidationFailedException(validationResult);
+            }
         }
     }
 }

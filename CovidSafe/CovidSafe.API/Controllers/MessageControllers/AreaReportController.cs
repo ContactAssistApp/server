@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,10 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// <summary>
     /// Handles requests for infected clients volunteering <see cref="AreaMatch"/> identifiers
     /// </summary>
-    [ApiVersion("1")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
+    [Route("api/Messages/[controller]")]
     public class AreaReportController : ControllerBase
     {
         /// <summary>
@@ -54,27 +56,32 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
         /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
+        /// <response code="200">Submission successful</response>
+        /// <response code="400">Malformed or invalid request</response>
         [HttpPut]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(AreaMatch request)
+        public async Task<ActionResult> PutAsync([Required] AreaMatch request, CancellationToken cancellationToken = default)
         {
-            CancellationToken ct = new CancellationToken();
-
-            // Validate inputs
-            if (request == null || request.Areas.Count() == 0 || String.IsNullOrEmpty(request.UserMessage))
+            try
+            {
+                // Publish area
+                await this._messageService.PublishAreaAsync(request, cancellationToken);
+                return Ok();
+            }
+            catch (ValidationFailedException ex)
+            {
+                // Only return validation issues
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
             {
                 return BadRequest();
             }
-
-            await this._messageService.PublishAreaAsync(request, ct);
-
-            return Ok();
         }
     }
 }

@@ -40,10 +40,10 @@ namespace CovidSafe.DAL.Services
         /// <summary>
         /// Store a new <see cref="MatchMessage"/> based on an <see cref="AreaMatch"/>
         /// </summary>
-        /// <param name="areas"><see cref="AreaMatch"/> content</param>
+        /// <param name="areaMatch"><see cref="AreaMatch"/> content</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Collection of published <see cref="MatchMessage"/> identifiers</returns>
-        Task PublishAreaAsync(AreaMatch areas, CancellationToken cancellationToken = default);
+        Task PublishAreaAsync(AreaMatch areaMatch, CancellationToken cancellationToken = default);
         /// <summary>
         /// Store a new <see cref="SelfReportRequest"/>
         /// </summary>

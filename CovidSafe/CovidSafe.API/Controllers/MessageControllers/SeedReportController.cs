@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,8 +14,9 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// Handles requests for infected clients volunteering <see cref="BlueToothSeed"/> identifiers
     /// </summary>
     [ApiController]
-    [ApiVersion("1")]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
+    [Route("api/Messages/[controller]")]
     public class SeedReportController : ControllerBase
     {
         /// <summary>
@@ -55,51 +57,34 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="200">Query matched Trace results</response>
-        /// <response code="400">Malformed or invalid query provided</response>
+        /// <param name="request"><see cref="SelfReportRequest"/> content</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
+        /// <response code="200">Submission successful</response>
+        /// <response code="400">Malformed or invalid request</response>
         [HttpPut]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync(SelfReportRequest request)
+        public async Task<ActionResult> PutAsync(SelfReportRequest request, CancellationToken cancellationToken = default)
         {
             // Get server timestamp at request immediately
             long serverTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            CancellationToken ct = new CancellationToken();
-
-            // Validate inputs
-            if (request == null)
+            try
+            {
+                await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
+                return Ok();
+            }
+            catch (ValidationFailedException ex)
+            {
+                // Only return validation results
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
             {
                 return BadRequest();
             }
-            if (request.Seeds.Count > 0)
-            {
-                // Validate seed formats (can they parse to Guid?)
-                foreach(BlueToothSeed seed in request.Seeds)
-                {
-                    Guid output;
-                    if(!Guid.TryParse(seed.Seed, out output))
-                    {
-                        return BadRequest(String.Format("'{0}' is not a valid GUID/UUID.", seed.Seed));
-                    }
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-            //TODO: add proper region validation
-            //TODO: remove precision limitation
-            if (request.Region.Precision != 4)
-            {
-                return BadRequest("Only precision 4 is supported for insertion temporarily");
-            }
-
-            await this._messageService.PublishAsync(request, serverTimestamp, ct);
-
-            return Ok();
         }
     }
 }
