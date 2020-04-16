@@ -3,14 +3,14 @@
 namespace CovidSafe.Entities.Validation
 {
     /// <summary>
-    /// Validation property name enumeration
+    /// Request validation property name constants
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public static class ValidationProperty
+    public static class RequestValidationProperty
     {
         /// <summary>
         /// String reference used when multiple properties cause a 
-        /// <see cref="ValidationFailure"/>
+        /// <see cref="RequestValidationFailure"/>
         /// </summary>
         public const string Multiple = "multiple";
     }

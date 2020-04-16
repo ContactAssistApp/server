@@ -9,15 +9,15 @@ namespace CovidSafe.Entities.Protos
     public partial class Area : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Validate location
             if(this.Location == null)
             {
                 result.Fail(
-                    ValidationIssue.InputNull,
+                    RequestValidationIssue.InputNull,
                     nameof(this.Location),
                     ValidationMessages.NullLocation
                 );

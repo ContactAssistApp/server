@@ -1,9 +1,9 @@
 ﻿namespace CovidSafe.Entities.Validation
 {
     /// <summary>
-    /// <see cref="ValidationResult"/> issue type enumeration
+    /// <see cref="RequestValidationResult"/> issue type enumeration
     /// </summary>
-    public enum ValidationIssue
+    public enum RequestValidationIssue
     {
         InputEmpty,
         InputInvalid,

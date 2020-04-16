@@ -8,7 +8,7 @@
         /// <summary>
         /// Determines if the current object is valid
         /// </summary>
-        /// <returns><see cref="ValidationResult"/> summary</returns>
-        ValidationResult Validate();
+        /// <returns><see cref="RequestValidationResult"/> summary</returns>
+        RequestValidationResult Validate();
     }
 }

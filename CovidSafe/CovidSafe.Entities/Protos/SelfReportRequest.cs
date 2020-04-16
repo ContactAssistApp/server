@@ -9,15 +9,15 @@ namespace CovidSafe.Entities.Protos
     public partial class SelfReportRequest : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Only validate if collection contains message information
             if(this.Seeds == null || this.Seeds.Count == 0)
             {
                 result.Fail(
-                    ValidationIssue.InputEmpty,
+                    RequestValidationIssue.InputEmpty,
                     nameof(this.Seeds),
                     ValidationMessages.EmptySeeds
                 );
@@ -36,7 +36,7 @@ namespace CovidSafe.Entities.Protos
             if(this.Region == null)
             {
                 result.Fail(
-                    ValidationIssue.InputNull,
+                    RequestValidationIssue.InputNull,
                     nameof(this.Region),
                     ValidationMessages.NullRegion
                 );

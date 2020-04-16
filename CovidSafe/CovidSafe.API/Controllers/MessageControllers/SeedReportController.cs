@@ -41,7 +41,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /Messages/SeedReport
+        ///     PUT /api/Messages/SeedReport&amp;api-version={current_version}
         ///     {
         ///         "seeds": [{
         ///             "seed": "00000000-0000-0000-0000-000000000000",
@@ -52,8 +52,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         ///             "latitudePrefix": 74.12,
         ///             "longitudePrefix": -39.12,
         ///             "precision": 2
-        ///         },
-        ///         "clientTimestamp": 1586409048649
+        ///         }
         ///     }
         ///
         /// </remarks>
@@ -65,6 +64,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RequestValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync(SelfReportRequest request, CancellationToken cancellationToken = default)
         {
@@ -76,7 +76,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
                 return Ok();
             }
-            catch (ValidationFailedException ex)
+            catch (RequestValidationFailedException ex)
             {
                 // Only return validation results
                 return BadRequest(ex.ValidationResult);
