@@ -80,16 +80,15 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 .Where(r =>
                     r.Id == messageId
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                ).ToFeedIterator();
+                )
+                .Select(r => r.Value)
+                .ToFeedIterator();
 
             List<MatchMessage> results = new List<MatchMessage>();
 
             while (iterator.HasMoreResults)
             {
-                foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
-                {
-                    results.Add(record.Value);
-                }
+                results.AddRange(await iterator.ReadNextAsync());
             }
 
             return results.FirstOrDefault();
@@ -106,30 +105,30 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
+            long timeStampFilter = this._getTimestampFilter(lastTimestamp);
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
-                    r.Timestamp > this._getTimestampFilter(lastTimestamp)
+                    r.Timestamp > timeStampFilter
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
                     && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                ).ToFeedIterator();
+                )
+                .Select(r => new MessageInfo
+                {
+                    MessageId = r.Id,
+                    MessageTimestamp = r.Timestamp
+                })
+                .ToFeedIterator();
 
             List<MessageInfo> results = new List<MessageInfo>();
 
             while(iterator.HasMoreResults)
             {
-                foreach(MatchMessageRecord record in await iterator.ReadNextAsync())
-                {
-                    results.Add(new MessageInfo
-                    {
-                        MessageId = record.Id,
-                        MessageTimestamp = record.Timestamp
-                    });
-                }
+                results.AddRange(await iterator.ReadNextAsync());
             }
 
             return results;
@@ -148,7 +147,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
 
             // Execute query
-            var iterator = queryable
+            long size = await CosmosLinqExtensions.SumAsync(queryable
                 .Where(r =>
                     r.Timestamp > this._getTimestampFilter(lastTimestamp)
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
@@ -156,17 +155,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
                     && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                ).ToFeedIterator();
-
-            long size = 0;
-
-            while (iterator.HasMoreResults)
-            {
-                foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
-                {
-                    size += record.Size;
-                }
-            }
+                )
+                .Select(r=> r.Size), cancellationToken);
 
             return size;
         }
@@ -183,16 +173,15 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 .Where(r =>
                     ids.Contains(r.Id)
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
-                ).ToFeedIterator();
+                )
+                .Select(r => r.Value)
+                .ToFeedIterator();
 
             List<MatchMessage> results = new List<MatchMessage>();
 
             while (iterator.HasMoreResults)
             {
-                foreach (MatchMessageRecord record in await iterator.ReadNextAsync())
-                {
-                    results.Add(record.Value);
-                }
+                results.AddRange(await iterator.ReadNextAsync());
             }
 
             return results;
