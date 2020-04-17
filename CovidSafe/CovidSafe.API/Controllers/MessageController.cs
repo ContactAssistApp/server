@@ -16,8 +16,9 @@ namespace CovidSafe.API.Controllers
     /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
     [ApiController]
-    [ApiVersion("1")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
+    [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
         /// <summary>
@@ -41,11 +42,11 @@ namespace CovidSafe.API.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /Message
+        ///     POST /api/Message&amp;api-version={current_version}
         ///     {
         ///         "RequestedQueries": [{
-        ///             "MessageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
-        ///             "MessageTimestamp": 1586199635012
+        ///             "messageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
+        ///             "messageTimestamp": 1586199635012
         ///         }]
         ///     }
         ///     
@@ -55,11 +56,11 @@ namespace CovidSafe.API.Controllers
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
-        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RequestValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
         {
@@ -72,7 +73,7 @@ namespace CovidSafe.API.Controllers
                     )
                 );
             }
-            catch(ValidationFailedException ex)
+            catch(RequestValidationFailedException ex)
             {
                 // Only return validation results
                 return BadRequest(ex.ValidationResult);
@@ -84,15 +85,21 @@ namespace CovidSafe.API.Controllers
         }
 
         /// <summary>
-        /// Service status request endpoint
+        /// Service status request endpoint, used mostly by Azure services to determine if 
+        /// an endpoint is alive
         /// </summary>
         /// <remarks>
-        /// Used by Azure App Services to check if service is alive.
+        /// Sample request:
+        /// 
+        ///     HEAD /api/Message
+        /// 
         /// </remarks>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <response code="200">Successful request with results</response>
+        /// <response code="200">Successful request</response>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiVersionNeutral]
         [HttpHead]
-        [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public Task<OkResult> HeadAsync(CancellationToken cancellationToken = default)
         {

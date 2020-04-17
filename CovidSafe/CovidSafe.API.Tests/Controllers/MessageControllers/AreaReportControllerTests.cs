@@ -20,10 +20,6 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
     public class AreaReportControllerTests
     {
         /// <summary>
-        /// Test <see cref="HttpContext"/> instance
-        /// </summary>
-        private Mock<HttpContext> _context;
-        /// <summary>
         /// Test <see cref="ListController"/> instance
         /// </summary>
         private AreaReportController _controller;
@@ -47,18 +43,10 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             // Configure service
             this._service = new MessageService(this._repo.Object);
 
-            // Create HttpContext mock
-            this._context = new Mock<HttpContext>();
-            ActionContext actionContext = new ActionContext
-            {
-                HttpContext = this._context.Object,
-                RouteData = new Microsoft.AspNetCore.Routing.RouteData(),
-                ActionDescriptor = new ControllerActionDescriptor()
-            };
-
             // Configure controller
             this._controller = new AreaReportController(this._service);
-            this._controller.ControllerContext = new ControllerContext(actionContext);
+            this._controller.ControllerContext = new ControllerContext();
+            this._controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
 
         /// <summary>

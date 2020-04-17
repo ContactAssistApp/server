@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -68,7 +69,7 @@ namespace CovidSafe.API
                             "protobuf", 
                             MediaTypeHeaderValue.Parse("application/x-protobuf")
                         );
-        }
+                    }
                 )
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -87,15 +88,21 @@ namespace CovidSafe.API
             services.AddApiVersioning(o =>
             {
                 // Share supported API versions in headers
+                o.ApiVersionReader = new QueryStringApiVersionReader("api-version");
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(
+                    DateTime.Parse(this.Configuration["DefaultApiVersion"])
+                );
                 o.ReportApiVersions = true;
             });
             services.AddVersionedApiExplorer(
                 options =>
                 {
-                    // API versions formatted as 'v'major[.minor][-status]
-                    options.GroupNameFormat = "'v'VVV";
                     // Enable API version in URL
                     options.SubstituteApiVersionInUrl = true;
+                    options.DefaultApiVersion = new ApiVersion(
+                        DateTime.Parse(this.Configuration["DefaultApiVersion"])
+                    );
                 }
             );
 
@@ -149,7 +156,8 @@ namespace CovidSafe.API
             app.UseSwaggerUI(c =>
             {
                 // Enable UI for multiple API versions
-                foreach(ApiVersionDescription description in provider.ApiVersionDescriptions)
+                // Descending operator forces latest version to appear first
+                foreach(ApiVersionDescription description in provider.ApiVersionDescriptions.OrderByDescending(x => x.ApiVersion))
                 {
                     c.SwaggerEndpoint(
                         $"/swagger/{description.GroupName}/swagger.json",

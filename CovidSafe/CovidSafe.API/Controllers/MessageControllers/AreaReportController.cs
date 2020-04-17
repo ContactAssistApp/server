@@ -14,9 +14,10 @@ namespace CovidSafe.API.Controllers.MessageControllers
     /// <summary>
     /// Handles requests for infected clients volunteering <see cref="AreaMatch"/> identifiers
     /// </summary>
-    [ApiVersion("1")]
+    [ApiVersion("2020-04-14", Deprecated = true)]
+    [ApiVersion("2020-04-15")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/Messages/[controller]")]
+    [Route("api/Messages/[controller]")]
     public class AreaReportController : ControllerBase
     {
         /// <summary>
@@ -40,7 +41,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /Messages/AreaReport
+        ///     PUT /api/Messages/AreaReport&amp;api-version={current_version}
         ///     {
         ///         "userMessage": "Monitor symptoms for one week.",
         ///         "areas": [{
@@ -63,6 +64,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<ActionResult> PutAsync([Required] AreaMatch request, CancellationToken cancellationToken = default)
         {
@@ -72,7 +74,7 @@ namespace CovidSafe.API.Controllers.MessageControllers
                 await this._messageService.PublishAreaAsync(request, cancellationToken);
                 return Ok();
             }
-            catch (ValidationFailedException ex)
+            catch (RequestValidationFailedException ex)
             {
                 // Only return validation issues
                 return BadRequest(ex.ValidationResult);

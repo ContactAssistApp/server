@@ -11,9 +11,9 @@ namespace CovidSafe.Entities.Protos
     public partial class AreaMatch : IValidatable
     {
         /// <inheritdoc/>
-        public ValidationResult Validate()
+        public RequestValidationResult Validate()
         {
-            ValidationResult result = new ValidationResult();
+            RequestValidationResult result = new RequestValidationResult();
 
             // Validate areas
             if(this.Areas.Count > 0)
@@ -28,7 +28,7 @@ namespace CovidSafe.Entities.Protos
             else
             {
                 result.Fail(
-                    ValidationIssue.InputEmpty,
+                    RequestValidationIssue.InputEmpty,
                     nameof(this.Areas),
                     ValidationMessages.EmptyAreas
                 );
@@ -38,7 +38,7 @@ namespace CovidSafe.Entities.Protos
             if(String.IsNullOrEmpty(this.UserMessage))
             {
                 result.Fail(
-                    ValidationIssue.InputEmpty,
+                    RequestValidationIssue.InputEmpty,
                     nameof(this.UserMessage),
                     ValidationMessages.EmptyMessage
                 );
