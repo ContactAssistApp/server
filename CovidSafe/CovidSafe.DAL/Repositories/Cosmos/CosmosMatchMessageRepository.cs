@@ -145,18 +145,21 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 .GetItemLinqQueryable<MatchMessageRecord>();
 
             RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
+            long timeStampFilter = this._getTimestampFilter(lastTimestamp);
 
             // Execute query
-            long size = await CosmosLinqExtensions.SumAsync(queryable
+            var size = await queryable
                 .Where(r =>
-                    r.Timestamp > this._getTimestampFilter(lastTimestamp)
+                    r.Timestamp > timeStampFilter
                     && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
                     && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
                     && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
                     && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
                     && r.Version == MatchMessageRecord.CURRENT_RECORD_VERSION
                 )
-                .Select(r=> r.Size), cancellationToken);
+                .Select(r => r.Size)
+                .SumAsync(cancellationToken)
+                .ConfigureAwait(false);
 
             return size;
         }
