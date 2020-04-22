@@ -201,10 +201,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             {
                 throw new ArgumentNullException(nameof(region));
             }
-            if(region.Precision != this.RegionPrecision)
-            {
-                throw new InvalidDataException($"Precision {region.Precision} is not supported right now. Please use {this.RegionPrecision}.");
-            }
 
             region = RegionHelper.AdjustToPrecision(region);
 
