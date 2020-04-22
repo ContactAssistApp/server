@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<LoadTest Name="LoadTest" Description="" Owner="" storage="c:\users\kevingao\workspace\hackathon\covidsafe\backend\covidsafe\covidsafe.api.webperformanceandloadtests\loadtest.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings1" Id="ad88da27-8367-4f5b-b0df-5285fcaca2db" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<LoadTest Name="LoadTest" Description="" Owner="" storage="d:\users\coryg\source\repos\covidsafe\backend\covidsafe\covidsafe.api.webperformanceandloadtests\loadtest.loadtest" Priority="2147483647" Enabled="true" CssProjectStructure="" CssIteration="" DeploymentItemsEditable="" WorkItemIds="" TraceLevel="None" CurrentRunConfig="Run Settings1" Id="ad88da27-8367-4f5b-b0df-5285fcaca2db" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Scenarios>
     <Scenario Name="Scenario1-SizeRequest" DelayBetweenIterations="3" PercentNewUsers="0" IPSwitching="false" TestMixType="PercentageOfTestsStarted" ApplyDistributionToPacingDelay="true" MaxTestIterations="0" DisableDuringWarmup="false" DelayStartTime="0" AllowedAgents="">
       <ThinkProfile Value="0.2" Pattern="NormalDistribution" />

@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CovidSafe.API.Tests", "Covi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CovidSafe.Entities.Tests", "CovidSafe.Entities.Tests\CovidSafe.Entities.Tests.csproj", "{143B3AB2-7F1A-4901-BF1D-A1BA7DE2EDFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovidSafe.API.WebPerformanceAndLoadTests", "CovidSafe.API.WebPerformanceAndLoadTests\CovidSafe.API.WebPerformanceAndLoadTests.csproj", "{B5F256B9-C0DC-4BA6-9C60-7BCF8E13F15A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovidSafe.API.Tests.Performance", "CovidSafe.API.Tests.Performance\CovidSafe.API.Tests.Performance.csproj", "{B5F256B9-C0DC-4BA6-9C60-7BCF8E13F15A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
