@@ -24,4 +24,8 @@
     <ProjectReference Include="..\CovidSafe.Entities\CovidSafe.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Performance\" />
+  </ItemGroup>
+
 </Project>
