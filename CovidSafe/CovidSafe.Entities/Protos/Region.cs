@@ -11,11 +11,11 @@ namespace CovidSafe.Entities.Protos
         /// <summary>
         /// Maximum allowed precision value;
         /// </summary>
-        public const int MAX_PRECISION = 8;
+        public const int MAX_PRECISION = 4;
         /// <summary>
         /// Minimum allowed precision value
         /// </summary>
-        public const int MIN_PRECISION = 0;
+        public const int MIN_PRECISION = 4;
 
         /// <inheritdoc/>
         public RequestValidationResult Validate()
