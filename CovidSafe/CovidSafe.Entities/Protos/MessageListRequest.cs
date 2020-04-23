@@ -15,7 +15,7 @@ namespace CovidSafe.Entities.Protos
 
             // Validate timestamp
             result.Combine(Validator.ValidateTimestamp(this.LastQueryTime, nameof(this.LastQueryTime)));
-            
+
             // Validate region
             if(this.Region == null)
             {
