@@ -73,13 +73,27 @@ namespace CovidSafe.API
                 )
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            #region Database Configuration
+
             // Get configuration sections
             services.Configure<CosmosSchemaConfigurationSection>(this.Configuration.GetSection("CosmosSchema"));
 
+            // Create Cosmos Connection, based on connection string location
+            if(!String.IsNullOrEmpty(this.Configuration.GetConnectionString("CosmosConnection"))) {
+                services.AddTransient(cf => new CosmosConnectionFactory(this.Configuration.GetConnectionString("CosmosConnection")));
+            }
+            else
+            {
+                // Attempt to pull from generic 'CosmosConnection' setting
+                // Throws exception if not defined
+                services.AddTransient(cf => new CosmosConnectionFactory(this.Configuration["CosmosConnection"]));
+            }
+            
             // Configure data repository implementations
-            services.AddTransient(cf => new CosmosConnectionFactory(this.Configuration["CosmosConnection"]));
             services.AddTransient<CosmosContext>();
             services.AddSingleton<IMatchMessageRepository, CosmosMatchMessageRepository>();
+
+            #endregion
 
             // Configure service layer
             services.AddSingleton<IMessageService, MessageService>();

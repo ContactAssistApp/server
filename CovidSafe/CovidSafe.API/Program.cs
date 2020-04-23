@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -36,19 +37,23 @@ namespace CovidSafe.API
                     // We need to generate the original config before we can get the Key Vault URL
                     var builtConfig = config.Build();
 
-                    // Get Managed Service Identity token
-                    AzureServiceTokenProvider tokenProvider = new AzureServiceTokenProvider();
-                    KeyVaultClient kvClient = new KeyVaultClient(
-                        new KeyVaultClient.AuthenticationCallback(
-                            tokenProvider.KeyVaultTokenCallback
-                        )
-                    );
+                    // Is there a Key Vault URL specified?
+                    if(!String.IsNullOrEmpty(builtConfig["KeyVaultUrl"]))
+                    {
+                        // Get Managed Service Identity token
+                        AzureServiceTokenProvider tokenProvider = new AzureServiceTokenProvider();
+                        KeyVaultClient kvClient = new KeyVaultClient(
+                            new KeyVaultClient.AuthenticationCallback(
+                                tokenProvider.KeyVaultTokenCallback
+                            )
+                        );
 
-                    config.AddAzureKeyVault(
-                        builtConfig["KeyVaultUrl"],
-                        kvClient,
-                        new DefaultKeyVaultSecretManager()
-                    );
+                        config.AddAzureKeyVault(
+                            builtConfig["KeyVaultUrl"],
+                            kvClient,
+                            new DefaultKeyVaultSecretManager()
+                        );
+                    }
                 })
                 .UseStartup<Startup>();
     }
