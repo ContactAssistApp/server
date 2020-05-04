@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -157,8 +158,8 @@ namespace CovidSafe.API.Tests.Controllers
             // Arrange
             IEnumerable<string> ids = new string[]
             {
-                "00000000-0000-0000-0000-000000000000",
-                "00000000-0000-0000-0000-000000000001"
+                "00000000-0000-0000-0000-000000000001",
+                "00000000-0000-0000-0000-000000000002"
             };
             MatchMessage result1 = new MatchMessage();
             MatchMessage result2 = new MatchMessage();
@@ -176,12 +177,12 @@ namespace CovidSafe.API.Tests.Controllers
             request.RequestedQueries.Add(new MessageInfo
             {
                 MessageId = ids.ElementAt(0),
-                MessageTimestamp = 0
+                MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             });
             request.RequestedQueries.Add(new MessageInfo
             {
                 MessageId = ids.ElementAt(1),
-                MessageTimestamp = 0
+                MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             });
 
             // Act
@@ -207,8 +208,8 @@ namespace CovidSafe.API.Tests.Controllers
             // Arrange
             IEnumerable<string> ids = new string[]
             {
-                "00000000-0000-0000-0000-000000000000",
-                "00000000-0000-0000-0000-000000000001"
+                "00000000-0000-0000-0000-000000000001",
+                "00000000-0000-0000-0000-000000000002"
             };
             MatchMessage result1 = new MatchMessage();
             IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
@@ -224,12 +225,12 @@ namespace CovidSafe.API.Tests.Controllers
             request.RequestedQueries.Add(new MessageInfo
             {
                 MessageId = ids.ElementAt(0),
-                MessageTimestamp = 0
+                MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             });
             request.RequestedQueries.Add(new MessageInfo
             {
                 MessageId = ids.ElementAt(1),
-                MessageTimestamp = 0
+                MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             });
 
             // Act

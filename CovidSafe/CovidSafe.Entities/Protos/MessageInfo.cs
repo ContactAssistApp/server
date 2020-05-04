@@ -16,7 +16,7 @@ namespace CovidSafe.Entities.Protos
             result.Combine(Validator.ValidateGuid(this.MessageId, nameof(this.MessageId)));
 
             // Timestamp validation
-            result.Combine(Validator.ValidateTimestamp(this.MessageTimestamp, nameof(this.MessageTimestamp)));
+            result.Combine(Validator.ValidateTimestamp(this.MessageTimestamp, parameterName: nameof(this.MessageTimestamp)));
 
             return result;
         }

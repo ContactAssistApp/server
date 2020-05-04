@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers.MessageControllers;
@@ -116,8 +117,8 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
             requestObj.Areas.Add(new Area
             {
-                BeginTime = 0,
-                EndTime = 1,
+                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 Location = new Location
                 {
                     Latitude = 10.1234,

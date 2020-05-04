@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.API.Controllers.MessageControllers;
@@ -155,9 +156,9 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
             };
             requestObj.Seeds.Add(new BlueToothSeed
             {
-                SequenceEndTime = 1,
-                SequenceStartTime = 0,
-                Seed = "00000000-0000-0000-0000-000000000000"
+                SequenceEndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
+                SequenceStartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                Seed = "00000000-0000-0000-0000-000000000001"
             });
 
             // Act

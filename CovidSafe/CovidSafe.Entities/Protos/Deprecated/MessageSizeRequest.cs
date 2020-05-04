@@ -30,7 +30,7 @@ namespace CovidSafe.Entities.Protos.Deprecated
             RequestValidationResult result = new RequestValidationResult();
 
             // Validate timestamp
-            result.Combine(Validator.ValidateTimestamp(this.LastQueryTime, nameof(this.LastQueryTime)));
+            result.Combine(Validator.ValidateTimestamp(this.LastQueryTime, parameterName: nameof(this.LastQueryTime)));
 
             // Validate region
             if(this.Region == null)

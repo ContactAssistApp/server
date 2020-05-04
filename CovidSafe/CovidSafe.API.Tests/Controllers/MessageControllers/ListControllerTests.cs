@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -164,14 +165,13 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                 LongitudePrefix = -10.1234,
                 Precision = 4
             };
-            int requestedTimestamp = 0;
 
             IEnumerable<MessageInfo> response = new List<MessageInfo>
             {
                 new MessageInfo
                 {
-                    MessageId = "00000000-0000-0000-0000-0000000000",
-                    MessageTimestamp = 0
+                    MessageId = "00000000-0000-0000-0000-0000000001",
+                    MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 }
             };
 
@@ -189,7 +189,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                     requestedRegion.LatitudePrefix,
                     requestedRegion.LongitudePrefix,
                     requestedRegion.Precision,
-                    requestedTimestamp,
+                    DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeMilliseconds(),
                     CancellationToken.None
                 );
 
@@ -214,7 +214,13 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Act
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
+                .GetAsync(
+                    10.1234,
+                    -10.1234,
+                    4,
+                    DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    CancellationToken.None
+                );
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -340,7 +346,13 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Act
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
+                .HeadAsync(
+                    10.1234,
+                    -10.1234,
+                    4,
+                    DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    CancellationToken.None
+                );
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -360,7 +372,13 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Act
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
+                .HeadAsync(
+                    10.1234,
+                    -10.1234,
+                    4,
+                    DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    CancellationToken.None
+                );
 
             // Assert
             Assert.IsNotNull(controllerResponse);

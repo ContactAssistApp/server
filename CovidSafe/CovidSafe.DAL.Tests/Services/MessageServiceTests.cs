@@ -87,8 +87,8 @@ namespace CovidSafe.DAL.Tests.Services
             // Arrange
             IEnumerable<string> ids = new List<string>
             {
-                "00000000-0000-0000-0000-000000000000",
-                "00000000-0000-0000-0000-000000000001"
+                "00000000-0000-0000-0000-000000000001",
+                "00000000-0000-0000-0000-000000000002"
             };
             IEnumerable<MatchMessage> serviceResponse = new List<MatchMessage>
             {
@@ -165,13 +165,13 @@ namespace CovidSafe.DAL.Tests.Services
             {
                 new MessageInfo
                 {
-                    MessageId = "00000000-0000-0000-0000-000000000000",
-                    MessageTimestamp = 0
+                    MessageId = "00000000-0000-0000-0000-000000000001",
+                    MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 },
                 new MessageInfo
                 {
-                    MessageId = "00000000-0000-0000-0000-000000000001",
-                    MessageTimestamp = 1
+                    MessageId = "00000000-0000-0000-0000-000000000002",
+                    MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 },
             };
 
@@ -181,7 +181,7 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Act
             IEnumerable<MessageInfo> result = await this._service
-                .GetLatestInfoAsync(region, 0, CancellationToken.None);
+                .GetLatestInfoAsync(region, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(result);
@@ -246,7 +246,11 @@ namespace CovidSafe.DAL.Tests.Services
                 .Returns(Task.FromResult(expectedResult));
 
             // Act
-            long result = await this._service.GetLatestRegionDataSizeAsync(region, 0, CancellationToken.None);
+            long result = await this._service.GetLatestRegionDataSizeAsync(
+                region,
+                DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                CancellationToken.None
+            );
 
             // Assert
             Assert.AreEqual(expectedResult, result);
@@ -281,8 +285,8 @@ namespace CovidSafe.DAL.Tests.Services
             AreaMatch request = new AreaMatch();
             request.Areas.Add(new Area
             {
-                BeginTime = 0,
-                EndTime = 1,
+                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 Location = new Location
                 {
                     Latitude = 10.1234,
@@ -291,7 +295,7 @@ namespace CovidSafe.DAL.Tests.Services
                 RadiusMeters = 100
             });
             request.UserMessage = "Test user message!";
-            string repoResponse = "00000000-0000-0000-0000-0000000000000";
+            string repoResponse = "00000000-0000-0000-0000-0000000000001";
 
             this._repo
                 .Setup(r => r.InsertAsync(It.IsAny<MatchMessage>(), It.IsAny<Region>(), CancellationToken.None))
@@ -396,7 +400,7 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task PublishAsync_SucceedsOnValidMessage()
         {
             // Arrange
-            string repoResponse = "00000000-0000-0000-0000-000000000001";
+            string repoResponse = "00000000-0000-0000-0000-000000000002";
             Region region = new Region
             {
                 LatitudePrefix = 10.1234,
@@ -410,8 +414,8 @@ namespace CovidSafe.DAL.Tests.Services
             };
             areaMatch.Areas.Add(new Area
             {
-                BeginTime = 0,
-                EndTime = 1,
+                BeginTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                EndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
                 Location = new Location
                 {
                     Latitude = 10.1234,
@@ -422,9 +426,9 @@ namespace CovidSafe.DAL.Tests.Services
             request.AreaMatches.Add(areaMatch);
             request.BluetoothSeeds.Add(new BlueToothSeed
             {
-                Seed = "00000000-0000-0000-0000-000000000000",
-                SequenceEndTime = 1,
-                SequenceStartTime = 0
+                Seed = "00000000-0000-0000-0000-000000000001",
+                SequenceEndTime = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
+                SequenceStartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             });
 
             this._repo

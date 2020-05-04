@@ -29,8 +29,8 @@ namespace CovidSafe.Entities.Protos
             }
 
             // Validate timestamps
-            result.Combine(Validator.ValidateTimestamp(this.BeginTime, nameof(this.BeginTime)));
-            result.Combine(Validator.ValidateTimestamp(this.EndTime, nameof(this.EndTime)));
+            result.Combine(Validator.ValidateTimestamp(this.BeginTime, parameterName: nameof(this.BeginTime)));
+            result.Combine(Validator.ValidateTimestamp(this.EndTime, parameterName: nameof(this.EndTime)));
             result.Combine(Validator.ValidateTimeRange(this.BeginTime, this.EndTime));
 
             return result;

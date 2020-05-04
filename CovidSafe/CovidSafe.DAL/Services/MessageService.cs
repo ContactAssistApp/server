@@ -99,7 +99,7 @@ namespace CovidSafe.DAL.Services
             }
 
             RequestValidationResult validationResult = region.Validate();
-            validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, nameof(lastTimestamp)));
+            validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, parameterName: nameof(lastTimestamp)));
 
             if(validationResult.Passed)
             {

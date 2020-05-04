@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -163,7 +164,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                 LongitudePrefix = -10.1234,
                 Precision = 4
             };
-            int requestedTimestamp = 0;
+
             long expectedSize = 1234;
 
             this._repo
@@ -180,7 +181,7 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
                     requestedRegion.LatitudePrefix,
                     requestedRegion.LongitudePrefix,
                     requestedRegion.Precision,
-                    requestedTimestamp,
+                    DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeMilliseconds(),
                     CancellationToken.None
                 );
 
@@ -205,7 +206,12 @@ namespace CovidSafe.API.Tests.Controllers.MessageControllers
 
             // Act
             ActionResult<MessageSizeResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, -10.1234, 4, 0, CancellationToken.None);
+                .GetAsync(
+                    10.1234,
+                    -10.1234,
+                    4,
+                    DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
