@@ -184,11 +184,9 @@ namespace CovidSafe.DAL.Services
             {
                 // Build MatchMessage from submitted content
                 MatchMessage message = new MatchMessage();
-                BluetoothMatch matches = new BluetoothMatch();
-                matches.Seeds.AddRange(request.Seeds);
+                message.BluetoothSeeds.AddRange(request.Seeds);
 
                 // Store in data repository
-                message.BluetoothMatches.Add(matches);
                 return await this._messageRepo.InsertAsync(message, request.Region, cancellationToken);
             }
             else

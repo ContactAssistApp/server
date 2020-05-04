@@ -14,7 +14,7 @@ namespace CovidSafe.Entities.Protos
             RequestValidationResult result = new RequestValidationResult();
 
             // Must contain at least one of either BluetoothSeeds or AreaMatches
-            if(this.AreaMatches.Count == 0 && this.BluetoothMatches.Count == 0)
+            if(this.AreaMatches.Count == 0 && this.BluetoothSeeds.Count == 0)
             {
                 result.Fail(
                     RequestValidationIssue.InputEmpty,
@@ -31,10 +31,10 @@ namespace CovidSafe.Entities.Protos
                     result.Combine(areaMatch.Validate());
                 }
             }
-            if(this.BluetoothMatches.Count > 0)
+            if(this.BluetoothSeeds.Count > 0)
             {
                 // Validate individual Bluetooth matches
-                foreach(BluetoothMatch btMatch in this.BluetoothMatches)
+                foreach(BlueToothSeed btMatch in this.BluetoothSeeds)
                 {
                     // User BluetoothMatch.Validate()
                     result.Combine(btMatch.Validate());

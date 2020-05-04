@@ -354,17 +354,12 @@ namespace CovidSafe.DAL.Tests.Services
                 RadiusMeters = 100
             });
             request.AreaMatches.Add(areaMatch);
-            BluetoothMatch btMatch = new BluetoothMatch
-            {
-                UserMessage = "Test BL message"
-            };
-            btMatch.Seeds.Add(new BlueToothSeed
+            request.BluetoothSeeds.Add(new BlueToothSeed
             {
                 Seed = "00000000-0000-0000-0000-000000000000",
                 SequenceEndTime = 1,
                 SequenceStartTime = 0
             });
-            request.BluetoothMatches.Add(btMatch);
 
             // Act
             string result = await this._service
@@ -425,17 +420,12 @@ namespace CovidSafe.DAL.Tests.Services
                 RadiusMeters = 100
             });
             request.AreaMatches.Add(areaMatch);
-            BluetoothMatch btMatch = new BluetoothMatch
-            {
-                UserMessage = "Test BL message"
-            };
-            btMatch.Seeds.Add(new BlueToothSeed
+            request.BluetoothSeeds.Add(new BlueToothSeed
             {
                 Seed = "00000000-0000-0000-0000-000000000000",
                 SequenceEndTime = 1,
                 SequenceStartTime = 0
             });
-            request.BluetoothMatches.Add(btMatch);
 
             this._repo
                 .Setup(r => r.InsertAsync(It.IsAny<MatchMessage>(), It.IsAny<Region>(), CancellationToken.None))
