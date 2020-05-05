@@ -3,7 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200415.Protos;
+using CovidSafe.Entities.Protos.v20200415;
+using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +20,18 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
     public class SeedReportController : ControllerBase
     {
         /// <summary>
-        /// <see cref="MatchMessage"/> service layer
+        /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IMessageService _messageService;
+        private IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="SeedReportController"/> instance
         /// </summary>
-        /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
-        public SeedReportController(IMessageService messageService)
+        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
+        public SeedReportController(IInfectionReportService reportService)
         {
             // Assign local values
-            this._messageService = messageService;
+            this._reportService = reportService;
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
 
             try
             {
-                await this._messageService.PublishAsync(request, serverTimestamp, cancellationToken);
+                await this._reportService.PublishAsync(request, serverTimestamp, cancellationToken);
                 return Ok();
             }
             catch (RequestValidationFailedException ex)

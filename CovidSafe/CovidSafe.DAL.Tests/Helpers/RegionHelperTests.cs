@@ -4,7 +4,6 @@ using System.Linq;
 
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.v20200505.Protos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CovidSafe.Tests.Helpers
@@ -138,23 +137,23 @@ namespace CovidSafe.Tests.Helpers
         public void RegionsCoverageTest()
         {
             var areas = new[] {
-                new Area
+                new InfectionArea
                 {
-                    BeginTime = 0,
-                    EndTime = 1,
+                    BeginTimestamp = 0,
+                    EndTimestamp = 1,
                     RadiusMeters = 100,
-                    Location = new Location
+                    Location = new Coordinates
                     {
                         Latitude = 40.73,
                         Longitude = -73.93
                     }
                 },
-                new Area
+                new InfectionArea
                 {
-                    BeginTime = 1,
-                    EndTime = 2,
+                    BeginTimestamp = 1,
+                    EndTimestamp = 2,
                     RadiusMeters = 100,
-                    Location = new Location
+                    Location = new Coordinates
                     {
                         Latitude = 40.1,
                         Longitude = -73.93

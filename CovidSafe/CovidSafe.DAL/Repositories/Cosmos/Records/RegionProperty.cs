@@ -1,4 +1,4 @@
-﻿using CovidSafe.Entities.Protos;
+﻿using CovidSafe.Entities.Geospatial;
 using Microsoft.Azure.Cosmos.Spatial;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Records

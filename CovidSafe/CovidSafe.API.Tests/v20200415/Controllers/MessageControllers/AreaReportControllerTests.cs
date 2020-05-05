@@ -24,13 +24,13 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
         /// </summary>
         private AreaReportController _controller;
         /// <summary>
-        /// Mock <see cref="IMatchMessageRepository"/> instance
+        /// Mock <see cref="IInfectionReportRepository"/> instance
         /// </summary>
-        private Mock<IMatchMessageRepository> _repo;
+        private Mock<IInfectionReportRepository> _repo;
         /// <summary>
-        /// <see cref="MessageService"/> instance
+        /// <see cref="InfectionReportService"/> instance
         /// </summary>
-        private MessageService _service;
+        private InfectionReportService _service;
 
         /// <summary>
         /// Creates a new <see cref="AreaReportControllerTests"/> instance
@@ -38,10 +38,10 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
         public AreaReportControllerTests()
         {
             // Configure repo mock
-            this._repo = new Mock<IMatchMessageRepository>();
+            this._repo = new Mock<IInfectionReportRepository>();
 
             // Configure service
-            this._service = new MessageService(this._repo.Object);
+            this._service = new InfectionReportService(this._repo.Object);
 
             // Configure controller
             this._controller = new AreaReportController(this._service);

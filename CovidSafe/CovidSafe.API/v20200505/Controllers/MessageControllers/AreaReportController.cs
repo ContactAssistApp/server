@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200505.Protos;
+using CovidSafe.Entities.Protos.v20200505;
+using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,18 +21,18 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
     public class AreaReportController : ControllerBase
     {
         /// <summary>
-        /// <see cref="MatchMessage"/> service layer
+        /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IMessageService _messageService;
+        private IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="AreaReportController"/> instance
         /// </summary>
-        /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
-        public AreaReportController(IMessageService messageService)
+        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
+        public AreaReportController(IInfectionReportService reportService)
         {
             // Assign local values
-            this._messageService = messageService;
+            this._reportService = reportService;
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             try
             {
                 // Publish area
-                await this._messageService.PublishAreaAsync(request, cancellationToken);
+                await this._reportService.PublishAreaAsync(request, cancellationToken);
                 return Ok();
             }
             catch (RequestValidationFailedException ex)

@@ -6,7 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200505.Protos;
+using CovidSafe.Entities.Protos.v20200505;
+using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,18 +23,18 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
     public class ListController : ControllerBase
     {
         /// <summary>
-        /// <see cref="MatchMessage"/> service layer
+        /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IMessageService _messageService;
+        private IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="ListController"/> instance
         /// </summary>
-        /// <param name="messageService"><see cref="MatchMessage"/> service layer</param>
-        public ListController(IMessageService messageService)
+        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
+        public ListController(IInfectionReportService reportService)
         {
             // Assign local values
-            this._messageService = messageService;
+            this._reportService = reportService;
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             {
                 // Pull queries matching parameters
                 var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
-                IEnumerable<MessageInfo> results = await this._messageService
+                IEnumerable<InfectionReportMetadata> results = await this._reportService
                     .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
 
                 // Convert to response proto
@@ -120,7 +121,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             {
                 // Pull queries matching parameters
                 var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
-                long size = await this._messageService
+                long size = await this._reportService
                     .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
 
                 // Set Content-Length header with calculated size

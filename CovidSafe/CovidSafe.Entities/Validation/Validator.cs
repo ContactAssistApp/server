@@ -1,5 +1,5 @@
 ﻿using System;
-
+using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Validation.Resources;
 
 namespace CovidSafe.Entities.Validation
@@ -10,25 +10,9 @@ namespace CovidSafe.Entities.Validation
     public static class Validator
     {
         /// <summary>
-        /// Maximum allowable latitude
-        /// </summary>
-        public const double MAX_LATITUDE = 90;
-        /// <summary>
-        /// Maximum allowable longitude
-        /// </summary>
-        public const double MAX_LONGITUDE = 180;
-        /// <summary>
         /// Maximum allowed age of a timestamp, in days
         /// </summary>
         public const int MAX_TIMESTAMP_AGE_DAYS = 28;
-        /// <summary>
-        /// Minimum allowable latitude
-        /// </summary>
-        public const double MIN_LATITUDE = -90;
-        /// <summary>
-        /// Minimum allowable longitude
-        /// </summary>
-        public const double MIN_LONGITUDE = -180;
 
         /// <summary>
         /// Determines if a string is a valid GUID/UUID
@@ -76,15 +60,15 @@ namespace CovidSafe.Entities.Validation
             RequestValidationResult result = new RequestValidationResult();
 
             // Must be within range
-            if(latitude > MAX_LATITUDE || latitude < MIN_LATITUDE)
+            if(latitude > Coordinates.MAX_LATITUDE || latitude < Coordinates.MIN_LATITUDE)
             {
                 result.Fail(
                     RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(latitude),
                     ValidationMessages.InvalidLatitude,
                     latitude.ToString(),
-                    MIN_LATITUDE.ToString(),
-                    MAX_LATITUDE.ToString()
+                    Coordinates.MIN_LATITUDE.ToString(),
+                    Coordinates.MAX_LATITUDE.ToString()
                 );
             }
 
@@ -102,15 +86,15 @@ namespace CovidSafe.Entities.Validation
             RequestValidationResult result = new RequestValidationResult();
 
             // Must be within range
-            if (longitude > MAX_LONGITUDE || longitude < MIN_LONGITUDE)
+            if (longitude > Coordinates.MAX_LONGITUDE || longitude < Coordinates.MIN_LONGITUDE)
             {
                 result.Fail(
                     RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(longitude),
                     ValidationMessages.InvalidLongitude,
                     longitude.ToString(),
-                    MIN_LONGITUDE.ToString(),
-                    MAX_LONGITUDE.ToString()
+                    Coordinates.MIN_LONGITUDE.ToString(),
+                    Coordinates.MAX_LONGITUDE.ToString()
                 );
             }
 
