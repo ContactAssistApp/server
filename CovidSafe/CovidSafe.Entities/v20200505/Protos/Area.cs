@@ -1,7 +1,7 @@
 ﻿using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200505.Protos
 {
     /// <summary>
     /// <see cref="Area"/> partial from generated Protobuf class

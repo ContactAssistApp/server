@@ -3,7 +3,7 @@
 // Input: my.proto
 
 #pragma warning disable CS1591, CS0612, CS3021, IDE1006
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200505.Protos
 {
 
     [global::ProtoBuf.ProtoContract()]

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.v20200505.Protos;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

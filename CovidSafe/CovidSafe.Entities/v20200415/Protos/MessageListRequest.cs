@@ -1,7 +1,7 @@
 ﻿using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200415.Protos
 {
     /// <summary>
     /// <see cref="MessageListRequest"/> partial from generated Protobuf class
@@ -17,7 +17,7 @@ namespace CovidSafe.Entities.Protos
             result.Combine(Validator.ValidateTimestamp(this.LastQueryTime, parameterName: nameof(this.LastQueryTime)));
 
             // Validate region
-            if(this.Region == null)
+            if (this.Region == null)
             {
                 result.Fail(
                     RequestValidationIssue.InputNull,

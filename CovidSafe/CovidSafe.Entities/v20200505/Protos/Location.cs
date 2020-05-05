@@ -1,30 +1,12 @@
 ﻿using CovidSafe.Entities.Validation;
-using CovidSafe.Entities.Validation.Resources;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200505.Protos
 {
     /// <summary>
     /// <see cref="Location"/> partial from generated Protobuf class
     /// </summary>
     public partial class Location : IValidatable
     {
-        /// <summary>
-        /// Maximum allowable latitude
-        /// </summary>
-        public const double MAX_LATITUDE = 90;
-        /// <summary>
-        /// Maximum allowable longitude
-        /// </summary>
-        public const double MAX_LONGITUDE = 180;
-        /// <summary>
-        /// Minimum allowable latitude
-        /// </summary>
-        public const double MIN_LATITUDE = -90;
-        /// <summary>
-        /// Minimum allowable longitude
-        /// </summary>
-        public const double MIN_LONGITUDE = -180;
-
         /// <inheritdoc/>
         public RequestValidationResult Validate()
         {

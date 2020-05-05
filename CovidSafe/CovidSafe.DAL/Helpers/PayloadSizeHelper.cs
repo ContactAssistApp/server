@@ -2,7 +2,6 @@
 using System.IO;
 
 using ProtoBuf;
-using CovidSafe.Entities.Protos;
 
 namespace CovidSafe.DAL.Helpers
 {
@@ -12,11 +11,11 @@ namespace CovidSafe.DAL.Helpers
     public static class PayloadSizeHelper
     {
         /// <summary>
-        /// Calculates the size (in bytes) of a <see cref="MatchMessage"/>
+        /// Calculates the size (in bytes) of an <see cref="object"/>
         /// </summary>
-        /// <param name="message">Source <see cref="MatchMessage"/></param>
-        /// <returns><see cref="MatchMessage"/> size, in bytes</returns>
-        public static long GetSize(MatchMessage message)
+        /// <param name="message">Source <see cref="object"/></param>
+        /// <returns><see cref="object"/> size, in bytes</returns>
+        public static long GetSize(object message)
         {
             if(message != null)
             {

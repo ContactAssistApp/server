@@ -1,7 +1,7 @@
 ﻿using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200505.Protos
 {
     /// <summary>
     /// <see cref="SelfReportRequest"/> partial from generated Protobuf class
@@ -14,7 +14,7 @@ namespace CovidSafe.Entities.Protos
             RequestValidationResult result = new RequestValidationResult();
 
             // Only validate if collection contains message information
-            if(this.Seeds == null || this.Seeds.Count == 0)
+            if (this.Seeds == null || this.Seeds.Count == 0)
             {
                 result.Fail(
                     RequestValidationIssue.InputEmpty,
@@ -25,7 +25,7 @@ namespace CovidSafe.Entities.Protos
             else
             {
                 // Validate each seed
-                foreach(BlueToothSeed seed in this.Seeds)
+                foreach (BlueToothSeed seed in this.Seeds)
                 {
                     // Use BlueToothSeed.Validate()
                     result.Combine(seed.Validate());
@@ -33,7 +33,7 @@ namespace CovidSafe.Entities.Protos
             }
 
             // Validate Region
-            if(this.Region == null)
+            if (this.Region == null)
             {
                 result.Fail(
                     RequestValidationIssue.InputNull,

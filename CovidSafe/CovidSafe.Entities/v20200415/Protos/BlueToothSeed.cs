@@ -1,6 +1,6 @@
 ﻿using CovidSafe.Entities.Validation;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200415.Protos
 {
     /// <summary>
     /// <see cref="BlueToothSeed"/> partial from generated Protobuf class

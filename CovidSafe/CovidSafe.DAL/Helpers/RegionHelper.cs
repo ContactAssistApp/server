@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.v20200505.Protos;
 
 namespace CovidSafe.DAL.Helpers
 {

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.v20200505.Protos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CovidSafe.Tests.Helpers

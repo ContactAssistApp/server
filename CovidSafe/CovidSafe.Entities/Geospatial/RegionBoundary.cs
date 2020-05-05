@@ -1,6 +1,6 @@
 ﻿using System;
 
-using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.v20200505.Protos;
 
 namespace CovidSafe.Entities.Geospatial
 {

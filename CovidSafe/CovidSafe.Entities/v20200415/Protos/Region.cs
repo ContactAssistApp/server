@@ -1,12 +1,14 @@
-﻿using CovidSafe.Entities.Validation;
+﻿using System;
+
+using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200415.Protos
 {
     /// <summary>
     /// <see cref="Region"/> partial from generated Protobuf class
     /// </summary>
-    public partial class Region : global::ProtoBuf.IExtensible, IValidatable
+    public partial class Region : IEquatable<Region>, global::ProtoBuf.IExtensible, IValidatable
     {
         /// <summary>
         /// Maximum allowed precision value;
@@ -18,6 +20,21 @@ namespace CovidSafe.Entities.Protos
         public const int MIN_PRECISION = 0;
 
         /// <inheritdoc/>
+        public bool Equals(Region other)
+        {
+            return this.LatitudePrefix == other.LatitudePrefix
+                && this.LongitudePrefix == other.LongitudePrefix
+                && this.Precision == other.Precision;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return Tuple.Create(this.LatitudePrefix, this.LongitudePrefix, this.LongitudePrefix)
+                .GetHashCode();
+        }
+
+        /// <inheritdoc/>
         public RequestValidationResult Validate()
         {
             RequestValidationResult result = new RequestValidationResult();
@@ -27,7 +44,7 @@ namespace CovidSafe.Entities.Protos
             result.Combine(Validator.ValidateLongitude(this.LongitudePrefix, nameof(this.LongitudePrefix)));
 
             // Validate precision
-            if(this.Precision < MIN_PRECISION || this.Precision > MAX_PRECISION)
+            if (this.Precision < MIN_PRECISION || this.Precision > MAX_PRECISION)
             {
                 result.Fail(
                     RequestValidationIssue.InputInvalid,

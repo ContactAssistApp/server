@@ -1,8 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 using CovidSafe.DAL.Helpers;
-using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.v20200505.Protos;
 using Newtonsoft.Json;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Records

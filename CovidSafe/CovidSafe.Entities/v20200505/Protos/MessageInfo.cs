@@ -1,6 +1,6 @@
 ﻿using CovidSafe.Entities.Validation;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200505.Protos
 {
     /// <summary>
     /// <see cref="MessageInfo"/> partial from generated Protobuf class

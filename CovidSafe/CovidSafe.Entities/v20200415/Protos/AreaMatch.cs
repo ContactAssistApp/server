@@ -3,7 +3,7 @@
 using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 
-namespace CovidSafe.Entities.Protos
+namespace CovidSafe.Entities.v20200415.Protos
 {
     /// <summary>
     /// <see cref="AreaMatch"/> partial from generated Protobuf class
@@ -16,10 +16,10 @@ namespace CovidSafe.Entities.Protos
             RequestValidationResult result = new RequestValidationResult();
 
             // Validate areas
-            if(this.Areas.Count > 0)
+            if (this.Areas.Count > 0)
             {
                 // Validate individual areas
-                foreach(Area area in this.Areas)
+                foreach (Area area in this.Areas)
                 {
                     // Use Area.Validate()
                     result.Combine(area.Validate());
@@ -35,7 +35,7 @@ namespace CovidSafe.Entities.Protos
             }
 
             // Validate message
-            if(String.IsNullOrEmpty(this.UserMessage))
+            if (String.IsNullOrEmpty(this.UserMessage))
             {
                 result.Fail(
                     RequestValidationIssue.InputEmpty,

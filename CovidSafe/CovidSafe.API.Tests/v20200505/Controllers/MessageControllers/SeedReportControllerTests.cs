@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CovidSafe.API.v20200505.Controllers.MessageControllers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Protos;
+using CovidSafe.Entities.v20200505.Protos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
