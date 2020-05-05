@@ -102,14 +102,12 @@ namespace CovidSafe.API
             // Enable API versioning
             services.AddApiVersioning(o =>
             {
-                // Share supported API versions in headers
                 o.ApiVersionReader = new QueryStringApiVersionReader("api-version");
                 o.AssumeDefaultVersionWhenUnspecified = true;
-                // Use namespaces to separate API versions
-                o.Conventions.Add(new VersionByNamespaceConvention());
                 o.DefaultApiVersion = new ApiVersion(
                     DateTime.Parse(this.Configuration["DefaultApiVersion"])
                 );
+                // Share supported API versions in headers
                 o.ReportApiVersions = true;
             });
             services.AddVersionedApiExplorer(

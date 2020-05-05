@@ -17,7 +17,7 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
     /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
     [ApiController]
-    [Obsolete]
+    [ApiVersion("2020-04-15", Deprecated = true)]
     [Route("api/Messages/[controller]")]
     public class ListController : ControllerBase
     {
@@ -111,7 +111,6 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         /// Total size of matching <see cref="MatchMessage"/> objects (via Content-Type header), in bytes, based 
         /// on their size when converted to the Protobuf format
         /// </returns>
-        [ApiVersion("2020-04-15")]
         [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]

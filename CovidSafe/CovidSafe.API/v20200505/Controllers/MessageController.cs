@@ -16,6 +16,7 @@ namespace CovidSafe.API.v20200505.Controllers
     /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
     [ApiController]
+    [ApiVersion("2020-05-05")]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
@@ -95,7 +96,6 @@ namespace CovidSafe.API.v20200505.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <response code="200">Successful request</response>
         [ApiExplorerSettings(IgnoreApi = true)]
-        [ApiVersionNeutral]
         [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
