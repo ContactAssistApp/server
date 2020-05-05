@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -104,6 +105,8 @@ namespace CovidSafe.API
                 // Share supported API versions in headers
                 o.ApiVersionReader = new QueryStringApiVersionReader("api-version");
                 o.AssumeDefaultVersionWhenUnspecified = true;
+                // Use namespaces to separate API versions
+                o.Conventions.Add(new VersionByNamespaceConvention());
                 o.DefaultApiVersion = new ApiVersion(
                     DateTime.Parse(this.Configuration["DefaultApiVersion"])
                 );

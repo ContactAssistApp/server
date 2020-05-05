@@ -11,14 +11,13 @@ using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.Controllers.MessageControllers
+namespace CovidSafe.API.v20200415.Controllers.MessageControllers
 {
     /// <summary>
     /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-04-14", Deprecated = true)]
-    [ApiVersion("2020-04-15")]
+    [Obsolete]
     [Route("api/Messages/[controller]")]
     public class ListController : ControllerBase
     {

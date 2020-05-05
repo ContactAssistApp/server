@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using CovidSafe.API.Controllers.MessageControllers;
+using CovidSafe.API.v20200415.Controllers.MessageControllers;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Protos;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CovidSafe.API.Tests.Controllers.MessageControllers
+namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
 {
     /// <summary>
     /// Unit tests for the <see cref="SeedReportController"/> class

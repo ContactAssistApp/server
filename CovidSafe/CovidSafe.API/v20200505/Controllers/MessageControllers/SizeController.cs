@@ -10,13 +10,12 @@ using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.Controllers.MessageControllers
+namespace CovidSafe.API.v20200505.Controllers.MessageControllers
 {
     /// <summary>
     /// Handles <see cref="MatchMessage"/> size requests
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-04-14", Deprecated = true)]
     [Route("api/Messages/[controller]")]
     public class SizeController : ControllerBase
     {

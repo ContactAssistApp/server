@@ -10,14 +10,13 @@ using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.Controllers
+namespace CovidSafe.API.v20200415.Controllers
 {
     /// <summary>
     /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-04-14", Deprecated = true)]
-    [ApiVersion("2020-04-15")]
+    [Obsolete]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
