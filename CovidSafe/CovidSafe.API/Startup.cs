@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using AutoMapper;
 using CovidSafe.API.Swagger;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Repositories.Cosmos;
@@ -95,6 +95,12 @@ namespace CovidSafe.API
             services.AddSingleton<IInfectionReportRepository, CosmosInfectionReportRepository>();
 
             #endregion
+
+            // Add AutoMapper profiles
+            services.AddAutoMapper(
+                typeof(v20200415.MappingProfiles),
+                typeof(v20200505.MappingProfiles)
+            );
 
             // Configure service layer
             services.AddSingleton<IInfectionReportService, InfectionReportService>();

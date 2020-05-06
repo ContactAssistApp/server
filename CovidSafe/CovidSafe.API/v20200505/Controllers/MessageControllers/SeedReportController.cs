@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
+using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Protos.v20200505;
 using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
@@ -20,17 +23,23 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
     public class SeedReportController : ControllerBase
     {
         /// <summary>
+        /// AutoMapper instance for object resolution
+        /// </summary>
+        private readonly IMapper _map;
+        /// <summary>
         /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IInfectionReportService _reportService;
+        private readonly IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="SeedReportController"/> instance
         /// </summary>
+        /// <param name="map">AutoMapper instance</param>
         /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public SeedReportController(IInfectionReportService reportService)
+        public SeedReportController(IMapper map, IInfectionReportService reportService)
         {
             // Assign local values
+            this._map = map;
             this._reportService = reportService;
         }
 
@@ -41,10 +50,10 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /api/Messages/SeedReport&amp;api-version={current_version}
+        ///     PUT /api/Messages/SeedReport&amp;api-version=2020-05-05
         ///     {
         ///         "seeds": [{
-        ///             "seed": "00000000-0000-0000-0000-000000000000",
+        ///             "seed": "00000000-0000-0000-0000-000000000001",
         ///             "sequenceStartTime": 1586406048649,
         ///             "sequenceEndTime": 1586408048649
         ///         }],
@@ -73,7 +82,14 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
 
             try
             {
-                await this._reportService.PublishAsync(request, serverTimestamp, cancellationToken);
+                // Parse request
+                Entities.Geospatial.Region region = this._map.Map<Entities.Geospatial.Region>(request.Region);
+                IEnumerable<BluetoothSeed> seeds = request.Seeds
+                    .Select(s => this._map.Map<BluetoothSeed>(s));
+
+                // Store submitted data
+                await this._reportService.PublishAsync(seeds, region, serverTimestamp, cancellationToken);
+
                 return Ok();
             }
             catch (RequestValidationFailedException ex)

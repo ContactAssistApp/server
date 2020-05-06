@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
 using CovidSafe.API.v20200415.Controllers;
+using CovidSafe.API.v20200415.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200415.Protos;
+using CovidSafe.Entities.Reports;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,8 +47,14 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
             // Configure Service instance
             this._service = new InfectionReportService(this._repo.Object);
 
+            // Create AutoMapper instance
+            MapperConfiguration mapperConfig = new MapperConfiguration(
+                opts => opts.AddProfile<MappingProfiles>()
+            );
+            IMapper mapper = mapperConfig.CreateMapper();
+
             // Configure controller
-            this._controller = new MessageController(this._service);
+            this._controller = new MessageController(mapper, this._service);
             this._controller.ControllerContext = new ControllerContext();
             this._controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
@@ -160,9 +168,9 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
                 "00000000-0000-0000-0000-000000000001",
                 "00000000-0000-0000-0000-000000000002"
             };
-            MatchMessage result1 = new MatchMessage();
-            MatchMessage result2 = new MatchMessage();
-            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
+            InfectionReport result1 = new InfectionReport();
+            InfectionReport result2 = new InfectionReport();
+            IEnumerable<InfectionReport> toReturn = new List<InfectionReport>
             {
                 result1,
                 result2
@@ -210,8 +218,8 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
                 "00000000-0000-0000-0000-000000000001",
                 "00000000-0000-0000-0000-000000000002"
             };
-            MatchMessage result1 = new MatchMessage();
-            IEnumerable<MatchMessage> toReturn = new List<MatchMessage>
+            InfectionReport result1 = new InfectionReport();
+            IEnumerable<InfectionReport> toReturn = new List<InfectionReport>
             {
                 result1
             };

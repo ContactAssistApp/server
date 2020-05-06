@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
+using CovidSafe.API.v20200415.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Protos.v20200415;
 using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
@@ -22,17 +23,23 @@ namespace CovidSafe.API.v20200415.Controllers
     public class MessageController : ControllerBase
     {
         /// <summary>
+        /// AutoMapper instance for object resolution
+        /// </summary>
+        private readonly IMapper _map;
+        /// <summary>
         /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IInfectionReportService _reportService;
+        private readonly IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="MessageController"/> instance
         /// </summary>
+        /// <param name="map">AutoMapper instance</param>
         /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public MessageController(IInfectionReportService reportService)
+        public MessageController(IMapper map, IInfectionReportService reportService)
         {
             // Assign local values
+            this._map = map;
             this._reportService = reportService;
         }
 
@@ -42,7 +49,7 @@ namespace CovidSafe.API.v20200415.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/Message&amp;api-version={current_version}
+        ///     POST /api/Message&amp;api-version=2020-04-15
         ///     {
         ///         "RequestedQueries": [{
         ///             "messageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
@@ -66,12 +73,32 @@ namespace CovidSafe.API.v20200415.Controllers
         {
             try
             {
-                // Fetch and return results
-                return Ok(
-                    await this._reportService.GetByIdsAsync(
-                        request.RequestedQueries.Select(r => r.MessageId), cancellationToken
-                    )
+                // Submit request
+                IEnumerable<InfectionReport> reports = await this._reportService
+                    .GetByIdsAsync(
+                        request.RequestedQueries.Select(r => r.MessageId),
+                        cancellationToken
                 );
+
+                // Map MatchMessage types
+                List<MatchMessage> messages = new List<MatchMessage>();
+
+                foreach(InfectionReport report in reports)
+                {
+                    MatchMessage result = this._map.Map<MatchMessage>(report);
+                    // Get BLEs
+                    BluetoothMatch match = new BluetoothMatch();
+                    match.Seeds.AddRange(
+                        report.BluetoothSeeds.Select(s => this._map.Map<BlueToothSeed>(s))
+                    );
+                    // Add converted BLE match
+                    result.BluetoothMatches.Add(match);
+                    // Add converted MatchMessage
+                    messages.Add(result);
+                }
+
+                // Return as expected proto type
+                return Ok(messages);
             }
             catch(RequestValidationFailedException ex)
             {

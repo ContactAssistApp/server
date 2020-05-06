@@ -2,10 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
 using CovidSafe.API.v20200505.Controllers.MessageControllers;
+using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200505.Protos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -43,8 +44,14 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
             // Configure service
             this._service = new InfectionReportService(this._repo.Object);
 
+            // Create AutoMapper instance
+            MapperConfiguration mapperConfig = new MapperConfiguration(
+                opts => opts.AddProfile<MappingProfiles>()
+            );
+            IMapper mapper = mapperConfig.CreateMapper();
+
             // Configure controller
-            this._controller = new SeedReportController(this._service);
+            this._controller = new SeedReportController(mapper, this._service);
             this._controller.ControllerContext = new ControllerContext();
             this._controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
@@ -85,11 +92,11 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
 
         /// <summary>
         /// <see cref="SeedReportController.PutAsync(SelfReportRequest, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> with invalid <see cref="Region"/> provided  
+        /// returns <see cref="BadRequestResult"/> with invalid <see cref="Region"/> provided  
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadRequestObjectWithNoRegion()
+        public async Task PutAsync_BadRequestWithNoRegion()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest();
@@ -106,16 +113,16 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestResult));
         }
 
         /// <summary>
         /// <see cref="SeedReportController.PutAsync(SelfReportRequest, CancellationToken)"/> 
-        /// returns <see cref="BadRequestObjectResult"/> when no <see cref="Seed"/> objects are provided 
+        /// returns <see cref="BadRequestResult"/> when no <see cref="Seed"/> objects are provided 
         /// with request
         /// </summary>
         [TestMethod]
-        public async Task PutAsync_BadRequestObjectWithNoSeeds()
+        public async Task PutAsync_BadRequestWithNoSeeds()
         {
             // Arrange
             SelfReportRequest requestObj = new SelfReportRequest
@@ -134,7 +141,7 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
 
             // Assert
             Assert.IsNotNull(controllerResponse);
-            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestResult));
         }
 
         /// <summary>

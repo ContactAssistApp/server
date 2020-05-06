@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
 using CovidSafe.API.v20200505.Controllers.MessageControllers;
+using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200505.Protos;
+using CovidSafe.Entities.Reports;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,8 +47,14 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
             // Configure service
             this._service = new InfectionReportService(this._repo.Object);
 
+            // Create AutoMapper instance
+            MapperConfiguration mapperConfig = new MapperConfiguration(
+                opts => opts.AddProfile<MappingProfiles>()
+            );
+            IMapper mapper = mapperConfig.CreateMapper();
+
             // Configure controller
-            this._controller = new ListController(this._service);
+            this._controller = new ListController(mapper, this._service);
             this._controller.ControllerContext = new ControllerContext();
             this._controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
@@ -159,25 +167,25 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
         public async Task GetAsync_OkWithMatchedParams()
         {
             // Arrange
-            Region requestedRegion = new Region
+            v20200505.Protos.Region requestedRegion = new Region
             {
                 LatitudePrefix = 10.1234,
                 LongitudePrefix = -10.1234,
                 Precision = 4
             };
 
-            IEnumerable<MessageInfo> response = new List<MessageInfo>
+            IEnumerable<InfectionReportMetadata> response = new List<InfectionReportMetadata>
             {
-                new MessageInfo
+                new InfectionReportMetadata
                 {
-                    MessageId = "00000000-0000-0000-0000-0000000001",
-                    MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                    Id = "00000000-0000-0000-0000-0000000001",
+                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 }
             };
 
             this._repo
                 .Setup(s => s.GetLatestAsync(
-                    It.IsAny<Region>(),
+                    It.IsAny<Entities.Geospatial.Region>(),
                     It.IsAny<long>(),
                     CancellationToken.None
                 ))
@@ -341,7 +349,13 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
             // Arrange
             long repoResponse = 1024;
             this._repo
-                .Setup(r => r.GetLatestRegionSizeAsync(It.IsAny<Region>(), It.IsAny<long>(), CancellationToken.None))
+                .Setup(
+                    r => r.GetLatestRegionSizeAsync(
+                        It.IsAny<Entities.Geospatial.Region>(),
+                        It.IsAny<long>(),
+                        CancellationToken.None
+                    )
+                )
                 .Returns(Task.FromResult(repoResponse));
 
             // Act

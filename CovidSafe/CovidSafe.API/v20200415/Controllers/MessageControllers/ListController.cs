@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
+using CovidSafe.API.v20200415.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Protos.v20200415;
 using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
@@ -23,17 +23,23 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
     public class ListController : ControllerBase
     {
         /// <summary>
+        /// AutoMapper instance for object resolution
+        /// </summary>
+        private readonly IMapper _map;
+        /// <summary>
         /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IInfectionReportService _reportService;
+        private readonly IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="ListController"/> instance
         /// </summary>
+        /// <param name="map">AutoMapper instance</param>
         /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public ListController(IInfectionReportService reportService)
+        public ListController(IMapper map, IInfectionReportService reportService)
         {
             // Assign local values
+            this._map = map;
             this._reportService = reportService;
         }
 
@@ -43,7 +49,7 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version={current_version}
+        ///     GET /api/Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-04-15
         ///     
         /// </remarks>
         /// <param name="lat">Latitude of desired <see cref="Region"/></param>
@@ -64,22 +70,18 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
             try
             {
                 // Pull queries matching parameters
-                var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
-                IEnumerable<MessageInfo> results = await this._reportService
+                var region = new Entities.Geospatial.Region
+                {
+                    LatitudePrefix = lat,
+                    LongitudePrefix = lon,
+                    Precision = precision
+                };
+
+                IEnumerable<InfectionReportMetadata> results = await this._reportService
                     .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
 
-                // Convert to response proto
-                MessageListResponse response = new MessageListResponse();
-
-                if(results.Count() > 0)
-                {
-                    response.MessageInfoes.AddRange(results);
-
-                    // Get maximum timestamp from resultset
-                    response.MaxResponseTimestamp = response.MessageInfoes.Max(m => m.MessageTimestamp);
-                }
-
-                return Ok(response);
+                // Return using mapped proto object
+                return Ok(this._map.Map<MessageListResponse>(results));
             }
             catch (RequestValidationFailedException ex)
             {
@@ -120,7 +122,13 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
             try
             {
                 // Pull queries matching parameters
-                var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+                var region = new Entities.Geospatial.Region
+                {
+                    LatitudePrefix = lat,
+                    LongitudePrefix = lon,
+                    Precision = precision
+                };
+
                 long size = await this._reportService
                     .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);
 

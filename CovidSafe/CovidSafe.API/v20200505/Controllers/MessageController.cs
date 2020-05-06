@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
+using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Protos.v20200505;
 using CovidSafe.Entities.Reports;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
@@ -22,17 +23,23 @@ namespace CovidSafe.API.v20200505.Controllers
     public class MessageController : ControllerBase
     {
         /// <summary>
+        /// AutoMapper instance for object resolution
+        /// </summary>
+        private readonly IMapper _map;
+        /// <summary>
         /// <see cref="InfectionReport"/> service layer
         /// </summary>
-        private IInfectionReportService _reportService;
+        private readonly IInfectionReportService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="MessageController"/> instance
         /// </summary>
+        /// <param name="map">AutoMapper instance</param>
         /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public MessageController(IInfectionReportService reportService)
+        public MessageController(IMapper map, IInfectionReportService reportService)
         {
             // Assign local values
+            this._map = map;
             this._reportService = reportService;
         }
 
@@ -42,7 +49,7 @@ namespace CovidSafe.API.v20200505.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/Message&amp;api-version={current_version}
+        ///     POST /api/Message&amp;api-version=2020-05-05
         ///     {
         ///         "RequestedQueries": [{
         ///             "messageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
@@ -55,23 +62,31 @@ namespace CovidSafe.API.v20200505.Controllers
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
+        /// <returns><see cref="MatchMessageResponse"/> of reports matching provided request parameters</returns>
         [HttpPost]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
         [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(RequestValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<MatchMessageResponse>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                // Fetch and return results
-                return Ok(
-                    await this._reportService.GetByIdsAsync(
-                        request.RequestedQueries.Select(r => r.MessageId), cancellationToken
-                    )
+                // Submit request
+                IEnumerable<InfectionReport> reports = await this._reportService
+                    .GetByIdsAsync(
+                        request.RequestedQueries.Select(r => r.MessageId),
+                        cancellationToken
                 );
+
+                // Map results to expected return type
+                MatchMessageResponse response = new MatchMessageResponse();
+                response.MatchMessages.AddRange(
+                    reports.Select(r => this._map.Map<MatchMessage>(r))
+                );
+
+                return Ok(response);
             }
             catch(RequestValidationFailedException ex)
             {

@@ -2,10 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using AutoMapper;
 using CovidSafe.API.v20200505.Controllers.MessageControllers;
+using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.v20200505.Protos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -43,8 +44,14 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
             // Configure service
             this._service = new InfectionReportService(this._repo.Object);
 
+            // Create AutoMapper instance
+            MapperConfiguration mapperConfig = new MapperConfiguration(
+                opts => opts.AddProfile<MappingProfiles>()
+            );
+            IMapper mapper = mapperConfig.CreateMapper();
+
             // Configure controller
-            this._controller = new AreaReportController(this._service);
+            this._controller = new AreaReportController(mapper, this._service);
             this._controller.ControllerContext = new ControllerContext();
             this._controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }

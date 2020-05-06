@@ -172,7 +172,7 @@ namespace CovidSafe.DAL.Services
         public async Task<string> PublishAsync(IEnumerable<BluetoothSeed> seeds, Region region, long timeAtRequest, CancellationToken cancellationToken = default)
         {
             // Validate inputs
-            if (seeds == null)
+            if (seeds == null || seeds.Count() == 0)
             {
                 throw new ArgumentNullException(nameof(seeds));
             }

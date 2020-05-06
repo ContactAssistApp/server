@@ -3,7 +3,7 @@
 // Input: my.proto
 
 #pragma warning disable CS1591, CS0612, CS3021, IDE1006
-namespace CovidSafe.Entities.Protos.v20200415
+namespace CovidSafe.API.v20200505.Protos
 {
 
     [global::ProtoBuf.ProtoContract()]
@@ -49,6 +49,18 @@ namespace CovidSafe.Entities.Protos.v20200415
     }
 
     [global::ProtoBuf.ProtoContract()]
+    public partial class MatchMessageResponse : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"match_messages")]
+        public global::System.Collections.Generic.List<MatchMessage> MatchMessages { get; } = new global::System.Collections.Generic.List<MatchMessage>();
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
     public partial class MatchMessage : global::ProtoBuf.IExtensible
     {
         private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -62,8 +74,12 @@ namespace CovidSafe.Entities.Protos.v20200415
         [global::ProtoBuf.ProtoMember(2, Name = @"area_matches")]
         public global::System.Collections.Generic.List<AreaMatch> AreaMatches { get; } = new global::System.Collections.Generic.List<AreaMatch>();
 
-        [global::ProtoBuf.ProtoMember(3, Name = @"bluetooth_matches")]
-        public global::System.Collections.Generic.List<BluetoothMatch> BluetoothMatches { get; } = new global::System.Collections.Generic.List<BluetoothMatch>();
+        [global::ProtoBuf.ProtoMember(3, Name = @"bluetooth_seeds")]
+        public global::System.Collections.Generic.List<BlueToothSeed> BluetoothSeeds { get; } = new global::System.Collections.Generic.List<BlueToothSeed>();
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"bluetooth_match_message")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string BluetoothMatchMessage { get; set; } = "";
 
     }
 
@@ -145,22 +161,6 @@ namespace CovidSafe.Entities.Protos.v20200415
 
         [global::ProtoBuf.ProtoMember(2, Name = @"message_timestamp")]
         public long MessageTimestamp { get; set; }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class BluetoothMatch : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"user_message")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string UserMessage { get; set; } = "";
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"seeds")]
-        public global::System.Collections.Generic.List<BlueToothSeed> Seeds { get; } = new global::System.Collections.Generic.List<BlueToothSeed>();
 
     }
 
