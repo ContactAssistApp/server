@@ -194,7 +194,18 @@ namespace CovidSafe.DAL.Services
             {
                 // Build MatchMessage from submitted content
                 InfectionReport report = new InfectionReport();
-                report.BluetoothSeeds.AddRange(seeds);
+
+                if(report.BluetoothSeeds is List<BluetoothSeed> asList)
+                {
+                    asList.AddRange(seeds);
+                }
+                else
+                {
+                    foreach(BluetoothSeed seed in seeds)
+                    {
+                        report.BluetoothSeeds.Add(seed);
+                    }
+                }
 
                 // Store in data repository
                 return await this._reportRepo.InsertAsync(report, region, cancellationToken);

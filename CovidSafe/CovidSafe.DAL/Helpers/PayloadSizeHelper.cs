@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
-
-using ProtoBuf;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CovidSafe.DAL.Helpers
 {
@@ -13,16 +12,19 @@ namespace CovidSafe.DAL.Helpers
         /// <summary>
         /// Calculates the size (in bytes) of an <see cref="object"/>
         /// </summary>
-        /// <param name="message">Source <see cref="object"/></param>
-        /// <returns><see cref="object"/> size, in bytes</returns>
+        /// <param name="message">Source object</param>
+        /// <typeparam name="T">Type of object to compute size</typeparam>
+        /// <returns>Message size, in bytes</returns>
         public static long GetSize(object message)
         {
             if(message != null)
             {
-                // Serialize object into a byte array and return its size
-                MemoryStream stream = new MemoryStream();
-                Serializer.Serialize(stream, message);
-                return stream.ToArray().Length;
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, message);
+                    return stream.ToArray().Length;
+                }
             }
             else
             {

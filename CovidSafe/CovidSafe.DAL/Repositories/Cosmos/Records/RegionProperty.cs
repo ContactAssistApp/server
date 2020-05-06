@@ -1,5 +1,6 @@
 ﻿using CovidSafe.Entities.Geospatial;
 using Microsoft.Azure.Cosmos.Spatial;
+using System;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Records
 {

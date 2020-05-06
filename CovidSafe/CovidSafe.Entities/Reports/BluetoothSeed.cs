@@ -1,4 +1,6 @@
-﻿using CovidSafe.Entities.Validation;
+﻿using System;
+
+using CovidSafe.Entities.Validation;
 using Newtonsoft.Json;
 
 namespace CovidSafe.Entities.Reports
@@ -7,6 +9,7 @@ namespace CovidSafe.Entities.Reports
     /// Bluetooth seed
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    [Serializable]
     public class BluetoothSeed : IValidatable
     {
         /// <summary>
@@ -26,10 +29,19 @@ namespace CovidSafe.Entities.Reports
         [JsonProperty("endTimestampMs", Required = Required.Always)]
         public long EndTimestamp { get; set; }
         /// <summary>
+        /// Seed backing field
+        /// </summary>
+        [NonSerialized]
+        private string _seed;
+        /// <summary>
         /// Seed value
         /// </summary>
         [JsonProperty("seed", Required = Required.Always)]
-        public string Seed { get; set; }
+        public string Seed
+        {
+            get { return this._seed; }
+            set { this._seed = value; }
+        }
 
         /// <inheritdoc/>
         public RequestValidationResult Validate()

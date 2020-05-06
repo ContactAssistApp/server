@@ -1,4 +1,6 @@
-﻿using CovidSafe.Entities.Validation;
+﻿using System;
+
+using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 using Newtonsoft.Json;
 
@@ -8,6 +10,7 @@ namespace CovidSafe.Entities.Geospatial
     /// Geographic region
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    [Serializable]
     public class Region : IValidatable
     {
         /// <summary>

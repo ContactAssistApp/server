@@ -1,4 +1,6 @@
-﻿using CovidSafe.Entities.Validation;
+﻿using System;
+
+using CovidSafe.Entities.Validation;
 using Newtonsoft.Json;
 
 namespace CovidSafe.Entities.Geospatial
@@ -7,6 +9,7 @@ namespace CovidSafe.Entities.Geospatial
     /// Geographic location coordinates
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    [Serializable]
     public class Coordinates : IValidatable
     {
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
@@ -10,28 +11,47 @@ namespace CovidSafe.Entities.Reports
     /// Infection Report data
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    [Serializable]
     public class InfectionReport : IValidatable
     {
         /// <summary>
         /// Location-based infection risk reports
         /// </summary>
-        [JsonProperty("areas", NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
-        public List<AreaReport> AreaReports { get; set; } = new List<AreaReport>();
+        [JsonProperty("Areas", NullValueHandling = NullValueHandling.Ignore)]
+        public IList<AreaReport> AreaReports { get; set; } = new List<AreaReport>();
+        /// <summary>
+        /// BluetoothMatchMessage backing property
+        /// </summary>
+        [NonSerialized]
+        private string _bluetoothMatchMessage;
         /// <summary>
         /// Message displayed to user if there is a Bluetooth match
         /// </summary>
-        [JsonProperty("bluetoothMatchMessage", NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
-        public string BluetoothMatchMessage { get; set; }
+        [JsonProperty("bluetoothMatchMessage", NullValueHandling = NullValueHandling.Ignore)]
+        public string BluetoothMatchMessage
+        {
+            get { return this._bluetoothMatchMessage; }
+            set { this._bluetoothMatchMessage = value; }
+        }
         /// <summary>
         /// Bluetooth Seed-based infection reports
         /// </summary>
-        [JsonProperty("seeds", NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
-        public List<BluetoothSeed> BluetoothSeeds { get; set; } = new List<BluetoothSeed>();
+        [JsonProperty("Seeds", NullValueHandling = NullValueHandling.Ignore)]
+        public IList<BluetoothSeed> BluetoothSeeds { get; set; } = new List<BluetoothSeed>();
+        /// <summary>
+        /// BooleanExpression backing property
+        /// </summary>
+        [NonSerialized]
+        private string _booleanExpression;
         /// <summary>
         /// Reserved for later use
         /// </summary>
-        [JsonProperty("booleanExpression", NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
-        public string BooleanExpression { get; set; }
+        [JsonProperty("booleanExpression", NullValueHandling = NullValueHandling.Ignore)]
+        public string BooleanExpression
+        {
+            get { return this._booleanExpression; }
+            set { this._booleanExpression = value; }
+        }
 
         /// <inheritdoc/>
         public RequestValidationResult Validate()

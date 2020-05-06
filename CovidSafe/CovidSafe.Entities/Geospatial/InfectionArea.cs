@@ -1,4 +1,6 @@
-﻿using CovidSafe.Entities.Validation;
+﻿using System;
+
+using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 using Newtonsoft.Json;
 
@@ -8,6 +10,7 @@ namespace CovidSafe.Entities.Geospatial
     /// Space and time of infection risk zone
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    [Serializable]
     public class InfectionArea : IValidatable
     {
         /// <summary>
@@ -29,7 +32,7 @@ namespace CovidSafe.Entities.Geospatial
         /// <summary>
         /// Geographic coordinates of the center of the infection risk zone
         /// </summary>
-        [JsonProperty("location", Required = Required.Always)]
+        [JsonProperty("Location", Required = Required.Always)]
         public Coordinates Location { get; set; }
         /// <summary>
         /// Radius of infection risk area

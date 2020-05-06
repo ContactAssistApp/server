@@ -12,17 +12,28 @@ namespace CovidSafe.Entities.Reports
     /// Area-based infection report
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    [Serializable]
     public class AreaReport : IValidatable
     {
         /// <summary>
         /// Infection risk <see cref="InfectionArea"/> part of this <see cref="AreaReport"/>
         /// </summary>
-        public List<InfectionArea> Areas { get; set; } = new List<InfectionArea>();
+        [JsonProperty("Areas", Required = Required.Always)]
+        public IList<InfectionArea> Areas { get; set; } = new List<InfectionArea>();
+        /// <summary>
+        /// Internal UserMessage backing field
+        /// </summary>
+        [NonSerialized]
+        private string _userMessage;
         /// <summary>
         /// Message displayed to user on positive match
         /// </summary>
-        [JsonProperty("userMessage", NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
-        public string UserMessage { get; set; }
+        [JsonProperty("userMessage", NullValueHandling = NullValueHandling.Ignore)]
+        public string UserMessage
+        {
+            get { return this._userMessage; }
+            set { _userMessage = value; }
+        }
 
         /// <inheritdoc/>
         public RequestValidationResult Validate()
