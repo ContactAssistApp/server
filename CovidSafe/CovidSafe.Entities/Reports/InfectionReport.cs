@@ -17,7 +17,7 @@ namespace CovidSafe.Entities.Reports
         /// <summary>
         /// Location-based infection risk reports
         /// </summary>
-        [JsonProperty("Areas", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("AreaReports", NullValueHandling = NullValueHandling.Ignore)]
         public IList<AreaReport> AreaReports { get; set; } = new List<AreaReport>();
         /// <summary>
         /// BluetoothMatchMessage backing property

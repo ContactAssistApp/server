@@ -90,7 +90,14 @@ namespace CovidSafe.API.v20200415
 
             // AreaMatch -> AreaReport
             CreateMap<AreaMatch, AreaReport>()
-                // Properties have the same name+type
+                .ForMember(
+                    ar => ar.Areas,
+                    op => op.MapFrom(am => am.Areas)
+                )
+                .ForMember(
+                    ar => ar.UserMessage,
+                    op => op.MapFrom(am => am.UserMessage)
+                )
                 .ReverseMap();
 
             // SelfReportRequest -> InfectionReport
