@@ -209,7 +209,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var record = new InfectionReportRecord(report)
             {
                 RegionBoundary = new RegionBoundary(boundary),
-                Region = new RegionProperty(region),
                 PartitionKey = InfectionReportRecord.GetPartitionKey(region)
             };
 
@@ -236,8 +235,8 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                 r => new InfectionReportRecord(report)
                 {
                     RegionBoundary = new RegionBoundary(
-                        RegionHelper.GetRegionBoundary(r)),
-                    Region = new RegionProperty(r),
+                        RegionHelper.GetRegionBoundary(r)
+                    ),
                     PartitionKey = InfectionReportRecord.GetPartitionKey(r)
                 }).GroupBy(r => r.PartitionKey);
 

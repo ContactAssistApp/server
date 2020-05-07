@@ -19,12 +19,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [Required]
         public RegionBoundary RegionBoundary { get; set; }
         /// <summary>
-        /// <see cref="Region"/> applicable to the <see cref="InfectionReport"/>
-        /// </summary>
-        [JsonProperty("Region", Required = Required.Always)]
-        [Required]
-        public RegionProperty Region { get; set; }
-        /// <summary>
         /// Size of the record <see cref="InfectionReport"/>, in bytes
         /// </summary>
         [JsonProperty("size", Required = Required.Always)]

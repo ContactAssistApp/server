@@ -13,7 +13,6 @@ namespace CovidSafe.DAL.Helpers
         /// Calculates the size (in bytes) of an <see cref="object"/>
         /// </summary>
         /// <param name="message">Source object</param>
-        /// <typeparam name="T">Type of object to compute size</typeparam>
         /// <returns>Message size, in bytes</returns>
         public static long GetSize(object message)
         {
