@@ -133,6 +133,10 @@
     <value>'{0}' is not a valid Message identifier (must be a GUID/UUID).</value>
     <comment>Provided Message identifier is not in a valid format.</comment>
   </data>
+  <data name="InvalidGuidEmpty" xml:space="preserve">
+    <value>'{0}' is not a valid Message identifier (cannot use zeroed value).</value>
+    <comment>Seed can be parsed, but is all zeroes.</comment>
+  </data>
   <data name="InvalidLatitude" xml:space="preserve">
     <value>'{0}' is not a valid Latitude (must be between {1} and {2}).</value>
     <comment>Latitude exeeds minimum or maximum allowed value.</comment>
@@ -156,6 +160,10 @@
   <data name="InvalidTimestamp" xml:space="preserve">
     <value>'{0}' is not a valid timestamp (must be greater than zero, in UTC, and be reported in milliseconds since the UNIX epoch).</value>
     <comment>Timestamp failed validation.</comment>
+  </data>
+  <data name="InvalidTimestampAge" xml:space="preserve">
+    <value>'{0}' is not a valid timestamp (violates age restriction).</value>
+    <comment>Timestamps are either too old or exceed the current date by 24 hours.</comment>
   </data>
   <data name="NullLocation" xml:space="preserve">
     <value>Location property is null or empty.</value>

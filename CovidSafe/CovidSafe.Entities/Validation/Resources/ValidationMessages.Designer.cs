@@ -97,6 +97,15 @@ namespace CovidSafe.Entities.Validation.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Message identifier (cannot use zeroed value)..
+        /// </summary>
+        public static string InvalidGuidEmpty {
+            get {
+                return ResourceManager.GetString("InvalidGuidEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Latitude (must be between {1} and {2})..
         /// </summary>
         public static string InvalidLatitude {
@@ -147,6 +156,15 @@ namespace CovidSafe.Entities.Validation.Resources {
         public static string InvalidTimestamp {
             get {
                 return ResourceManager.GetString("InvalidTimestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid timestamp (violates age restriction)..
+        /// </summary>
+        public static string InvalidTimestampAge {
+            get {
+                return ResourceManager.GetString("InvalidTimestampAge", resourceCulture);
             }
         }
         

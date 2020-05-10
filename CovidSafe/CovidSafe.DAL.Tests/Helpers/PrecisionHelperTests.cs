@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CovidSafe.DAL.Helpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CovidSafe.Tests.Helpers
 {

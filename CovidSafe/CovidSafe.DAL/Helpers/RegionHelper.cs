@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Protos;
 
 namespace CovidSafe.DAL.Helpers
 {
@@ -28,8 +26,8 @@ namespace CovidSafe.DAL.Helpers
 
             return new RegionBoundary
             {
-                Min = new Location { Latitude = latRange.Item1, Longitude = lonRange.Item1 },
-                Max = new Location { Latitude = latRange.Item2, Longitude = lonRange.Item2 }
+                Min = new Coordinates { Latitude = latRange.Item1, Longitude = lonRange.Item1 },
+                Max = new Coordinates { Latitude = latRange.Item2, Longitude = lonRange.Item2 }
             };
         }
 
@@ -108,11 +106,11 @@ namespace CovidSafe.DAL.Helpers
         /// Under assumption of radius of area to be significantly below precision resolution and usage of extension >= 1 in search,
         /// that is enough
         /// </summary>
-        /// <param name="area"><see cref="Area"/></param>
+        /// <param name="area"><see cref="InfectionArea"/></param>
         /// <param name="precision">Precision. Any integer number</param>
         /// <returns>Collection of <see cref="Region"/>s</returns>
 
-        public static IEnumerable<Region> GetRegionsCoverage(Area area, int precision)
+        public static IEnumerable<Region> GetRegionsCoverage(InfectionArea area, int precision)
         {
             yield return new Region
             {
@@ -125,11 +123,11 @@ namespace CovidSafe.DAL.Helpers
         /// <summary>
         /// Enumerates all <see cref="Region"/>s of given precision covering given areas/>
         /// </summary>
-        /// <param name="areas">Container of <see cref="Area"/>s</param>
+        /// <param name="areas">Container of <see cref="InfectionArea"/>s</param>
         /// <param name="precision">Precision. Any integer number</param>
         /// <returns>Collection of <see cref="Region"/>s</returns>
 
-        public static IEnumerable<Region> GetRegionsCoverage(IEnumerable<Area> areas, int precision)
+        public static IEnumerable<Region> GetRegionsCoverage(IEnumerable<InfectionArea> areas, int precision)
         {
             var result = new HashSet<Region>(new RegionComparer());
             foreach (var a in areas)

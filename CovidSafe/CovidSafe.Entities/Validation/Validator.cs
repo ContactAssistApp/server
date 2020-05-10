@@ -1,6 +1,6 @@
-﻿using CovidSafe.Entities.Protos;
+﻿using System;
+using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Validation.Resources;
-using System;
 
 namespace CovidSafe.Entities.Validation
 {
@@ -9,6 +9,11 @@ namespace CovidSafe.Entities.Validation
     /// </summary>
     public static class Validator
     {
+        /// <summary>
+        /// Maximum allowed age of a timestamp, in days
+        /// </summary>
+        public const int MAX_TIMESTAMP_AGE_DAYS = 28;
+
         /// <summary>
         /// Determines if a string is a valid GUID/UUID
         /// </summary>
@@ -22,6 +27,16 @@ namespace CovidSafe.Entities.Validation
             // Seeds must parse to GUID
             Guid output;
             if (!Guid.TryParse(guid, out output))
+            {
+                result.Fail(
+                    RequestValidationIssue.InputInvalid,
+                    parameterName ?? nameof(guid),
+                    ValidationMessages.InvalidSeed,
+                    guid
+                );
+            }
+            // Guid will be normalized already, so only need to check for this all-zero case
+            else if (output.ToString() == "00000000-0000-0000-0000-000000000000")
             {
                 result.Fail(
                     RequestValidationIssue.InputInvalid,
@@ -45,15 +60,15 @@ namespace CovidSafe.Entities.Validation
             RequestValidationResult result = new RequestValidationResult();
 
             // Must be within range
-            if(latitude > Location.MAX_LATITUDE || latitude < Location.MIN_LATITUDE)
+            if(latitude > Coordinates.MAX_LATITUDE || latitude < Coordinates.MIN_LATITUDE)
             {
                 result.Fail(
                     RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(latitude),
                     ValidationMessages.InvalidLatitude,
                     latitude.ToString(),
-                    Location.MIN_LATITUDE.ToString(),
-                    Location.MAX_LATITUDE.ToString()
+                    Coordinates.MIN_LATITUDE.ToString(),
+                    Coordinates.MAX_LATITUDE.ToString()
                 );
             }
 
@@ -71,15 +86,15 @@ namespace CovidSafe.Entities.Validation
             RequestValidationResult result = new RequestValidationResult();
 
             // Must be within range
-            if (longitude > Location.MAX_LONGITUDE || longitude < Location.MIN_LONGITUDE)
+            if (longitude > Coordinates.MAX_LONGITUDE || longitude < Coordinates.MIN_LONGITUDE)
             {
                 result.Fail(
                     RequestValidationIssue.InputInvalid,
                     parameterName ?? nameof(longitude),
                     ValidationMessages.InvalidLongitude,
                     longitude.ToString(),
-                    Location.MIN_LONGITUDE.ToString(),
-                    Location.MAX_LONGITUDE.ToString()
+                    Coordinates.MIN_LONGITUDE.ToString(),
+                    Coordinates.MAX_LONGITUDE.ToString()
                 );
             }
 
@@ -127,11 +142,29 @@ namespace CovidSafe.Entities.Validation
         /// Determines if a timestamp provided by a <see cref="long"/> is valid
         /// </summary>
         /// <param name="timestamp">Timestamp to validate, in ms since UNIX epoch</param>
+        /// <param name="asOf">Timestamp (in ms since UNIX epoch) used to determine age, which defaults to current time in UTC if '0'</param>
+        /// <param name="maxAgeDays">Maximum allowed age of timestamp, in minutes</param>
         /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
         /// <returns><see cref="RequestValidationResult"/></returns>
-        public static RequestValidationResult ValidateTimestamp(long timestamp, string parameterName = null)
+        public static RequestValidationResult ValidateTimestamp(long timestamp, long asOf = 0, int maxAgeDays = MAX_TIMESTAMP_AGE_DAYS, string parameterName = null)
         {
             RequestValidationResult result = new RequestValidationResult();
+
+            DateTimeOffset baseTimestamp;
+
+            if(asOf < 0)
+            {
+                throw new ArgumentException(nameof(asOf));
+            }
+            else if(asOf == 0)
+            {
+                // Set to current timestamp in UTC
+                baseTimestamp = DateTimeOffset.UtcNow;
+            }
+            else
+            {
+                baseTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(asOf);
+            }
 
             // Timestamps must be zero or greater
             if(timestamp < 0)
@@ -142,6 +175,22 @@ namespace CovidSafe.Entities.Validation
                     ValidationMessages.InvalidTimestamp,
                     timestamp.ToString()
                 );
+            }
+            else
+            {
+                // Calculate age boundaries
+                long minAgeMs = baseTimestamp.AddDays(-(maxAgeDays)).ToUnixTimeMilliseconds();
+                long maxAgeMs = baseTimestamp.AddDays(1).ToUnixTimeMilliseconds();
+
+                if(timestamp > maxAgeMs || timestamp < minAgeMs)
+                {
+                    result.Fail(
+                        RequestValidationIssue.InputInvalid,
+                        parameterName ?? nameof(timestamp),
+                        ValidationMessages.InvalidTimestampAge,
+                        timestamp.ToString()
+                    );
+                }
             }
 
             return result;
