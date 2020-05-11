@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using AutoMapper;
 using CovidSafe.API.Swagger;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Repositories.Cosmos;
@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -91,22 +92,28 @@ namespace CovidSafe.API
             
             // Configure data repository implementations
             services.AddTransient<CosmosContext>();
-            services.AddSingleton<IMatchMessageRepository, CosmosMatchMessageRepository>();
+            services.AddSingleton<IInfectionReportRepository, CosmosInfectionReportRepository>();
 
             #endregion
 
+            // Add AutoMapper profiles
+            services.AddAutoMapper(
+                typeof(v20200415.MappingProfiles),
+                typeof(v20200505.MappingProfiles)
+            );
+
             // Configure service layer
-            services.AddSingleton<IMessageService, MessageService>();
+            services.AddSingleton<IInfectionReportService, InfectionReportService>();
 
             // Enable API versioning
             services.AddApiVersioning(o =>
             {
-                // Share supported API versions in headers
                 o.ApiVersionReader = new QueryStringApiVersionReader("api-version");
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(
                     DateTime.Parse(this.Configuration["DefaultApiVersion"])
                 );
+                // Share supported API versions in headers
                 o.ReportApiVersions = true;
             });
             services.AddVersionedApiExplorer(

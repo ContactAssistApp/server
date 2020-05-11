@@ -19,8 +19,8 @@ namespace CovidSafe.Entities.Tests.Validation
         public void ValidateGuid_AcceptsValidInput()
         {
             // Arrange
-            string input1 = "00000000-0000-0000-0000-000000000000";
-            string input2 = "00000000000000000000000000000000";
+            string input1 = "00000000-0000-0000-0000-000000000001";
+            string input2 = "00000000000000000000000000000001";
 
             // Act
             RequestValidationResult result1 = Validator.ValidateGuid(input1);
@@ -148,8 +148,8 @@ namespace CovidSafe.Entities.Tests.Validation
         public void ValidateSeed_AcceptsValidInput()
         {
             // Arrange
-            string input1 = "00000000-0000-0000-0000-000000000000";
-            string input2 = "00000000000000000000000000000000";
+            string input1 = "00000000-0000-0000-0000-000000000001";
+            string input2 = "00000000000000000000000000000001";
 
             // Act
             RequestValidationResult result1 = Validator.ValidateGuid(input1);
@@ -237,8 +237,8 @@ namespace CovidSafe.Entities.Tests.Validation
         public void ValidateTimestamp_AcceptsValidInput()
         {
             // Arrange
-            long timestamp1 = 0;
-            long timestamp2 = Int64.MaxValue;
+            long timestamp1 = DateTimeOffset.UtcNow.AddDays(-(Validator.MAX_TIMESTAMP_AGE_DAYS-1)).ToUnixTimeMilliseconds();
+            long timestamp2 = DateTimeOffset.UtcNow.AddDays(1).AddHours(-1).ToUnixTimeMilliseconds();
 
             // Act
             RequestValidationResult result1 = Validator.ValidateTimestamp(timestamp1);

@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Protos\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CovidSafe.Entities\CovidSafe.Entities.csproj" />
   </ItemGroup>
 

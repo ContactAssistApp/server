@@ -1,5 +1,4 @@
-﻿using CovidSafe.Entities.Protos;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Client
 {
@@ -17,7 +16,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Client
         /// </summary>
         public int MaxDataAgeToReturnDays { get; set; }
         /// <summary>
-        /// Name of <see cref="Container"/> used to store <see cref="MatchMessage"/> objects
+        /// Name of <see cref="Container"/> used to store objects
         /// </summary>
         public string MessageContainerName { get; set; }
 

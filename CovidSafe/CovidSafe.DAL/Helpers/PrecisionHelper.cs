@@ -1,12 +1,9 @@
 ﻿using System;
 
-using CovidSafe.Entities.Protos;
-
 namespace CovidSafe.DAL.Helpers
 {
 	/// <summary>
 	/// Helper functions for working with rounding numbers with controlled precision.
-	/// Used to interpret <see cref="Region"/>
 	/// </summary>
 	public static class PrecisionHelper
 	{
