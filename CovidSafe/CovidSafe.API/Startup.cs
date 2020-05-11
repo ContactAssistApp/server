@@ -102,8 +102,6 @@ namespace CovidSafe.API
                 typeof(v20200505.MappingProfiles)
             );
 
-            #endregion
-
             // Configure service layer
             services.AddSingleton<IInfectionReportService, InfectionReportService>();
 
