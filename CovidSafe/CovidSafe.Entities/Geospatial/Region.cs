@@ -21,7 +21,6 @@ namespace CovidSafe.Entities.Geospatial
         /// Minimum allowed precision value
         /// </summary>
         public const int MIN_PRECISION = 0;
-
         /// <summary>
         /// Latitude prefix of this <see cref="Region"/>
         /// </summary>
