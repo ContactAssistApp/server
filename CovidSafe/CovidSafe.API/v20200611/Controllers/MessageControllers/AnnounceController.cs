@@ -51,7 +51,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         ///     PUT /api/Messages/Announce&amp;api-version=2020-06-11
         ///     {
         ///         "userMessage": "Monitor symptoms for one week.",
-        ///         "areas": [{
+        ///         "area": {
         ///             "location": {
         ///                 "latitude": 74.12345,
         ///                 "longitude": -39.12345
@@ -59,7 +59,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         ///             "radiusMeters": 100,
         ///             "beginTime": 1586083599,
         ///             "endTime": 1586085189
-        ///         }]
+        ///         }
         ///     }
         ///
         /// </remarks>

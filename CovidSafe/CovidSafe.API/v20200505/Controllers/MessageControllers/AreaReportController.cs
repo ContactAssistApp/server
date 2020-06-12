@@ -17,7 +17,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
     /// Handles requests for submitting <see cref="AreaMatch"/> messages
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-05-05")]
+    [ApiVersion("2020-05-05", Deprecated = true)]
     [Route("api/Messages/[controller]")]
     public class AreaReportController : ControllerBase
     {

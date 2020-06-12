@@ -18,7 +18,7 @@ namespace CovidSafe.API.v20200505.Controllers
     /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-05-05")]
+    [ApiVersion("2020-05-05", Deprecated = true)]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {

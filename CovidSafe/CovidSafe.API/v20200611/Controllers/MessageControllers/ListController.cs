@@ -49,7 +49,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
+        ///     GET /api/Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=1591996565365&amp;api-version=2020-06-11
         ///     
         /// </remarks>
         /// <param name="lat">Latitude prefix (no decimals) of desired <see cref="Region"/></param>
@@ -100,7 +100,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     HEAD /Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
+        ///     HEAD /Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=1591996565365&amp;api-version=2020-06-11
         ///     
         /// </remarks>
         /// <param name="lat">Latitude prefix (no decimals) of desired <see cref="Region"/></param>
