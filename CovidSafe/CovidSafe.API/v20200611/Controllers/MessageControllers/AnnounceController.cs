@@ -57,8 +57,8 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         ///                 "longitude": -39.12345
         ///             },
         ///             "radiusMeters": 100,
-        ///             "beginTime": 1586083599,
-        ///             "endTime": 1586085189
+        ///             "beginTime": 1591997285105,
+        ///             "endTime": 1591997385105
         ///         }
         ///     }
         ///
