@@ -169,7 +169,15 @@ namespace CovidSafe.API.v20200611.Tests.Controllers
                 "00000000-0000-0000-0000-000000000002"
             };
             MessageContainer result1 = new MessageContainer();
+            result1.Narrowcasts.Add(new Entities.Messages.NarrowcastMessage
+            {
+                UserMessage = "This is one message."
+            });
             MessageContainer result2 = new MessageContainer();
+            result2.Narrowcasts.Add(new Entities.Messages.NarrowcastMessage
+            {
+                UserMessage = "This is another."
+            });
             IEnumerable<MessageContainer> toReturn = new List<MessageContainer>
             {
                 result1,
@@ -202,7 +210,7 @@ namespace CovidSafe.API.v20200611.Tests.Controllers
             OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
             Assert.IsInstanceOfType(castedResult.Value, typeof(MessageResponse));
             MessageResponse listResult = castedResult.Value as MessageResponse;
-            Assert.AreEqual(toReturn.Count(), listResult.NarrowcastMessages.Count());
+            Assert.AreEqual(toReturn.Count(), listResult.NarrowcastMessages.Count);
         }
 
         /// <summary>
@@ -219,6 +227,10 @@ namespace CovidSafe.API.v20200611.Tests.Controllers
                 "00000000-0000-0000-0000-000000000002"
             };
             MessageContainer result1 = new MessageContainer();
+            result1.Narrowcasts.Add(new Entities.Messages.NarrowcastMessage
+            {
+                UserMessage = "This is a message"
+            });
             IEnumerable<MessageContainer> toReturn = new List<MessageContainer>
             {
                 result1

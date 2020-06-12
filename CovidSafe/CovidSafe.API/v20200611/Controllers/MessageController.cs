@@ -82,9 +82,14 @@ namespace CovidSafe.API.v20200611.Controllers
 
                 // Map results to expected return type
                 MessageResponse response = new MessageResponse();
-                response.NarrowcastMessages.AddRange(
-                    reports.Select(r => this._map.Map<Protos.NarrowcastMessage>(r))
-                );
+                foreach(MessageContainer container in reports)
+                {
+                    response.NarrowcastMessages.AddRange(
+                        container.Narrowcasts.Select(
+                            c => this._map.Map<Protos.NarrowcastMessage>(c)
+                        )
+                    );
+                }
 
                 return Ok(response);
             }
