@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 
 using AutoMapper;
@@ -94,6 +96,18 @@ namespace CovidSafe.API.v20200611
                     op => op.Ignore()
                 )
                 // Other properties have the same name+type
+                .ReverseMap();
+
+            // NarrowcastMessage -> NarrowcastMessage
+            CreateMap<Protos.NarrowcastMessage, Entities.Messages.NarrowcastMessage>()
+                .ForMember(
+                    src => src.Area,
+                    op => op.MapFrom(dst => dst.Area)
+                )
+                .ForMember(
+                    src => src.UserMessage,
+                    op => op.MapFrom(dst => dst.UserMessage)
+                )
                 .ReverseMap();
         }
     }

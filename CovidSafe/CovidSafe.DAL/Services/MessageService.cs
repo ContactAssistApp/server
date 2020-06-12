@@ -130,7 +130,7 @@ namespace CovidSafe.DAL.Services
                 container.Narrowcasts.Add(message);
 
                 // Define regions for the published message
-                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(message.Areas, this.RegionPrecision);
+                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(message.Area, this.RegionPrecision);
 
                 // Publish
                 await this._reportRepo.InsertAsync(container, messageRegions, cancellationToken);

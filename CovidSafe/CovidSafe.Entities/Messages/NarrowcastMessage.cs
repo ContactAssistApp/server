@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Validation;
@@ -16,10 +15,10 @@ namespace CovidSafe.Entities.Messages
     public class NarrowcastMessage : IValidatable
     {
         /// <summary>
-        /// Infection risk <see cref="NarrowcastArea"/> part of this <see cref="NarrowcastMessage"/>
+        /// <see cref="NarrowcastArea"/> targeted by this <see cref="NarrowcastMessage"/>
         /// </summary>
-        [JsonProperty("Areas", Required = Required.Always)]
-        public IList<NarrowcastArea> Areas { get; set; } = new List<NarrowcastArea>();
+        [JsonProperty("Area", Required = Required.Always)]
+        public NarrowcastArea Area { get; set; }
         /// <summary>
         /// Internal UserMessage backing field
         /// </summary>
@@ -40,21 +39,17 @@ namespace CovidSafe.Entities.Messages
         {
             RequestValidationResult result = new RequestValidationResult();
 
-            // Validate areas
-            if (this.Areas.Count > 0)
+            // Validate provided NarrowcastArea
+            if (this.Area != null)
             {
-                // Validate individual areas
-                foreach (NarrowcastArea area in this.Areas)
-                {
-                    // Use Area.Validate()
-                    result.Combine(area.Validate());
-                }
+                // Use NarrowcastArea.Validate()
+                result.Combine(this.Area.Validate());
             }
             else
             {
                 result.Fail(
                     RequestValidationIssue.InputEmpty,
-                    nameof(this.Areas),
+                    nameof(this.Area),
                     ValidationMessages.EmptyAreas
                 );
             }

@@ -5,6 +5,7 @@ using AutoMapper;
 using CovidSafe.API.v20200415.Protos;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Messages;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace CovidSafe.API.v20200415
 {
@@ -91,8 +92,9 @@ namespace CovidSafe.API.v20200415
             // AreaMatch -> AreaReport
             CreateMap<AreaMatch, NarrowcastMessage>()
                 .ForMember(
-                    ar => ar.Areas,
-                    op => op.MapFrom(am => am.Areas)
+                    ar => ar.Area,
+                    // v20200611 clarified a NarrowcastMessage should have only one Area
+                    op => op.MapFrom(am => am.Areas.FirstOrDefault())
                 )
                 .ForMember(
                     ar => ar.UserMessage,

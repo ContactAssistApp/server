@@ -276,7 +276,7 @@ namespace CovidSafe.DAL.Tests.Services
         {
             // Arrange
             NarrowcastMessage request = new NarrowcastMessage();
-            request.Areas.Add(new NarrowcastArea
+            request.Area = new NarrowcastArea
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
@@ -286,7 +286,7 @@ namespace CovidSafe.DAL.Tests.Services
                     Longitude = -10.1234
                 },
                 RadiusMeters = 100
-            });
+            };
             request.UserMessage = "Test user message!";
             string repoResponse = "00000000-0000-0000-0000-0000000000001";
 
@@ -334,7 +334,7 @@ namespace CovidSafe.DAL.Tests.Services
             {
                 UserMessage = "Test user message"
             };
-            narrowcast.Areas.Add(new NarrowcastArea
+            narrowcast.Area = new NarrowcastArea
             {
                 BeginTimestamp = 0,
                 EndTimestamp = 1,
@@ -344,7 +344,7 @@ namespace CovidSafe.DAL.Tests.Services
                     Longitude = -10.1234
                 },
                 RadiusMeters = 100
-            });
+            };
             request.Narrowcasts.Add(narrowcast);
             request.BluetoothSeeds.Add(new BluetoothSeedMessage
             {
@@ -396,7 +396,7 @@ namespace CovidSafe.DAL.Tests.Services
             {
                 UserMessage = "Test user message"
             };
-            narrowcast.Areas.Add(new NarrowcastArea
+            narrowcast.Area = new NarrowcastArea
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
@@ -406,7 +406,7 @@ namespace CovidSafe.DAL.Tests.Services
                     Longitude = -10.1234
                 },
                 RadiusMeters = 100
-            });
+            };
             request.Narrowcasts.Add(narrowcast);
             request.BluetoothSeeds.Add(new BluetoothSeedMessage
             {
