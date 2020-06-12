@@ -74,10 +74,10 @@ message NarrowcastMessage {
 
 // Geographic region quantized by precision of lat/long;
 message Region {
-  // Latitude source;
-  double latitude_prefix = 1;
-  // Longitude source;
-  double longitude_prefix = 2;
+  // Latitude source, no decimal;
+  int32 latitude_prefix = 1;
+  // Longitude source, no decimal;
+  int32 longitude_prefix = 2;
   // Mantissa mask/precision bits;
   int32 precision = 3;
 }

@@ -52,8 +52,8 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         ///     GET /api/Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
         ///     
         /// </remarks>
-        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
-        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
+        /// <param name="lat">Latitude prefix (no decimals) of desired <see cref="Region"/></param>
+        /// <param name="lon">Longitude prefix (no decimals) of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Latest <see cref="NarrowcastMessage"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
@@ -65,7 +65,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         [ProducesResponseType(typeof(MessageListResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<MessageListResponse>> GetAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<MessageListResponse>> GetAsync([Required] int lat, [Required] int lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -100,11 +100,11 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     HEAD /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
+        ///     HEAD /Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
         ///     
         /// </remarks>
-        /// <param name="lat">Latitude of desired <see cref="Region"/></param>
-        /// <param name="lon">Longitude of desired <see cref="Region"/></param>
+        /// <param name="lat">Latitude prefix (no decimals) of desired <see cref="Region"/></param>
+        /// <param name="lon">Longitude prefix (no decimals) of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
         /// <param name="lastTimestamp">Latest <see cref="MessageResponse"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
@@ -117,7 +117,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         [HttpHead]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> HeadAsync([Required] double lat, [Required] double lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> HeadAsync([Required] int lat, [Required] int lon, [Required] int precision, [Required] long lastTimestamp, CancellationToken cancellationToken = default)
         {
             try
             {

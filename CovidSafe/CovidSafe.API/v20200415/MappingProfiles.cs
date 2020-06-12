@@ -53,7 +53,7 @@ namespace CovidSafe.API.v20200415
                 );
 
             // Area -> InfectionArea
-            CreateMap<Area, InfectionArea>()
+            CreateMap<Area, NarrowcastArea>()
                 .ForMember(
                     ia => ia.BeginTimestamp,
                     op => op.MapFrom(a => a.BeginTime)

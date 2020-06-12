@@ -156,12 +156,8 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task GetLatestInfoAsync_ReturnsMultipleMessages()
         {
             // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
+            Region region = new Region(10, -10, 4);
+
             IEnumerable<MessageContainerMetadata> serviceResponse = new List<MessageContainerMetadata>
             {
                 new MessageContainerMetadata
@@ -235,12 +231,8 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task GetLatestRegionDataSizeAsync_ReturnsSize()
         {
             // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
+            Region region = new Region(10, -10, 4);
+
             long expectedResult = 1024;
             this._repo
                 .Setup(r => r.GetLatestRegionSizeAsync(It.IsAny<Region>(), It.IsAny<long>(), CancellationToken.None))
@@ -284,7 +276,7 @@ namespace CovidSafe.DAL.Tests.Services
         {
             // Arrange
             NarrowcastMessage request = new NarrowcastMessage();
-            request.Areas.Add(new InfectionArea
+            request.Areas.Add(new NarrowcastArea
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
@@ -318,12 +310,7 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task PublishAsync_ArgumentNullOnNullInfectionReport()
         {
             // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
+            Region region = new Region(10, -10, 4);
 
             // Act
             string result = await this._service
@@ -347,7 +334,7 @@ namespace CovidSafe.DAL.Tests.Services
             {
                 UserMessage = "Test user message"
             };
-            narrowcast.Areas.Add(new InfectionArea
+            narrowcast.Areas.Add(new NarrowcastArea
             {
                 BeginTimestamp = 0,
                 EndTimestamp = 1,
@@ -402,18 +389,14 @@ namespace CovidSafe.DAL.Tests.Services
         {
             // Arrange
             string repoResponse = "00000000-0000-0000-0000-000000000002";
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
+            Region region = new Region(10, -10, 4);
+
             MessageContainer request = new MessageContainer();
             NarrowcastMessage narrowcast = new NarrowcastMessage
             {
                 UserMessage = "Test user message"
             };
-            narrowcast.Areas.Add(new InfectionArea
+            narrowcast.Areas.Add(new NarrowcastArea
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),

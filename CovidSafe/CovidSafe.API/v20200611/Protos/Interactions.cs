@@ -139,10 +139,10 @@ namespace CovidSafe.API.v20200611.Protos
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"latitude_prefix")]
-        public double LatitudePrefix { get; set; }
+        public int LatitudePrefix { get; set; }
 
         [global::ProtoBuf.ProtoMember(2, Name = @"longitude_prefix")]
-        public double LongitudePrefix { get; set; }
+        public int LongitudePrefix { get; set; }
 
         [global::ProtoBuf.ProtoMember(3, Name = @"precision")]
         public int Precision { get; set; }

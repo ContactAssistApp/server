@@ -16,10 +16,10 @@ namespace CovidSafe.Entities.Messages
     public class NarrowcastMessage : IValidatable
     {
         /// <summary>
-        /// Infection risk <see cref="InfectionArea"/> part of this <see cref="NarrowcastMessage"/>
+        /// Infection risk <see cref="NarrowcastArea"/> part of this <see cref="NarrowcastMessage"/>
         /// </summary>
         [JsonProperty("Areas", Required = Required.Always)]
-        public IList<InfectionArea> Areas { get; set; } = new List<InfectionArea>();
+        public IList<NarrowcastArea> Areas { get; set; } = new List<NarrowcastArea>();
         /// <summary>
         /// Internal UserMessage backing field
         /// </summary>
@@ -44,7 +44,7 @@ namespace CovidSafe.Entities.Messages
             if (this.Areas.Count > 0)
             {
                 // Validate individual areas
-                foreach (InfectionArea area in this.Areas)
+                foreach (NarrowcastArea area in this.Areas)
                 {
                     // Use Area.Validate()
                     result.Combine(area.Validate());

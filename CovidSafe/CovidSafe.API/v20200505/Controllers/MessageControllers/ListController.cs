@@ -70,12 +70,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             try
             {
                 // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region
-                {
-                    LatitudePrefix = lat,
-                    LongitudePrefix = lon,
-                    Precision = precision
-                };
+                var region = new Entities.Geospatial.Region(lat, lon, precision);
 
                 IEnumerable<MessageContainerMetadata> results = await this._reportService
                     .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
@@ -122,12 +117,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             try
             {
                 // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region
-                {
-                    LatitudePrefix = lat,
-                    LongitudePrefix = lon,
-                    Precision = precision
-                };
+                var region = new Entities.Geospatial.Region(lat, lon, precision);
 
                 long size = await this._reportService
                     .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);

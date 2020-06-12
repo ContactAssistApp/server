@@ -28,7 +28,7 @@ namespace CovidSafe.API.v20200611
                 // Properties have the same name+type
                 .ReverseMap();
 
-            // MessageInfo -> InfectionReportMetadata
+            // MessageInfo -> MessageContainerMetadata
             CreateMap<MessageInfo, MessageContainerMetadata>()
                 .ForMember(
                     im => im.Id,
@@ -40,7 +40,7 @@ namespace CovidSafe.API.v20200611
                 )
                 .ReverseMap();
 
-            // IEnumerable<InfectionReportMetadata> -> MessageListResponse
+            // IEnumerable<MessageContainerMetadata> -> MessageListResponse
             // This is a one-way response so no ReverseMap is necessary
             CreateMap<IEnumerable<MessageContainerMetadata>, MessageListResponse>()
                 .ForMember(
@@ -52,8 +52,8 @@ namespace CovidSafe.API.v20200611
                     op => op.MapFrom(im => im.Count() > 0 ? im.Max(o => o.Timestamp) : 0)
                 );
 
-            // Area -> InfectionArea
-            CreateMap<Area, InfectionArea>()
+            // Area -> NarrowcastArea
+            CreateMap<Area, NarrowcastArea>()
                 .ForMember(
                     ia => ia.BeginTimestamp,
                     op => op.MapFrom(a => a.BeginTime)
@@ -72,7 +72,7 @@ namespace CovidSafe.API.v20200611
                 )
                 .ReverseMap();
 
-            // MessageResponse -> InfectionReport
+            // MessageResponse -> MessageContainer
             CreateMap<MessageResponse, MessageContainer>()
                 .ForMember(
                     ir => ir.Narrowcasts,

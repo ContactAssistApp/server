@@ -50,12 +50,7 @@ namespace CovidSafe.DAL.Helpers
                 {
                     for (double lon = rb.Min.Longitude - extension * step; lon < rb.Max.Longitude + extension * step; lon += step)
                     {
-                        yield return new Region
-                        {
-                            LatitudePrefix = lat,
-                            LongitudePrefix = lon,
-                            Precision = precision
-                        };
+                        yield return new Region(lat, lon, precision);
                     }
                 }
             }
@@ -68,12 +63,11 @@ namespace CovidSafe.DAL.Helpers
         /// <returns><see cref="Region"/> - region with adjusted coordinate prefixes</returns>
         public static Region AdjustToPrecision(Region region)
         {
-            return new Region
-            {
-                LatitudePrefix = PrecisionHelper.Round(region.LatitudePrefix, region.Precision),
-                LongitudePrefix = PrecisionHelper.Round(region.LongitudePrefix, region.Precision),
-                Precision = region.Precision
-            };
+            return new Region(
+                PrecisionHelper.Round(region.LatitudePrefix, region.Precision),
+                PrecisionHelper.Round(region.LongitudePrefix, region.Precision),
+                region.Precision
+            );
         }
 
         ///<summary>
@@ -106,28 +100,27 @@ namespace CovidSafe.DAL.Helpers
         /// Under assumption of radius of area to be significantly below precision resolution and usage of extension >= 1 in search,
         /// that is enough
         /// </summary>
-        /// <param name="area"><see cref="InfectionArea"/></param>
+        /// <param name="area"><see cref="NarrowcastArea"/></param>
         /// <param name="precision">Precision. Any integer number</param>
         /// <returns>Collection of <see cref="Region"/>s</returns>
 
-        public static IEnumerable<Region> GetRegionsCoverage(InfectionArea area, int precision)
+        public static IEnumerable<Region> GetRegionsCoverage(NarrowcastArea area, int precision)
         {
-            yield return new Region
-            {
-                LatitudePrefix = PrecisionHelper.Round(area.Location.Latitude, precision),
-                LongitudePrefix = PrecisionHelper.Round(area.Location.Longitude, precision),
-                Precision = precision
-            };
+            yield return new Region(
+                PrecisionHelper.Round(area.Location.Latitude, precision),
+                PrecisionHelper.Round(area.Location.Longitude, precision),
+                precision
+            );
         }
 
         /// <summary>
         /// Enumerates all <see cref="Region"/>s of given precision covering given areas/>
         /// </summary>
-        /// <param name="areas">Container of <see cref="InfectionArea"/>s</param>
+        /// <param name="areas">Container of <see cref="NarrowcastArea"/>s</param>
         /// <param name="precision">Precision. Any integer number</param>
         /// <returns>Collection of <see cref="Region"/>s</returns>
 
-        public static IEnumerable<Region> GetRegionsCoverage(IEnumerable<InfectionArea> areas, int precision)
+        public static IEnumerable<Region> GetRegionsCoverage(IEnumerable<NarrowcastArea> areas, int precision)
         {
             var result = new HashSet<Region>(new RegionComparer());
             foreach (var a in areas)
