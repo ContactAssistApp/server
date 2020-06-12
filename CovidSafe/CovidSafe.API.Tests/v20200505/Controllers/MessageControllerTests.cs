@@ -9,7 +9,7 @@ using CovidSafe.API.v20200505.Controllers;
 using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,13 +28,13 @@ namespace CovidSafe.API.v20200505.Tests.Controllers
         /// </summary>
         private MessageController _controller;
         /// <summary>
-        /// Mock <see cref="IInfectionReportRepository"/>
+        /// Mock <see cref="IMessageContainerRepository"/>
         /// </summary>
-        private Mock<IInfectionReportRepository> _repo;
+        private Mock<IMessageContainerRepository> _repo;
         /// <summary>
-        /// <see cref="InfectionReportService"/> instance
+        /// <see cref="MessageService"/> instance
         /// </summary>
-        private InfectionReportService _service;
+        private MessageService _service;
         
         /// <summary>
         /// Creates a new <see cref="MessageControllerTests"/> instance
@@ -42,10 +42,10 @@ namespace CovidSafe.API.v20200505.Tests.Controllers
         public MessageControllerTests()
         {
             // Configure repository
-            this._repo = new Mock<IInfectionReportRepository>();
+            this._repo = new Mock<IMessageContainerRepository>();
 
             // Configure Service instance
-            this._service = new InfectionReportService(this._repo.Object);
+            this._service = new MessageService(this._repo.Object);
 
             // Create AutoMapper instance
             MapperConfiguration mapperConfig = new MapperConfiguration(
@@ -168,9 +168,9 @@ namespace CovidSafe.API.v20200505.Tests.Controllers
                 "00000000-0000-0000-0000-000000000001",
                 "00000000-0000-0000-0000-000000000002"
             };
-            InfectionReport result1 = new InfectionReport();
-            InfectionReport result2 = new InfectionReport();
-            IEnumerable<InfectionReport> toReturn = new List<InfectionReport>
+            MessageContainer result1 = new MessageContainer();
+            MessageContainer result2 = new MessageContainer();
+            IEnumerable<MessageContainer> toReturn = new List<MessageContainer>
             {
                 result1,
                 result2
@@ -218,8 +218,8 @@ namespace CovidSafe.API.v20200505.Tests.Controllers
                 "00000000-0000-0000-0000-000000000001",
                 "00000000-0000-0000-0000-000000000002"
             };
-            InfectionReport result1 = new InfectionReport();
-            IEnumerable<InfectionReport> toReturn = new List<InfectionReport>
+            MessageContainer result1 = new MessageContainer();
+            IEnumerable<MessageContainer> toReturn = new List<MessageContainer>
             {
                 result1
             };

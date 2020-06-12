@@ -5,20 +5,20 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
-using CovidSafe.API.v20200415.Protos;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.v20200415.Controllers.MessageControllers
+namespace CovidSafe.API.v20200611.Controllers.MessageControllers
 {
     /// <summary>
-    /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
+    /// Handles requests to list <see cref="NarrowcastMessage"/> identifiers which are new to a client
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-04-15", Deprecated = true)]
+    [ApiVersion("2020-06-11")]
     [Route("api/Messages/[controller]")]
     public class ListController : ControllerBase
     {
@@ -49,13 +49,13 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-04-15
+        ///     GET /api/Messages/List?lat=74&amp;lon=-39&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
         ///     
         /// </remarks>
         /// <param name="lat">Latitude of desired <see cref="Region"/></param>
         /// <param name="lon">Longitude of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
-        /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
+        /// <param name="lastTimestamp">Latest <see cref="NarrowcastMessage"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
@@ -94,24 +94,24 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// Get total size of <see cref="MatchMessage"/> objects for a <see cref="Region"/> based 
+        /// Get total size of <see cref="MessageResponse"/> objects for a <see cref="Region"/> based 
         /// on the provided parameters when using application/x-protobuf
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     HEAD /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0
+        ///     HEAD /Messages/List?lat=74.12&amp;lon=-39.12&amp;precision=2&amp;lastTimestamp=0&amp;api-version=2020-06-11
         ///     
         /// </remarks>
         /// <param name="lat">Latitude of desired <see cref="Region"/></param>
         /// <param name="lon">Longitude of desired <see cref="Region"/></param>
         /// <param name="precision">Precision of desired <see cref="Region"/></param>
-        /// <param name="lastTimestamp">Latest <see cref="MatchMessage"/> timestamp on client device, in ms from UNIX epoch</param>
+        /// <param name="lastTimestamp">Latest <see cref="MessageResponse"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request</response>
         /// <response code="400">Malformed or invalid request provided</response>
         /// <returns>
-        /// Total size of matching <see cref="MatchMessage"/> objects (via Content-Type header), in bytes, based 
+        /// Total size of matching <see cref="MessageResponse"/> objects (via Content-Type header), in bytes, based 
         /// on their size when converted to the Protobuf format
         /// </returns>
         [HttpHead]

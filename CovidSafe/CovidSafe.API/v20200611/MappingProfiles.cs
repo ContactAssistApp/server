@@ -2,11 +2,11 @@
 using System.Linq;
 
 using AutoMapper;
-using CovidSafe.API.v20200415.Protos;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Messages;
 
-namespace CovidSafe.API.v20200415
+namespace CovidSafe.API.v20200611
 {
     /// <summary>
     /// Maps proto types to their internal database representations
@@ -72,90 +72,28 @@ namespace CovidSafe.API.v20200415
                 )
                 .ReverseMap();
 
-            // BlueToothSeed -> BluetoothSeedMessage
-            CreateMap<BlueToothSeed, BluetoothSeedMessage>()
-                .ForMember(
-                    bs => bs.BeginTimestamp,
-                    op => op.MapFrom(s => s.SequenceStartTime)
-                )
-                .ForMember(
-                    bs => bs.EndTimestamp,
-                    op => op.MapFrom(s => s.SequenceEndTime)
-                )
-                .ForMember(
-                    bs => bs.Seed,
-                    op => op.MapFrom(s => s.Seed)
-                )
-                .ReverseMap();
-
-            // AreaMatch -> AreaReport
-            CreateMap<AreaMatch, NarrowcastMessage>()
-                .ForMember(
-                    ar => ar.Areas,
-                    op => op.MapFrom(am => am.Areas)
-                )
-                .ForMember(
-                    ar => ar.UserMessage,
-                    op => op.MapFrom(am => am.UserMessage)
-                )
-                .ReverseMap();
-
-            // SelfReportRequest -> InfectionReport
-            // This is only a request object so no ReverseMap is necessary
-            CreateMap<SelfReportRequest, MessageContainer>()
-                .ForMember(
-                    ir => ir.BluetoothSeeds,
-                    op => op.MapFrom(sr => sr.Seeds)
-                )
-                // Currently no Narrowcast message in a SelfReportRequest
+            // MessageResponse -> InfectionReport
+            CreateMap<MessageResponse, MessageContainer>()
                 .ForMember(
                     ir => ir.Narrowcasts,
+                    op => op.MapFrom(mm => mm.NarrowcastMessages)
+                )
+                .ForMember(
+                    // Not supported in v20200611+
+                    ir => ir.BluetoothSeeds,
                     op => op.Ignore()
                 )
-                // Not supported in v20200415
                 .ForMember(
+                    // Not supported in v20200611+
+                    ir => ir.BooleanExpression,
+                    op => op.Ignore()
+                )
+                .ForMember(
+                    // Not supported in v20200415+
                     ir => ir.BluetoothMatchMessage,
                     op => op.Ignore()
                 )
-                // Not specified by users
-                .ForMember(
-                    ir => ir.BooleanExpression,
-                    op => op.Ignore()
-                );
-
-            // List<BluetoothSeedMessage> -> BluetoothMatch
-            CreateMap<List<BluetoothSeedMessage>, BluetoothMatch>()
-                .ForMember(
-                    bm => bm.Seeds,
-                    op => op.MapFrom(bs => bs.Select(s => new BlueToothSeed
-                    {
-                        Seed = s.Seed,
-                        SequenceEndTime = s.EndTimestamp,
-                        SequenceStartTime = s.BeginTimestamp
-                    }))
-                )
-                // No user messages in Bluetooth Matches
-                .ForMember(
-                    bm => bm.UserMessage,
-                    op => op.Ignore()
-                );
-
-            // InfectionReport -> MatchMessage
-            CreateMap<MessageContainer, MatchMessage>()
-                .ForMember(
-                    mm => mm.AreaMatches,
-                    op => op.MapFrom(ir => ir.Narrowcasts)
-                )
-                .ForMember(
-                    mm => mm.BoolExpression,
-                    op => op.MapFrom(ir => ir.BooleanExpression)
-                )
-                // Ignore BLE matches because the conversion is too complex for AutoMapper
-                // Do this in MessagesController
-                .ForMember(
-                    mm => mm.BluetoothMatches,
-                    op => op.Ignore()
-                )
+                // Other properties have the same name+type
                 .ReverseMap();
         }
     }

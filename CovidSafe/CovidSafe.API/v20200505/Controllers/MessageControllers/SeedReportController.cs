@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,16 +27,16 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
         /// </summary>
         private readonly IMapper _map;
         /// <summary>
-        /// <see cref="InfectionReport"/> service layer
+        /// <see cref="MessageContainer"/> service layer
         /// </summary>
-        private readonly IInfectionReportService _reportService;
+        private readonly IMessageService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="SeedReportController"/> instance
         /// </summary>
         /// <param name="map">AutoMapper instance</param>
-        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public SeedReportController(IMapper map, IInfectionReportService reportService)
+        /// <param name="reportService"><see cref="MessageContainer"/> service layer</param>
+        public SeedReportController(IMapper map, IMessageService reportService)
         {
             // Assign local values
             this._map = map;
@@ -84,8 +84,8 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             {
                 // Parse request
                 Entities.Geospatial.Region region = this._map.Map<Entities.Geospatial.Region>(request.Region);
-                IEnumerable<BluetoothSeed> seeds = request.Seeds
-                    .Select(s => this._map.Map<BluetoothSeed>(s));
+                IEnumerable<BluetoothSeedMessage> seeds = request.Seeds
+                    .Select(s => this._map.Map<BluetoothSeedMessage>(s));
 
                 // Store submitted data
                 await this._reportService.PublishAsync(seeds, region, serverTimestamp, cancellationToken);

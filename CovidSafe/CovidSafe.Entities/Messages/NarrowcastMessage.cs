@@ -6,17 +6,17 @@ using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 using Newtonsoft.Json;
 
-namespace CovidSafe.Entities.Reports
+namespace CovidSafe.Entities.Messages
 {
     /// <summary>
-    /// Area-based infection report
+    /// Narrowcast message container
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     [Serializable]
-    public class AreaReport : IValidatable
+    public class NarrowcastMessage : IValidatable
     {
         /// <summary>
-        /// Infection risk <see cref="InfectionArea"/> part of this <see cref="AreaReport"/>
+        /// Infection risk <see cref="InfectionArea"/> part of this <see cref="NarrowcastMessage"/>
         /// </summary>
         [JsonProperty("Areas", Required = Required.Always)]
         public IList<InfectionArea> Areas { get; set; } = new List<InfectionArea>();

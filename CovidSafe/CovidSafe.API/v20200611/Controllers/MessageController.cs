@@ -5,20 +5,20 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
-using CovidSafe.API.v20200415.Protos;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.v20200415.Controllers
+namespace CovidSafe.API.v20200611.Controllers
 {
     /// <summary>
-    /// Handles <see cref="MatchMessage"/> CRUD operations
+    /// Handles <see cref="MessageContainer"/> CRUD operations
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-04-15", Deprecated = true)]
+    [ApiVersion("2020-06-11")]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
@@ -44,12 +44,12 @@ namespace CovidSafe.API.v20200415.Controllers
         }
 
         /// <summary>
-        /// Get <see cref="MatchMessage"/> objects matching the provided identifiers
+        /// Get <see cref="MessageContainer"/> objects matching the provided identifiers
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/Message&amp;api-version=2020-04-15
+        ///     POST /api/Message&amp;api-version=2020-06-11
         ///     {
         ///         "RequestedQueries": [{
         ///             "messageId": "baa0ebe1-e6dd-447d-8d82-507644991e07",
@@ -62,14 +62,14 @@ namespace CovidSafe.API.v20200415.Controllers
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
         /// <response code="400">Malformed or invalid request provided</response>
-        /// <returns>Collection of <see cref="MatchMessage"/> objects matching request parameters</returns>
+        /// <returns><see cref="MessageResponse"/> of reports matching provided request parameters</returns>
         [HttpPost]
         [Consumes("application/x-protobuf", "application/json")]
         [Produces("application/x-protobuf", "application/json")]
-        [ProducesResponseType(typeof(IEnumerable<MatchMessage>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(RequestValidationResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(IEnumerable<MessageResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Protos.RequestValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult<IEnumerable<MatchMessage>>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<MessageResponse>> PostAsync([FromBody] MessageRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -80,25 +80,13 @@ namespace CovidSafe.API.v20200415.Controllers
                         cancellationToken
                 );
 
-                // Map MatchMessage types
-                List<MatchMessage> messages = new List<MatchMessage>();
+                // Map results to expected return type
+                MessageResponse response = new MessageResponse();
+                response.NarrowcastMessages.AddRange(
+                    reports.Select(r => this._map.Map<Protos.NarrowcastMessage>(r))
+                );
 
-                foreach(MessageContainer report in reports)
-                {
-                    MatchMessage result = this._map.Map<MatchMessage>(report);
-                    // Get BLEs
-                    BluetoothMatch match = new BluetoothMatch();
-                    match.Seeds.AddRange(
-                        report.BluetoothSeeds.Select(s => this._map.Map<BlueToothSeed>(s))
-                    );
-                    // Add converted BLE match
-                    result.BluetoothMatches.Add(match);
-                    // Add converted MatchMessage
-                    messages.Add(result);
-                }
-
-                // Return as expected proto type
-                return Ok(messages);
+                return Ok(response);
             }
             catch(RequestValidationFailedException ex)
             {
