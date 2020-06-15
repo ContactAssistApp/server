@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 
 using AutoMapper;
-using CovidSafe.API.v20200505.Protos;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Messages;
-using Microsoft.EntityFrameworkCore.Internal;
 
-namespace CovidSafe.API.v20200505
+namespace CovidSafe.API.v20200611
 {
     /// <summary>
     /// Maps proto types to their internal database representations
@@ -29,7 +30,7 @@ namespace CovidSafe.API.v20200505
                 // Properties have the same name+type
                 .ReverseMap();
 
-            // MessageInfo -> InfectionReportMetadata
+            // MessageInfo -> MessageContainerMetadata
             CreateMap<MessageInfo, MessageContainerMetadata>()
                 .ForMember(
                     im => im.Id,
@@ -41,7 +42,7 @@ namespace CovidSafe.API.v20200505
                 )
                 .ReverseMap();
 
-            // IEnumerable<InfectionReportMetadata> -> MessageListResponse
+            // IEnumerable<MessageContainerMetadata> -> MessageListResponse
             // This is a one-way response so no ReverseMap is necessary
             CreateMap<IEnumerable<MessageContainerMetadata>, MessageListResponse>()
                 .ForMember(
@@ -53,7 +54,7 @@ namespace CovidSafe.API.v20200505
                     op => op.MapFrom(im => im.Count() > 0 ? im.Max(o => o.Timestamp) : 0)
                 );
 
-            // Area -> InfectionArea
+            // Area -> NarrowcastArea
             CreateMap<Area, NarrowcastArea>()
                 .ForMember(
                     ia => ia.BeginTimestamp,
@@ -73,78 +74,40 @@ namespace CovidSafe.API.v20200505
                 )
                 .ReverseMap();
 
-            // BlueToothSeed -> BluetoothSeedMessage
-            CreateMap<BlueToothSeed, BluetoothSeedMessage>()
-                .ForMember(
-                    bs => bs.BeginTimestamp,
-                    op => op.MapFrom(s => s.SequenceStartTime)
-                )
-                .ForMember(
-                    bs => bs.EndTimestamp,
-                    op => op.MapFrom(s => s.SequenceEndTime)
-                )
-                .ForMember(
-                    bs => bs.Seed,
-                    op => op.MapFrom(s => s.Seed)
-                )
-                .ReverseMap();
-
-            // AreaMatch -> AreaReport
-            CreateMap<AreaMatch, NarrowcastMessage>()
-                .ForMember(
-                    ar => ar.Area,
-                    // v20200611 clarified a NarrowcastMessage should have only one Area
-                    op => op.MapFrom(am => am.Areas.FirstOrDefault())
-                )
-                .ForMember(
-                    ar => ar.UserMessage,
-                    op => op.MapFrom(am => am.UserMessage)
-                )
-                .ReverseMap();
-
-            // SelfReportRequest -> InfectionReport
-            // This is only a request object so no ReverseMap is necessary
-            CreateMap<SelfReportRequest, MessageContainer>()
-                .ForMember(
-                    ir => ir.BluetoothSeeds,
-                    op => op.MapFrom(sr => sr.Seeds)
-                )
-                // Currently no NarrowcastMessages in a SelfReportRequest
+            // MessageResponse -> MessageContainer
+            CreateMap<MessageResponse, MessageContainer>()
                 .ForMember(
                     ir => ir.Narrowcasts,
-                    op => op.Ignore()
-                )
-                // Not specified by users
-                .ForMember(
-                    ir => ir.BluetoothMatchMessage,
-                    op => op.Ignore()
-                )
-                // Not specified by users
-                .ForMember(
-                    ir => ir.BooleanExpression,
-                    op => op.Ignore()
-                );
-
-            // MatchMessage -> InfectionReport
-            CreateMap<MatchMessage, MessageContainer>()
-                .ForMember(
-                    ir => ir.Narrowcasts,
-                    op => op.MapFrom(mm => mm.AreaMatches)
+                    op => op.MapFrom(mm => mm.NarrowcastMessages)
                 )
                 .ForMember(
+                    // Not supported in v20200611+
                     ir => ir.BluetoothSeeds,
-                    op => op.MapFrom(mm => mm.BluetoothSeeds)
+                    op => op.Ignore()
                 )
                 .ForMember(
+                    // Not supported in v20200611+
                     ir => ir.BooleanExpression,
-                    op => op.MapFrom(mm => mm.BoolExpression)
+                    op => op.Ignore()
                 )
                 .ForMember(
-                    // Not supported in v20200415
+                    // Not supported in v20200415+
                     ir => ir.BluetoothMatchMessage,
                     op => op.Ignore()
                 )
                 // Other properties have the same name+type
+                .ReverseMap();
+
+            // NarrowcastMessage -> NarrowcastMessage
+            CreateMap<Protos.NarrowcastMessage, Entities.Messages.NarrowcastMessage>()
+                .ForMember(
+                    src => src.Area,
+                    op => op.MapFrom(dst => dst.Area)
+                )
+                .ForMember(
+                    src => src.UserMessage,
+                    op => op.MapFrom(dst => dst.UserMessage)
+                )
                 .ReverseMap();
         }
     }

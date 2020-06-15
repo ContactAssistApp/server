@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
     /// Handles requests to list <see cref="MatchMessage"/> identifiers which are new to a client
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-05-05")]
+    [ApiVersion("2020-05-05", Deprecated = true)]
     [Route("api/Messages/[controller]")]
     public class ListController : ControllerBase
     {
@@ -27,16 +27,16 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
         /// </summary>
         private readonly IMapper _map;
         /// <summary>
-        /// <see cref="InfectionReport"/> service layer
+        /// <see cref="MessageContainer"/> service layer
         /// </summary>
-        private readonly IInfectionReportService _reportService;
+        private readonly IMessageService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="ListController"/> instance
         /// </summary>
         /// <param name="map">AutoMapper instance</param>
-        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public ListController(IMapper map, IInfectionReportService reportService)
+        /// <param name="reportService"><see cref="MessageContainer"/> service layer</param>
+        public ListController(IMapper map, IMessageService reportService)
         {
             // Assign local values
             this._map = map;
@@ -70,14 +70,9 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             try
             {
                 // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region
-                {
-                    LatitudePrefix = lat,
-                    LongitudePrefix = lon,
-                    Precision = precision
-                };
+                var region = new Entities.Geospatial.Region(lat, lon, precision);
 
-                IEnumerable<InfectionReportMetadata> results = await this._reportService
+                IEnumerable<MessageContainerMetadata> results = await this._reportService
                     .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
 
                 // Return using mapped proto object
@@ -122,12 +117,7 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
             try
             {
                 // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region
-                {
-                    LatitudePrefix = lat,
-                    LongitudePrefix = lon,
-                    Precision = precision
-                };
+                var region = new Entities.Geospatial.Region(lat, lon, precision);
 
                 long size = await this._reportService
                     .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);

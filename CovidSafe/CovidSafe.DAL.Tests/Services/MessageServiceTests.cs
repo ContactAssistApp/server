@@ -7,41 +7,41 @@ using System.Threading.Tasks;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace CovidSafe.DAL.Tests.Services
 {
     /// <summary>
-    /// Unit Tests for the <see cref="InfectionReportService"/> class
+    /// Unit Tests for the <see cref="MessageService"/> class
     /// </summary>
     [TestClass]
-    public class InfectionReportServiceTests
+    public class MessageServiceTests
     {
         /// <summary>
-        /// Mock <see cref="IInfectionReportRepository"/> instance
+        /// Mock <see cref="IMessageContainerRepository"/> instance
         /// </summary>
-        private Mock<IInfectionReportRepository> _repo;
+        private Mock<IMessageContainerRepository> _repo;
         /// <summary>
-        /// <see cref="IInfectionReportService"/> implementation being tested
+        /// <see cref="IMessageService"/> implementation being tested
         /// </summary>
-        private InfectionReportService _service;
+        private MessageService _service;
 
         /// <summary>
-        /// Initializes a new <see cref="InfectionReportServiceTests"/> instance
+        /// Initializes a new <see cref="MessageServiceTests"/> instance
         /// </summary>
-        public InfectionReportServiceTests()
+        public MessageServiceTests()
         {
             // Initialize repositories
-            this._repo = new Mock<IInfectionReportRepository>();
+            this._repo = new Mock<IMessageContainerRepository>();
 
             // Create service
-            this._service = new InfectionReportService(this._repo.Object);
+            this._service = new MessageService(this._repo.Object);
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
+        /// <see cref="MessageService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with empty 'ids' parameter
         /// </summary>
         [TestMethod]
@@ -52,7 +52,7 @@ namespace CovidSafe.DAL.Tests.Services
             IEnumerable<string> ids = new List<string>();
 
             // Act
-            IEnumerable<InfectionReport> result = await this._service
+            IEnumerable<MessageContainer> result = await this._service
                 .GetByIdsAsync(ids, CancellationToken.None);
 
             // Assert
@@ -60,7 +60,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
+        /// <see cref="MessageService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with null 'ids' parameter
         /// </summary>
         [TestMethod]
@@ -71,7 +71,7 @@ namespace CovidSafe.DAL.Tests.Services
             // N/A
 
             // Act
-            IEnumerable<InfectionReport> result = await this._service
+            IEnumerable<MessageContainer> result = await this._service
                 .GetByIdsAsync(null, CancellationToken.None);
 
             // Assert
@@ -79,7 +79,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
+        /// <see cref="MessageService.GetByIdsAsync(IEnumerable{string}, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with empty 'ids' parameter
         /// </summary>
         [TestMethod]
@@ -91,10 +91,10 @@ namespace CovidSafe.DAL.Tests.Services
                 "00000000-0000-0000-0000-000000000001",
                 "00000000-0000-0000-0000-000000000002"
             };
-            IEnumerable<InfectionReport> serviceResponse = new List<InfectionReport>
+            IEnumerable<MessageContainer> serviceResponse = new List<MessageContainer>
             {
-                new InfectionReport(),
-                new InfectionReport()
+                new MessageContainer(),
+                new MessageContainer()
             };
 
             this._repo
@@ -102,7 +102,7 @@ namespace CovidSafe.DAL.Tests.Services
                 .Returns(Task.FromResult(serviceResponse));
 
             // Act
-            IEnumerable<InfectionReport> result = await this._service
+            IEnumerable<MessageContainer> result = await this._service
                 .GetByIdsAsync(ids, CancellationToken.None);
 
             // Assert
@@ -111,7 +111,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
+        /// <see cref="MessageService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with empty 'region' parameter
         /// </summary>
         [TestMethod]
@@ -122,7 +122,7 @@ namespace CovidSafe.DAL.Tests.Services
             // N/A
 
             // Act
-            IEnumerable<InfectionReportMetadata> result = await this._service
+            IEnumerable<MessageContainerMetadata> result = await this._service
                 .GetLatestInfoAsync(null, 0, CancellationToken.None);
 
             // Assert
@@ -130,7 +130,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
+        /// <see cref="MessageService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with null 'region' parameter
         /// </summary>
         [TestMethod]
@@ -141,7 +141,7 @@ namespace CovidSafe.DAL.Tests.Services
             // N/A
 
             // Act
-            IEnumerable<InfectionReportMetadata> result = await this._service
+            IEnumerable<MessageContainerMetadata> result = await this._service
                 .GetLatestInfoAsync(null, 0, CancellationToken.None);
 
             // Assert
@@ -149,27 +149,23 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
+        /// <see cref="MessageService.GetLatestInfoAsync(Region, long, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with empty 'ids' parameter
         /// </summary>
         [TestMethod]
         public async Task GetLatestInfoAsync_ReturnsMultipleMessages()
         {
             // Arrange
-            Region region = new Region
+            Region region = new Region(10, -10, 4);
+
+            IEnumerable<MessageContainerMetadata> serviceResponse = new List<MessageContainerMetadata>
             {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
-            IEnumerable<InfectionReportMetadata> serviceResponse = new List<InfectionReportMetadata>
-            {
-                new InfectionReportMetadata
+                new MessageContainerMetadata
                 {
                     Id = "00000000-0000-0000-0000-000000000001",
                     Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 },
-                new InfectionReportMetadata
+                new MessageContainerMetadata
                 {
                     Id = "00000000-0000-0000-0000-000000000002",
                     Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
@@ -181,7 +177,7 @@ namespace CovidSafe.DAL.Tests.Services
                 .Returns(Task.FromResult(serviceResponse));
 
             // Act
-            IEnumerable<InfectionReportMetadata> result = await this._service
+            IEnumerable<MessageContainerMetadata> result = await this._service
                 .GetLatestInfoAsync(region, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), CancellationToken.None);
 
             // Assert
@@ -190,7 +186,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/> 
+        /// <see cref="MessageService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with empty 'region' parameter
         /// </summary>
         [TestMethod]
@@ -209,7 +205,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/>
+        /// <see cref="MessageService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/>
         /// throws <see cref="ArgumentNullException"/> with null 'region' parameter
         /// </summary>
         [TestMethod]
@@ -228,19 +224,15 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/> 
+        /// <see cref="MessageService.GetLatestRegionDataSizeAsync(Region, long, CancellationToken)"/> 
         /// returns a size of type <see cref="long"/>
         /// </summary>
         [TestMethod]
         public async Task GetLatestRegionDataSizeAsync_ReturnsSize()
         {
             // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
+            Region region = new Region(10, -10, 4);
+
             long expectedResult = 1024;
             this._repo
                 .Setup(r => r.GetLatestRegionSizeAsync(It.IsAny<Region>(), It.IsAny<long>(), CancellationToken.None))
@@ -258,7 +250,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.PublishAreaAsync(AreaReport, CancellationToken)"/> 
+        /// <see cref="MessageService.PublishAreaAsync(NarrowcastMessage, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with null 'areas' parameter
         /// </summary>
         [TestMethod]
@@ -276,15 +268,15 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.PublishAreaAsync(AreaReport, CancellationToken)"/> 
+        /// <see cref="MessageService.PublishAreaAsync(NarrowcastMessage, CancellationToken)"/> 
         /// completes successfully with valid inputs
         /// </summary>
         [TestMethod]
         public async Task PublishAreaAsync_SucceedsOnValidInputs()
         {
             // Arrange
-            AreaReport request = new AreaReport();
-            request.Areas.Add(new InfectionArea
+            NarrowcastMessage request = new NarrowcastMessage();
+            request.Area = new NarrowcastArea
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
@@ -294,12 +286,12 @@ namespace CovidSafe.DAL.Tests.Services
                     Longitude = -10.1234
                 },
                 RadiusMeters = 100
-            });
+            };
             request.UserMessage = "Test user message!";
             string repoResponse = "00000000-0000-0000-0000-0000000000001";
 
             this._repo
-                .Setup(r => r.InsertAsync(It.IsAny<InfectionReport>(), It.IsAny<Region>(), CancellationToken.None))
+                .Setup(r => r.InsertAsync(It.IsAny<MessageContainer>(), It.IsAny<Region>(), CancellationToken.None))
                 .Returns(Task.FromResult(repoResponse));
 
             // Act
@@ -310,7 +302,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.PublishAsync(InfectionReport, Region, CancellationToken)"/> 
+        /// <see cref="MessageService.PublishAsync(MessageContainer, Region, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with null 'message' parameter
         /// </summary>
         [TestMethod]
@@ -318,12 +310,7 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task PublishAsync_ArgumentNullOnNullInfectionReport()
         {
             // Arrange
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
+            Region region = new Region(10, -10, 4);
 
             // Act
             string result = await this._service
@@ -334,7 +321,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.PublishAsync(InfectionReport, Region, CancellationToken)"/> 
+        /// <see cref="MessageService.PublishAsync(MessageContainer, Region, CancellationToken)"/> 
         /// succeeds with valid inputs
         /// </summary>
         [TestMethod]
@@ -342,12 +329,12 @@ namespace CovidSafe.DAL.Tests.Services
         public async Task PublishAsync_ArgumentNullOnNullRegion()
         {
             // Arrange
-            InfectionReport request = new InfectionReport();
-            AreaReport areaMatch = new AreaReport
+            MessageContainer request = new MessageContainer();
+            NarrowcastMessage narrowcast = new NarrowcastMessage
             {
                 UserMessage = "Test user message"
             };
-            areaMatch.Areas.Add(new InfectionArea
+            narrowcast.Area = new NarrowcastArea
             {
                 BeginTimestamp = 0,
                 EndTimestamp = 1,
@@ -357,9 +344,9 @@ namespace CovidSafe.DAL.Tests.Services
                     Longitude = -10.1234
                 },
                 RadiusMeters = 100
-            });
-            request.AreaReports.Add(areaMatch);
-            request.BluetoothSeeds.Add(new BluetoothSeed
+            };
+            request.Narrowcasts.Add(narrowcast);
+            request.BluetoothSeeds.Add(new BluetoothSeedMessage
             {
                 EndTimestamp = 1,
                 BeginTimestamp = 0,
@@ -375,7 +362,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.PublishAsync(InfectionReport, Region, CancellationToken)"/> 
+        /// <see cref="MessageService.PublishAsync(MessageContainer, Region, CancellationToken)"/> 
         /// throws <see cref="ArgumentNullException"/> with null parameters
         /// </summary>
         [TestMethod]
@@ -394,7 +381,7 @@ namespace CovidSafe.DAL.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="InfectionReportService.PublishAsync(InfectionReport, Region, CancellationToken)"/> 
+        /// <see cref="MessageService.PublishAsync(MessageContainer, Region, CancellationToken)"/> 
         /// succeeds with valid inputs
         /// </summary>
         [TestMethod]
@@ -402,18 +389,14 @@ namespace CovidSafe.DAL.Tests.Services
         {
             // Arrange
             string repoResponse = "00000000-0000-0000-0000-000000000002";
-            Region region = new Region
-            {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
-                Precision = 4
-            };
-            InfectionReport request = new InfectionReport();
-            AreaReport areaReport = new AreaReport
+            Region region = new Region(10, -10, 4);
+
+            MessageContainer request = new MessageContainer();
+            NarrowcastMessage narrowcast = new NarrowcastMessage
             {
                 UserMessage = "Test user message"
             };
-            areaReport.Areas.Add(new InfectionArea
+            narrowcast.Area = new NarrowcastArea
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
@@ -423,9 +406,9 @@ namespace CovidSafe.DAL.Tests.Services
                     Longitude = -10.1234
                 },
                 RadiusMeters = 100
-            });
-            request.AreaReports.Add(areaReport);
-            request.BluetoothSeeds.Add(new BluetoothSeed
+            };
+            request.Narrowcasts.Add(narrowcast);
+            request.BluetoothSeeds.Add(new BluetoothSeedMessage
             {
                 BeginTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 EndTimestamp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeMilliseconds(),
@@ -433,7 +416,7 @@ namespace CovidSafe.DAL.Tests.Services
             });
 
             this._repo
-                .Setup(r => r.InsertAsync(It.IsAny<InfectionReport>(), It.IsAny<Region>(), CancellationToken.None))
+                .Setup(r => r.InsertAsync(It.IsAny<MessageContainer>(), It.IsAny<Region>(), CancellationToken.None))
                 .Returns(Task.FromResult(repoResponse));
 
             // Act

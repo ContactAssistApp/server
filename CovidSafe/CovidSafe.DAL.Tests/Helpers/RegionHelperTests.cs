@@ -13,7 +13,7 @@ namespace CovidSafe.Tests.Helpers
     {
         void TestRegion(double lat, double lon, int precision, Tuple<double, double> first, Tuple<double, double> second)
         {
-            var region = new Region { LatitudePrefix = lat, LongitudePrefix = lon, Precision = precision };
+            var region = new Region(lat, lon, precision);
             RegionBoundary rb = RegionHelper.GetRegionBoundary(region);
 
             Assert.AreEqual(rb.Min.Latitude, first.Item1);
@@ -53,7 +53,7 @@ namespace CovidSafe.Tests.Helpers
         [TestMethod]
         public void NewYorkConnectedRegionsTest()
         {
-            var region = new Region { LatitudePrefix = 40.73, LongitudePrefix = -73.93, Precision = 0 };
+            var region = new Region (40.73, -73.93, 0);
             TestConnectedRegions(region, 1, 0, new List<Tuple<double, double>>
             {
                 Tuple.Create(39.0, -75.0),
@@ -104,7 +104,7 @@ namespace CovidSafe.Tests.Helpers
         [TestMethod]
         public void ConnectedRegionsRangeTest()
         {
-            var region = new Region { LatitudePrefix = 40.73, LongitudePrefix = -73.93, Precision = 0 };
+            var region = new Region (40.73, -73.93, 0);
 
             {
                 var range = RegionHelper.GetConnectedRegionsRange(region, 1, 2);
@@ -137,7 +137,7 @@ namespace CovidSafe.Tests.Helpers
         public void RegionsCoverageTest()
         {
             var areas = new[] {
-                new InfectionArea
+                new NarrowcastArea
                 {
                     BeginTimestamp = 0,
                     EndTimestamp = 1,
@@ -148,7 +148,7 @@ namespace CovidSafe.Tests.Helpers
                         Longitude = -73.93
                     }
                 },
-                new InfectionArea
+                new NarrowcastArea
                 {
                     BeginTimestamp = 1,
                     EndTimestamp = 2,

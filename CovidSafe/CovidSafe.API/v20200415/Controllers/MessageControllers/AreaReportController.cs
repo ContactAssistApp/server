@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CovidSafe.API.v20200415.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,16 +26,16 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         /// </summary>
         private readonly IMapper _map;
         /// <summary>
-        /// <see cref="InfectionReport"/> service layer
+        /// <see cref="MessageContainer"/> service layer
         /// </summary>
-        private IInfectionReportService _reportService;
+        private IMessageService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="AreaReportController"/> instance
         /// </summary>
         /// <param name="map">AutoMapper instance</param>
-        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public AreaReportController(IMapper map, IInfectionReportService reportService)
+        /// <param name="reportService"><see cref="MessageContainer"/> service layer</param>
+        public AreaReportController(IMapper map, IMessageService reportService)
         {
             // Assign local values
             this._map = map;
@@ -78,7 +78,7 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
             try
             {
                 // Parse AreaMatch to AreaReport type
-                AreaReport report = this._map.Map<AreaReport>(request);
+                NarrowcastMessage report = this._map.Map<NarrowcastMessage>(request);
 
                 // Publish area
                 await this._reportService.PublishAreaAsync(report, cancellationToken);

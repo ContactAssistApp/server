@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package Corona;
+option csharp_namespace = "CovidSafe.API.v20200611.Protos";
+
+// Geographic location at a point in time;
+message Area {
+  // Geographic location coordinates;
+  Location location = 1;
+  // Radius, in meters, of coordinate coverage;
+  float radius_meters = 2;
+  // Alert start time;
+  int64 begin_time = 3;
+  // Alert end time;
+  int64 end_time = 4;
+}
+
+// Geographic location;
+message Location {
+  // Latitude;
+  double latitude = 1;
+  // Longitude;
+  double longitude = 2;
+}
+
+// Message metadata object;
+message MessageInfo {
+  // Unique Message identifier;
+  string message_id = 1;
+  // Message timestamp;
+  int64 message_timestamp = 2;
+}
+
+// Phone -> Server;
+// Request for metadata of added or updated messages based on client timestamp;
+message MessageListRequest {
+  // Region targeted by request;
+  Region region = 1;
+  // Timestamp of most recent API request from the client;
+  int64 last_query_time = 2;
+}
+
+// Server -> Phone;
+// Collection of MessageInfo matching MessageListRequest;
+message MessageListResponse {
+  // Matching Message metadata collection;
+  repeated MessageInfo message_info = 1;
+  // Latest Message timestamp included in the MessageInfo collection;
+  int64 max_response_timestamp = 2;
+}
+
+// Phone -> Server GetMessages(new_message_ids);
+// Request to download the details of given query ids;
+message MessageRequest {
+  // Collection of Message metadata, used to pull specific Message objects;
+  repeated MessageInfo requested_queries = 1;
+}
+
+// Server -> Phone (list of messages corresponding to touch points where
+// infection can occur);
+message MessageResponse {
+  // Collection of Narrowcast messages matching MessageRequest criteria
+  repeated NarrowcastMessage narrowcast_messages = 1;
+}
+
+// Phone <-> Server;
+// Narrowcast Message object;
+message NarrowcastMessage {
+  // Message displayed to user on match;
+  string user_message = 1;
+  // Area of infection risk;
+  Area area = 2;
+}
+
+// Geographic region quantized by precision of lat/long;
+message Region {
+  // Latitude source, no decimal;
+  int32 latitude_prefix = 1;
+  // Longitude source, no decimal;
+  int32 longitude_prefix = 2;
+  // Mantissa mask/precision bits;
+  int32 precision = 3;
+}
+
+// Request error message;
+message RequestValidationResult {
+  // Collection of individual request validation failures;
+  repeated RequestValidationFailure failures = 1;
+}
+
+// Individual request failure message;
+message RequestValidationFailure {
+  // Validation error message;
+  string message = 1;
+  // Name of parameter failing validation;
+  string property = 2;
+}

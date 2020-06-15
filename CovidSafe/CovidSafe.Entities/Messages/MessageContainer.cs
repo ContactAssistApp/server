@@ -5,20 +5,15 @@ using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 using Newtonsoft.Json;
 
-namespace CovidSafe.Entities.Reports
+namespace CovidSafe.Entities.Messages
 {
     /// <summary>
-    /// Infection Report data
+    /// Wraps all message-related types into a single, reportable object which enables mixed messages in a single result
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     [Serializable]
-    public class InfectionReport : IValidatable
+    public class MessageContainer : IValidatable
     {
-        /// <summary>
-        /// Location-based infection risk reports
-        /// </summary>
-        [JsonProperty("AreaReports", NullValueHandling = NullValueHandling.Ignore)]
-        public IList<AreaReport> AreaReports { get; set; } = new List<AreaReport>();
         /// <summary>
         /// BluetoothMatchMessage backing property
         /// </summary>
@@ -37,7 +32,7 @@ namespace CovidSafe.Entities.Reports
         /// Bluetooth Seed-based infection reports
         /// </summary>
         [JsonProperty("Seeds", NullValueHandling = NullValueHandling.Ignore)]
-        public IList<BluetoothSeed> BluetoothSeeds { get; set; } = new List<BluetoothSeed>();
+        public IList<BluetoothSeedMessage> BluetoothSeeds { get; set; } = new List<BluetoothSeedMessage>();
         /// <summary>
         /// BooleanExpression backing property
         /// </summary>
@@ -52,14 +47,19 @@ namespace CovidSafe.Entities.Reports
             get { return this._booleanExpression; }
             set { this._booleanExpression = value; }
         }
+        /// <summary>
+        /// <see cref="NarrowcastMessage"/> collection
+        /// </summary>
+        [JsonProperty("Narrowcasts", NullValueHandling = NullValueHandling.Ignore)]
+        public IList<NarrowcastMessage> Narrowcasts { get; set; } = new List<NarrowcastMessage>();
 
         /// <inheritdoc/>
         public RequestValidationResult Validate()
         {
             RequestValidationResult result = new RequestValidationResult();
 
-            // Must contain at least one of either BluetoothSeeds or AreaMatches
-            if (this.AreaReports.Count == 0 && this.BluetoothSeeds.Count == 0)
+            // Must contain at least one of either BluetoothSeeds or NarrowcastMessages
+            if (this.BluetoothSeeds.Count == 0 && this.Narrowcasts.Count == 0)
             {
                 result.Fail(
                     RequestValidationIssue.InputEmpty,
@@ -67,22 +67,24 @@ namespace CovidSafe.Entities.Reports
                     ValidationMessages.EmptyMessage
                 );
             }
-            if (this.AreaReports.Count > 0)
-            {
-                // Validate individual area matches
-                foreach (AreaReport areaReport in this.AreaReports)
-                {
-                    // Use AreaMatch.Validate()
-                    result.Combine(areaReport.Validate());
-                }
-            }
+
+            // Validate individual messages
             if (this.BluetoothSeeds.Count > 0)
             {
                 // Validate individual Bluetooth matches
-                foreach (BluetoothSeed seed in this.BluetoothSeeds)
+                foreach (BluetoothSeedMessage seed in this.BluetoothSeeds)
                 {
                     // Use BluetoothSeed.Validate()
                     result.Combine(seed.Validate());
+                }
+            }
+            if (this.Narrowcasts.Count > 0)
+            {
+                // Validate individual area matches
+                foreach (NarrowcastMessage message in this.Narrowcasts)
+                {
+                    // Use NarrowcastMessage.Validate()
+                    result.Combine(message.Validate());
                 }
             }
 

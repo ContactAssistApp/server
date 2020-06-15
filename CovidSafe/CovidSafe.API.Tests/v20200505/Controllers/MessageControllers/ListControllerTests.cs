@@ -9,7 +9,7 @@ using CovidSafe.API.v20200505.Controllers.MessageControllers;
 using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,13 +28,13 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
         /// </summary>
         private ListController _controller;
         /// <summary>
-        /// Mock <see cref="IInfectionReportRepository"/> instance
+        /// Mock <see cref="IMessageContainerRepository"/> instance
         /// </summary>
-        private Mock<IInfectionReportRepository> _repo;
+        private Mock<IMessageContainerRepository> _repo;
         /// <summary>
-        /// <see cref="InfectionReportService"/> instance
+        /// <see cref="MessageService"/> instance
         /// </summary>
-        private InfectionReportService _service;
+        private MessageService _service;
 
         /// <summary>
         /// Creates a new <see cref="ListControllerTests"/> instance
@@ -42,10 +42,10 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
         public ListControllerTests()
         {
             // Configure repo mock
-            this._repo = new Mock<IInfectionReportRepository>();
+            this._repo = new Mock<IMessageContainerRepository>();
 
             // Configure service
-            this._service = new InfectionReportService(this._repo.Object);
+            this._service = new MessageService(this._repo.Object);
 
             // Create AutoMapper instance
             MapperConfiguration mapperConfig = new MapperConfiguration(
@@ -174,9 +174,9 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
                 Precision = 4
             };
 
-            IEnumerable<InfectionReportMetadata> response = new List<InfectionReportMetadata>
+            IEnumerable<MessageContainerMetadata> response = new List<MessageContainerMetadata>
             {
-                new InfectionReportMetadata
+                new MessageContainerMetadata
                 {
                     Id = "00000000-0000-0000-0000-0000000001",
                     Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()

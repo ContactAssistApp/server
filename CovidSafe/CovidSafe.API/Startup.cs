@@ -92,7 +92,7 @@ namespace CovidSafe.API
             
             // Configure data repository implementations
             services.AddTransient<CosmosContext>();
-            services.AddSingleton<IInfectionReportRepository, CosmosInfectionReportRepository>();
+            services.AddSingleton<IMessageContainerRepository, CosmosMessageContainerRepository>();
 
             #endregion
 
@@ -103,7 +103,7 @@ namespace CovidSafe.API
             );
 
             // Configure service layer
-            services.AddSingleton<IInfectionReportService, InfectionReportService>();
+            services.AddSingleton<IMessageService, MessageService>();
 
             // Enable API versioning
             services.AddApiVersioning(o =>
