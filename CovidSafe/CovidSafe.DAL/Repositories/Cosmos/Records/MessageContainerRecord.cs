@@ -18,17 +18,26 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         [JsonProperty("RegionBoundary", Required = Required.Always)]
         [Required]
         public RegionBoundary RegionBoundary { get; set; }
+
+        /// <summary>
+        /// <see cref="MessageContainer"/> region
+        /// </summary>
+        [JsonProperty("Region", Required = Required.Always)]
+        [Required]
+        public Region Region { get; set; }
+
         /// <summary>
         /// Size of the record <see cref="MessageContainer"/>, in bytes
         /// </summary>
         [JsonProperty("size", Required = Required.Always)]
         [Required]
         public long Size { get; set; }
+        
         /// <summary>
         /// Current version of record schema
         /// </summary>
         [JsonIgnore]
-        public const string CURRENT_RECORD_VERSION = "3.0.0";
+        public const string CURRENT_RECORD_VERSION = "4.0.0";
 
         /// <summary>
         /// Creates a new <see cref="MessageContainerRecord"/> instance
@@ -54,10 +63,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <returns>Partition Key value</returns>
         public static string GetPartitionKey(Region region)
         {
-            int lat = (int)PrecisionHelper.Round(region.LatitudePrefix, 0);
-            int lon = (int)PrecisionHelper.Round(region.LongitudePrefix, 0);
-            
-            return $"{lat},{lon}";
+            return $"{region.LatitudePrefix},{region.LongitudePrefix},{region.Precision}";
         }
     }
 }

@@ -11,126 +11,52 @@ namespace CovidSafe.Tests.Helpers
     [TestClass]
     public class RegionHelperTests
     {
-        void TestRegion(double lat, double lon, int precision, Tuple<double, double> first, Tuple<double, double> second)
+        void TestRegionBackwardCompatible(double lat, double lon, Region expected)
         {
-            var region = new Region(lat, lon, precision);
-            RegionBoundary rb = RegionHelper.GetRegionBoundary(region);
+            var region = RegionHelper.CreateRegion(lat, lon);
 
-            Assert.AreEqual(rb.Min.Latitude, first.Item1);
-            Assert.AreEqual(rb.Min.Longitude, first.Item2);
-            Assert.AreEqual(rb.Max.Latitude, second.Item1);
-            Assert.AreEqual(rb.Max.Longitude, second.Item2);
+            Assert.AreEqual(expected.LatitudePrefix, region.LatitudePrefix);
+            Assert.AreEqual(expected.LongitudePrefix, region.LongitudePrefix);
+            Assert.AreEqual(expected.Precision, region.Precision);
+        }
+
+        [TestMethod]
+        public void NYRegionBackwardCompatibilityTest()
+        {
+            var expected = new Region(40, -73, 9);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+        }
+
+        void TestRegion(int lat, int lon, int precision, Region expected)
+        {
+            var region = RegionHelper.AdjustToPrecision(new Region(lat, lon, precision));
+
+            Assert.AreEqual(expected.LatitudePrefix, region.LatitudePrefix);
+            Assert.AreEqual(expected.LongitudePrefix, region.LongitudePrefix);
+            Assert.AreEqual(expected.Precision, region.Precision);
         }
 
         [TestMethod]
         public void NewYorkRegionTest()
         {
-            TestRegion(40.73, -73.93, 0, Tuple.Create(40.0, -74.0), Tuple.Create(41.0, -73.0));
-            TestRegion(40.73, -73.93, 1, Tuple.Create(40.5, -74.0), Tuple.Create(41.0, -73.5));
-            TestRegion(40.73, -73.93, 2, Tuple.Create(40.5, -74.0), Tuple.Create(40.75, -73.75));
-            TestRegion(40.73, -73.93, 3, Tuple.Create(40.625, -74.0), Tuple.Create(40.75, -73.875));
-            TestRegion(40.73, -73.93, 4, Tuple.Create(40.6875, -73.9375), Tuple.Create(40.75, -73.875));
-            TestRegion(40.73, -73.93, -1, Tuple.Create(40.0, -74.0), Tuple.Create(42.0, -72.0));
-            TestRegion(40.73, -73.93, -2, Tuple.Create(40.0, -76.0), Tuple.Create(44.0, -72.0));
-            TestRegion(40.73, -73.93, -3, Tuple.Create(40.0, -80.0), Tuple.Create(48.0, -72.0));
-            TestRegion(40.73, -73.93, -4, Tuple.Create(32.0, -80.0), Tuple.Create(48.0, -64.0));
-        }
-
-        void TestConnectedRegions(Region region, int extension, int precision, IList<Tuple<double, double>> expected)
-        {
-            List<Region> regions = RegionHelper.GetConnectedRegions(region, extension, precision).ToList();
-
-            Assert.AreEqual(regions.Count, expected.Count);
-
-            for (int i = 0; i < regions.Count; ++i)
-            {
-                Assert.AreEqual(expected[i].Item1, regions[i].LatitudePrefix);
-                Assert.AreEqual(expected[i].Item2, regions[i].LongitudePrefix);
-                Assert.AreEqual(precision, regions[i].Precision);
-            }
-        }
-
-        [TestMethod]
-        public void NewYorkConnectedRegionsTest()
-        {
-            var region = new Region (40.73, -73.93, 0);
-            TestConnectedRegions(region, 1, 0, new List<Tuple<double, double>>
-            {
-                Tuple.Create(39.0, -75.0),
-                Tuple.Create(39.0, -74.0),
-                Tuple.Create(39.0, -73.0),
-                Tuple.Create(40.0, -75.0),
-                Tuple.Create(40.0, -74.0),
-                Tuple.Create(40.0, -73.0),
-                Tuple.Create(41.0, -75.0),
-                Tuple.Create(41.0, -74.0),
-                Tuple.Create(41.0, -73.0),
-            });
-
-            TestConnectedRegions(region, 1, 1, new List<Tuple<double, double>>
-            {
-                Tuple.Create(39.5, -74.5),
-                Tuple.Create(39.5, -74.0),
-                Tuple.Create(39.5, -73.5),
-                Tuple.Create(39.5, -73.0),
-                Tuple.Create(40.0, -74.5),
-                Tuple.Create(40.0, -74.0),
-                Tuple.Create(40.0, -73.5),
-                Tuple.Create(40.0, -73.0),
-                Tuple.Create(40.5, -74.5),
-                Tuple.Create(40.5, -74.0),
-                Tuple.Create(40.5, -73.5),
-                Tuple.Create(40.5, -73.0),
-                Tuple.Create(41.0, -74.5),
-                Tuple.Create(41.0, -74.0),
-                Tuple.Create(41.0, -73.5),
-                Tuple.Create(41.0, -73.0),
-            });
-
-            TestConnectedRegions(region, 1, -1, new List<Tuple<double, double>>
-            {
-                Tuple.Create(38.0, -76.0),
-                Tuple.Create(38.0, -74.0),
-                Tuple.Create(38.0, -72.0),
-                Tuple.Create(40.0, -76.0),
-                Tuple.Create(40.0, -74.0),
-                Tuple.Create(40.0, -72.0),
-                Tuple.Create(42.0, -76.0),
-                Tuple.Create(42.0, -74.0),
-                Tuple.Create(42.0, -72.0),
-            });
-        }
-
-        [TestMethod]
-        public void ConnectedRegionsRangeTest()
-        {
-            var region = new Region (40.73, -73.93, 0);
-
-            {
-                var range = RegionHelper.GetConnectedRegionsRange(region, 1, 2);
-                Assert.AreEqual(39.75, range.Min.Latitude);
-                Assert.AreEqual(-74.25, range.Min.Longitude);
-                Assert.AreEqual(41.0, range.Max.Latitude);
-                Assert.AreEqual(-73.0, range.Max.Longitude);
-            }
-
-
-            {
-                var range = RegionHelper.GetConnectedRegionsRange(region, 1, 0);
-                Assert.AreEqual(39.0, range.Min.Latitude);
-                Assert.AreEqual(-75.0, range.Min.Longitude);
-                Assert.AreEqual(41.0, range.Max.Latitude);
-                Assert.AreEqual(-73.0, range.Max.Longitude);
-            }
-
-            //Invalid Test. TODO: Fix
-         /*   {
-                var range = RegionHelper.GetConnectedRegionsRange(region, 1, -1);
-                Assert.AreEqual(39.75, range.Min.Latitude);
-                Assert.AreEqual(-74.25, range.Min.Longitude);
-                Assert.AreEqual(41.0, range.Max.Latitude);
-                Assert.AreEqual(-73.0, range.Max.Longitude);
-            }*/
+            TestRegion(40, -73, 0, new Region(0, 0, 0));
+            TestRegion(40, -73, 1, new Region(0, 0, 1));
+            TestRegion(40, -73, 2, new Region(0, 0, 2));
+            TestRegion(40, -73, 3, new Region(0, -64, 3));
+            TestRegion(40, -73, 4, new Region(32, -64, 4));
+            TestRegion(40, -73, 5, new Region(32, -64, 5));
+            TestRegion(40, -73, 6, new Region(40, -72, 6));
+            TestRegion(40, -73, 7, new Region(40, -72, 7));
+            TestRegion(40, -73, 8, new Region(40, -72, 8));
+            TestRegion(40, -73, 9, new Region(40, -73, 9));
         }
 
         [TestMethod]
@@ -156,7 +82,7 @@ namespace CovidSafe.Tests.Helpers
                     Location = new Coordinates
                     {
                         Latitude = 40.1,
-                        Longitude = -73.93
+                        Longitude = -74.93
                     }
                 }
             };
@@ -167,7 +93,7 @@ namespace CovidSafe.Tests.Helpers
             }
 
             {
-                var regions = RegionHelper.GetRegionsCoverage(areas, 1).ToList();
+                var regions = RegionHelper.GetRegionsCoverage(areas, 9).ToList();
                 Assert.AreEqual(2, regions.Count);
             }
         }

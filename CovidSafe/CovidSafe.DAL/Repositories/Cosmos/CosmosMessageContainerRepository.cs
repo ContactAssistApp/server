@@ -96,24 +96,19 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task<IEnumerable<MessageContainerMetadata>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            // Get boundaries for provided region
-            Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
-
             // Create LINQ query
             var queryable = this.Container
                 .GetItemLinqQueryable<MessageContainerRecord>();
 
-            RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
             long timeStampFilter = this._getTimestampFilter(lastTimestamp);
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
                     r.Timestamp > timeStampFilter
-                    && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
-                    && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
-                    && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
-                    && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
+                    && r.Region.LatitudePrefix == region.LatitudePrefix
+                    && r.Region.LongitudePrefix == region.LongitudePrefix
+                    && r.Region.Precision == region.Precision
                     && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
                 )
                 .Select(r => new MessageContainerMetadata
@@ -136,24 +131,19 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            // Get boundaries for provided region
-            Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
-
             // Create LINQ query
             var queryable = this.Container
                 .GetItemLinqQueryable<MessageContainerRecord>();
 
-            RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
             long timeStampFilter = this._getTimestampFilter(lastTimestamp);
 
             // Execute query
             var size = await queryable
                 .Where(r =>
                     r.Timestamp > timeStampFilter
-                    && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
-                    && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
-                    && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
-                    && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
+                    && r.Region.LatitudePrefix == region.LatitudePrefix
+                    && r.Region.LongitudePrefix == region.LongitudePrefix
+                    && r.Region.Precision == region.Precision
                     && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
                 )
                 .Select(r => r.Size)
@@ -209,6 +199,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             var record = new MessageContainerRecord(report)
             {
                 RegionBoundary = new RegionBoundary(boundary),
+                Region = region,
                 PartitionKey = MessageContainerRecord.GetPartitionKey(region)
             };
 
@@ -237,6 +228,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
                     RegionBoundary = new RegionBoundary(
                         RegionHelper.GetRegionBoundary(r)
                     ),
+                    Region = RegionHelper.AdjustToPrecision(r),
                     PartitionKey = MessageContainerRecord.GetPartitionKey(r)
                 }).GroupBy(r => r.PartitionKey);
 
