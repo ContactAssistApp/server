@@ -16,7 +16,7 @@ namespace CovidSafe.Entities.Geospatial
         /// <summary>
         /// Maximum allowed precision value;
         /// </summary>
-        public const int MAX_PRECISION = 9;
+        public const int MAX_PRECISION = 8;
         /// <summary>
         /// Minimum allowed precision value
         /// </summary>

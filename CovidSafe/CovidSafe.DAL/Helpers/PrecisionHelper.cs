@@ -9,7 +9,7 @@ namespace CovidSafe.DAL.Helpers
 	{
 		public static int GetStep(int precision)
         {
-			int bits = Math.Max(9 - precision, 0);
+			int bits = Math.Max(8 - precision, 0);
 			return 1 << bits;
         }
 
@@ -20,10 +20,10 @@ namespace CovidSafe.DAL.Helpers
 		/// <param name="precision">Precision parameter, any integer</param>
 		/// <returns>Nearest number aligned with precision grid, equal to d or closer to 0.
 		/// Precision=0 maps any int from [-256, 256] to 0.
-		/// Precision>=9 maps any int to itself</returns>
+		/// Precision>=8 maps any int to itself</returns>
 		public static int Round(int d, int precision)
         {
-			int bits = Math.Max(9 - precision, 0);
+			int bits = Math.Max(8 - precision, 0);
 			return d >= 0 ? d >> bits << bits : -(-d >> bits << bits);
         }
 

@@ -23,7 +23,7 @@ namespace CovidSafe.Tests.Helpers
         [TestMethod]
         public void NYRegionBackwardCompatibilityTest()
         {
-            var expected = new Region(40, -73, 9);
+            var expected = new Region(40, -73, 8);
             TestRegionBackwardCompatible(40.73, -73.93, expected);
             TestRegionBackwardCompatible(40.73, -73.93, expected);
             TestRegionBackwardCompatible(40.73, -73.93, expected);
@@ -49,39 +49,109 @@ namespace CovidSafe.Tests.Helpers
         {
             TestRegion(40, -73, 0, new Region(0, 0, 0));
             TestRegion(40, -73, 1, new Region(0, 0, 1));
-            TestRegion(40, -73, 2, new Region(0, 0, 2));
-            TestRegion(40, -73, 3, new Region(0, -64, 3));
+            TestRegion(40, -73, 2, new Region(0, -64, 2));
+            TestRegion(40, -73, 3, new Region(32, -64, 3));
             TestRegion(40, -73, 4, new Region(32, -64, 4));
-            TestRegion(40, -73, 5, new Region(32, -64, 5));
+            TestRegion(40, -73, 5, new Region(40, -72, 5));
             TestRegion(40, -73, 6, new Region(40, -72, 6));
             TestRegion(40, -73, 7, new Region(40, -72, 7));
-            TestRegion(40, -73, 8, new Region(40, -72, 8));
-            TestRegion(40, -73, 9, new Region(40, -73, 9));
+            TestRegion(40, -73, 8, new Region(40, -73, 8));
         }
 
         [TestMethod]
-        public void SimpleRegionsCoverageTest()
+        public void RegionCoverageTest_Precision0()
         {
             var area = new NarrowcastArea
             {
                 BeginTimestamp = 0,
                 EndTimestamp = 1,
-                RadiusMeters = 100,
-                Location = new Coordinates
-                {
-                    Latitude = 40.73,
-                    Longitude = -73.93
-                }
+                RadiusMeters = 1000,
             };
 
+
             {
+                area.Location = new Coordinates { Latitude = 0.0001, Longitude = 0.0001 };
                 var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
                 Assert.AreEqual(1, regions.Count);
             }
 
             {
-                var regions = RegionHelper.GetRegionsCoverage(area, 9).ToList();
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
                 Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = 179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -89.9999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+        }
+
+        [TestMethod]
+        public void RegionCoverageTest_Precision1()
+        {
+            var area = new NarrowcastArea
+            {
+                BeginTimestamp = 0,
+                EndTimestamp = 1,
+                RadiusMeters = 1000,
+            };
+
+            int precision = 1;
+
+            {
+                area.Location = new Coordinates { Latitude = 0.0001, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = 179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -89.9999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(3, regions.Count);
             }
         }
 
