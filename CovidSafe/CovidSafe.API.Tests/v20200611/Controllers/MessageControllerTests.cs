@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
-using CovidSafe.API.v20200415.Controllers;
-using CovidSafe.API.v20200415.Protos;
+using CovidSafe.API.v20200611.Controllers;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CovidSafe.API.v20200415.Tests.Controllers
+namespace CovidSafe.API.v20200611.Tests.Controllers
 {
     /// <summary>
     /// Unit Tests for the <see cref="MessageController"/> class
@@ -91,11 +91,11 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
             request.RequestedQueries.Add(new MessageInfo
             {
                 MessageId = "Not a GUID!", // Invalid format
-                MessageTimestamp = 0
+                MessageTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+            ActionResult<MessageResponse> controllerResponse = await this._controller
                 .PostAsync(request, CancellationToken.None);
 
             // Assert
@@ -114,7 +114,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
             MessageRequest request = new MessageRequest(); // Empty request
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+            ActionResult<MessageResponse> controllerResponse = await this._controller
                 .PostAsync(request, CancellationToken.None);
 
             // Assert
@@ -143,16 +143,16 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+            ActionResult<MessageResponse> controllerResponse = await this._controller
                 .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
             Assert.IsInstanceOfType(controllerResponse.Result, typeof(OkObjectResult));
             OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
-            Assert.IsInstanceOfType(castedResult.Value, typeof(IEnumerable<MatchMessage>));
-            IEnumerable<MatchMessage> listResult = castedResult.Value as IEnumerable<MatchMessage>;
-            Assert.AreEqual(0, listResult.Count());
+            Assert.IsInstanceOfType(castedResult.Value, typeof(MessageResponse));
+            MessageResponse listResult = castedResult.Value as MessageResponse;
+            Assert.AreEqual(0, listResult.NarrowcastMessages.Count());
         }
 
         /// <summary>
@@ -169,7 +169,15 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
                 "00000000-0000-0000-0000-000000000002"
             };
             MessageContainer result1 = new MessageContainer();
+            result1.Narrowcasts.Add(new Entities.Messages.NarrowcastMessage
+            {
+                UserMessage = "This is one message."
+            });
             MessageContainer result2 = new MessageContainer();
+            result2.Narrowcasts.Add(new Entities.Messages.NarrowcastMessage
+            {
+                UserMessage = "This is another."
+            });
             IEnumerable<MessageContainer> toReturn = new List<MessageContainer>
             {
                 result1,
@@ -193,16 +201,16 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+            ActionResult<MessageResponse> controllerResponse = await this._controller
                 .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
             Assert.IsInstanceOfType(controllerResponse.Result, typeof(OkObjectResult));
             OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
-            Assert.IsInstanceOfType(castedResult.Value, typeof(List<MatchMessage>));
-            List<MatchMessage> listResult = castedResult.Value as List<MatchMessage>;
-            Assert.AreEqual(toReturn.Count(), listResult.Count());
+            Assert.IsInstanceOfType(castedResult.Value, typeof(MessageResponse));
+            MessageResponse listResult = castedResult.Value as MessageResponse;
+            Assert.AreEqual(toReturn.Count(), listResult.NarrowcastMessages.Count);
         }
 
         /// <summary>
@@ -219,6 +227,10 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
                 "00000000-0000-0000-0000-000000000002"
             };
             MessageContainer result1 = new MessageContainer();
+            result1.Narrowcasts.Add(new Entities.Messages.NarrowcastMessage
+            {
+                UserMessage = "This is a message"
+            });
             IEnumerable<MessageContainer> toReturn = new List<MessageContainer>
             {
                 result1
@@ -241,16 +253,16 @@ namespace CovidSafe.API.v20200415.Tests.Controllers
             });
 
             // Act
-            ActionResult<IEnumerable<MatchMessage>> controllerResponse = await this._controller
+            ActionResult<MessageResponse> controllerResponse = await this._controller
                 .PostAsync(request, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
             Assert.IsInstanceOfType(controllerResponse.Result, typeof(OkObjectResult));
             OkObjectResult castedResult = controllerResponse.Result as OkObjectResult;
-            Assert.IsInstanceOfType(castedResult.Value, typeof(List<MatchMessage>));
-            List<MatchMessage> listResult = castedResult.Value as List<MatchMessage>;
-            Assert.AreEqual(1, listResult.Count());
+            Assert.IsInstanceOfType(castedResult.Value, typeof(MessageResponse));
+            MessageResponse listResult = castedResult.Value as MessageResponse;
+            Assert.AreEqual(1, listResult.NarrowcastMessages.Count());
         }
     }
 }

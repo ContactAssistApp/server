@@ -3,17 +3,17 @@
 using CovidSafe.Entities.Validation;
 using Newtonsoft.Json;
 
-namespace CovidSafe.Entities.Reports
+namespace CovidSafe.Entities.Messages
 {
     /// <summary>
     /// Bluetooth seed
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     [Serializable]
-    public class BluetoothSeed : IValidatable
+    public class BluetoothSeedMessage : IValidatable
     {
         /// <summary>
-        /// Start of <see cref="BluetoothSeed"/> validity period
+        /// Start of <see cref="BluetoothSeedMessage"/> validity period
         /// </summary>
         /// <remarks>
         /// Reported in milliseconds (ms) since the UNIX epoch.
@@ -21,7 +21,7 @@ namespace CovidSafe.Entities.Reports
         [JsonProperty("beginTimestampMs", Required = Required.Always)]
         public long BeginTimestamp { get; set; }
         /// <summary>
-        /// End of <see cref="BluetoothSeed"/> validity period
+        /// End of <see cref="BluetoothSeedMessage"/> validity period
         /// </summary>
         /// <remarks>
         /// Reported in milliseconds (ms) since the UNIX epoch.

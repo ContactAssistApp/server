@@ -2,46 +2,55 @@
 
 using CovidSafe.DAL.Helpers;
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using Newtonsoft.Json;
 
 namespace CovidSafe.DAL.Repositories.Cosmos.Records
 {
     /// <summary>
-    /// <see cref="InfectionReport"/> implementation of <see cref="CosmosRecord{T}"/>
+    /// <see cref="MessageContainer"/> implementation of <see cref="CosmosRecord{T}"/>
     /// </summary>
-    public class InfectionReportRecord : CosmosRecord<InfectionReport>
+    public class MessageContainerRecord : CosmosRecord<MessageContainer>
     {
         /// <summary>
-        /// Boundary allowed by <see cref="InfectionReport"/> region
+        /// Boundary allowed by <see cref="MessageContainer"/> region
         /// </summary>
         [JsonProperty("RegionBoundary", Required = Required.Always)]
         [Required]
         public RegionBoundary RegionBoundary { get; set; }
+
         /// <summary>
-        /// Size of the record <see cref="InfectionReport"/>, in bytes
+        /// <see cref="MessageContainer"/> region
+        /// </summary>
+        [JsonProperty("Region", Required = Required.Always)]
+        [Required]
+        public Region Region { get; set; }
+
+        /// <summary>
+        /// Size of the record <see cref="MessageContainer"/>, in bytes
         /// </summary>
         [JsonProperty("size", Required = Required.Always)]
         [Required]
         public long Size { get; set; }
+        
         /// <summary>
         /// Current version of record schema
         /// </summary>
         [JsonIgnore]
-        public const string CURRENT_RECORD_VERSION = "2.0.0";
+        public const string CURRENT_RECORD_VERSION = "4.0.0";
 
         /// <summary>
-        /// Creates a new <see cref="InfectionReportRecord"/> instance
+        /// Creates a new <see cref="MessageContainerRecord"/> instance
         /// </summary>
-        public InfectionReportRecord()
+        public MessageContainerRecord()
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="InfectionReportRecord"/> instance
+        /// Creates a new <see cref="MessageContainerRecord"/> instance
         /// </summary>
-        /// <param name="report"><see cref="InfectionReport"/> to store</param>
-        public InfectionReportRecord(InfectionReport report)
+        /// <param name="report"><see cref="MessageContainer"/> to store</param>
+        public MessageContainerRecord(MessageContainer report)
         {
             this.Size = PayloadSizeHelper.GetSize(report);
             this.Value = report;
@@ -54,10 +63,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos.Records
         /// <returns>Partition Key value</returns>
         public static string GetPartitionKey(Region region)
         {
-            int lat = (int)PrecisionHelper.Round(region.LatitudePrefix, 0);
-            int lon = (int)PrecisionHelper.Round(region.LongitudePrefix, 0);
-            
-            return $"{lat},{lon}";
+            return $"{region.LatitudePrefix},{region.LongitudePrefix},{region.Precision}";
         }
     }
 }

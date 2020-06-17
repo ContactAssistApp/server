@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
-using CovidSafe.API.v20200415.Controllers.MessageControllers;
-using CovidSafe.API.v20200415.Protos;
+using CovidSafe.API.v20200611.Controllers.MessageControllers;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
+namespace CovidSafe.API.v20200611.Tests.Controllers.MessageControllers
 {
     /// <summary>
     /// Unit Tests for the <see cref="ListController"/> class
@@ -72,7 +72,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Min Latitude is -90
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
+                .GetAsync(10, -10, 4, -1, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -92,7 +92,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Max Latitude is 90
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(91, -10.1234, 4, 0, CancellationToken.None);
+                .GetAsync(91, -10, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -112,7 +112,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Max Longitude is 180
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, 181, 4, 0, CancellationToken.None);
+                .GetAsync(10, 181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -132,7 +132,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Min Latitude is -90
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(-91, -10.1234, 4, 0, CancellationToken.None);
+                .GetAsync(-91, -10, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -152,7 +152,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Min Longitude is -180
             ActionResult<MessageListResponse> controllerResponse = await this._controller
-                .GetAsync(10.1234, -181, 4, 0, CancellationToken.None);
+                .GetAsync(10, -181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -167,10 +167,10 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
         public async Task GetAsync_OkWithMatchedParams()
         {
             // Arrange
-            v20200415.Protos.Region requestedRegion = new Region
+            v20200611.Protos.Region requestedRegion = new Region
             {
-                LatitudePrefix = 10.1234,
-                LongitudePrefix = -10.1234,
+                LatitudePrefix = 10,
+                LongitudePrefix = -10,
                 Precision = 4
             };
 
@@ -223,8 +223,8 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             ActionResult<MessageListResponse> controllerResponse = await this._controller
                 .GetAsync(
-                    10.1234,
-                    -10.1234,
+                    10,
+                    -10,
                     4,
                     DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     CancellationToken.None
@@ -252,7 +252,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Min Latitude is -90
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, -10.1234, 4, -1, CancellationToken.None);
+                .HeadAsync(10, -10, 4, -1, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -272,7 +272,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Max Latitude is 90
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(91, -10.1234, 4, 0, CancellationToken.None);
+                .HeadAsync(91, -10, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -292,7 +292,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Max Longitude is 180
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, 181, 4, 0, CancellationToken.None);
+                .HeadAsync(10, 181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -312,7 +312,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Min Latitude is -90
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(-91, -10.1234, 4, 0, CancellationToken.None);
+                .HeadAsync(-91, -10, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -332,7 +332,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             // Min Longitude is -180
             ActionResult controllerResponse = await this._controller
-                .HeadAsync(10.1234, -181, 4, 0, CancellationToken.None);
+                .HeadAsync(10, -181, 4, 0, CancellationToken.None);
 
             // Assert
             Assert.IsNotNull(controllerResponse);
@@ -361,8 +361,8 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             ActionResult controllerResponse = await this._controller
                 .HeadAsync(
-                    10.1234,
-                    -10.1234,
+                    10,
+                    -10,
                     4,
                     DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     CancellationToken.None
@@ -387,8 +387,8 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
             // Act
             ActionResult controllerResponse = await this._controller
                 .HeadAsync(
-                    10.1234,
-                    -10.1234,
+                    10,
+                    -10,
                     4,
                     DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     CancellationToken.None

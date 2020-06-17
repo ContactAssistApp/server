@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Performance\**" />
+    <EmbeddedResource Remove="Performance\**" />
+    <None Remove="Performance\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
@@ -22,10 +28,6 @@
     <ProjectReference Include="..\CovidSafe.API\CovidSafe.API.csproj" />
     <ProjectReference Include="..\CovidSafe.DAL\CovidSafe.DAL.csproj" />
     <ProjectReference Include="..\CovidSafe.Entities\CovidSafe.Entities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Performance\" />
   </ItemGroup>
 
 </Project>

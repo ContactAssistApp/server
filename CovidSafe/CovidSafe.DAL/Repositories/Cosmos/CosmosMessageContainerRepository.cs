@@ -8,7 +8,7 @@ using CovidSafe.DAL.Helpers;
 using CovidSafe.DAL.Repositories.Cosmos.Client;
 using CovidSafe.DAL.Repositories.Cosmos.Records;
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.Cosmos.Spatial;
@@ -16,24 +16,15 @@ using Microsoft.Azure.Cosmos.Spatial;
 namespace CovidSafe.DAL.Repositories.Cosmos
 {
     /// <summary>
-    /// CosmosDB implementation of <see cref="IInfectionReportRepository"/>
+    /// CosmosDB implementation of <see cref="IMessageContainerRepository"/>
     /// </summary>
-    public class CosmosInfectionReportRepository : CosmosRepository, IInfectionReportRepository
+    public class CosmosMessageContainerRepository : CosmosRepository, IMessageContainerRepository
     {
         /// <summary>
-        /// Precision of regions that are used for keys.
-        /// </summary>
-        private int RegionPrecision = 4;
-        /// <summary>
-        /// Search extension size
-        /// </summary>
-        private int RegionsExtension = 1;
-
-        /// <summary>
-        /// Creates a new <see cref="CosmosInfectionReportRepository"/> instance
+        /// Creates a new <see cref="CosmosMessageContainerRepository"/> instance
         /// </summary>
         /// <param name="dbContext"><see cref="CosmosContext"/> instance</param>
-        public CosmosInfectionReportRepository(CosmosContext dbContext) : base(dbContext)
+        public CosmosMessageContainerRepository(CosmosContext dbContext) : base(dbContext)
         {
             // Create container reference
             this.Container = this.Context.GetContainer(
@@ -68,22 +59,22 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<InfectionReport> GetAsync(string messageId, CancellationToken cancellationToken = default)
+        public async Task<MessageContainer> GetAsync(string messageId, CancellationToken cancellationToken = default)
         {
             // Create LINQ query
             var queryable = this.Container
-                .GetItemLinqQueryable<InfectionReportRecord>();
+                .GetItemLinqQueryable<MessageContainerRecord>();
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
                     r.Id == messageId
-                    && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
+                    && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
                 )
                 .Select(r => r.Value)
                 .ToFeedIterator();
 
-            List<InfectionReport> results = new List<InfectionReport>();
+            List<MessageContainer> results = new List<MessageContainer>();
 
             while (iterator.HasMoreResults)
             {
@@ -94,36 +85,31 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<InfectionReportMetadata>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<MessageContainerMetadata>> GetLatestAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            // Get boundaries for provided region
-            Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
-
             // Create LINQ query
             var queryable = this.Container
-                .GetItemLinqQueryable<InfectionReportRecord>();
+                .GetItemLinqQueryable<MessageContainerRecord>();
 
-            RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
             long timeStampFilter = this._getTimestampFilter(lastTimestamp);
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
                     r.Timestamp > timeStampFilter
-                    && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
-                    && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
-                    && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
-                    && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
-                    && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
+                    && r.Region.LatitudePrefix == region.LatitudePrefix
+                    && r.Region.LongitudePrefix == region.LongitudePrefix
+                    && r.Region.Precision == region.Precision
+                    && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
                 )
-                .Select(r => new InfectionReportMetadata
+                .Select(r => new MessageContainerMetadata
                 {
                     Id = r.Id,
                     Timestamp = r.Timestamp
                 })
                 .ToFeedIterator();
 
-            List<InfectionReportMetadata> results = new List<InfectionReportMetadata>();
+            List<MessageContainerMetadata> results = new List<MessageContainerMetadata>();
 
             while(iterator.HasMoreResults)
             {
@@ -136,25 +122,20 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         /// <inheritdoc/>
         public async Task<long> GetLatestRegionSizeAsync(Region region, long lastTimestamp, CancellationToken cancellationToken = default)
         {
-            // Get boundaries for provided region
-            Point regionPoint = new Point(region.LongitudePrefix, region.LatitudePrefix);
-
             // Create LINQ query
             var queryable = this.Container
-                .GetItemLinqQueryable<InfectionReportRecord>();
+                .GetItemLinqQueryable<MessageContainerRecord>();
 
-            RegionBoundary rb = RegionHelper.GetConnectedRegionsRange(region, this.RegionsExtension, this.RegionPrecision);
             long timeStampFilter = this._getTimestampFilter(lastTimestamp);
 
             // Execute query
             var size = await queryable
                 .Where(r =>
                     r.Timestamp > timeStampFilter
-                    && r.RegionBoundary.Min.Latitude >= rb.Min.Latitude
-                    && r.RegionBoundary.Min.Latitude <= rb.Max.Latitude
-                    && r.RegionBoundary.Min.Longitude >= rb.Min.Longitude
-                    && r.RegionBoundary.Min.Longitude <= rb.Max.Longitude
-                    && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
+                    && r.Region.LatitudePrefix == region.LatitudePrefix
+                    && r.Region.LongitudePrefix == region.LongitudePrefix
+                    && r.Region.Precision == region.Precision
+                    && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
                 )
                 .Select(r => r.Size)
                 .SumAsync(cancellationToken)
@@ -164,22 +145,22 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<InfectionReport>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MessageContainer>> GetRangeAsync(IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             // Create LINQ query
             var queryable = this.Container
-                .GetItemLinqQueryable<InfectionReportRecord>();
+                .GetItemLinqQueryable<MessageContainerRecord>();
 
             // Execute query
             var iterator = queryable
                 .Where(r =>
                     ids.Contains(r.Id)
-                    && r.Version == InfectionReportRecord.CURRENT_RECORD_VERSION
+                    && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
                 )
                 .Select(r => r.Value)
                 .ToFeedIterator();
 
-            List<InfectionReport> results = new List<InfectionReport>();
+            List<MessageContainer> results = new List<MessageContainer>();
 
             while (iterator.HasMoreResults)
             {
@@ -190,7 +171,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<string> InsertAsync(InfectionReport report, Region region, CancellationToken cancellationToken = default)
+        public async Task<string> InsertAsync(MessageContainer report, Region region, CancellationToken cancellationToken = default)
         {
             if (report == null)
             {
@@ -206,14 +187,15 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Get allowed region boundary
             RegionBoundary boundary = RegionHelper.GetRegionBoundary(region);
 
-            var record = new InfectionReportRecord(report)
+            var record = new MessageContainerRecord(report)
             {
                 RegionBoundary = new RegionBoundary(boundary),
-                PartitionKey = InfectionReportRecord.GetPartitionKey(region)
+                Region = region,
+                PartitionKey = MessageContainerRecord.GetPartitionKey(region)
             };
 
-            ItemResponse<InfectionReportRecord> response = await this.Container
-                .CreateItemAsync<InfectionReportRecord>(
+            ItemResponse<MessageContainerRecord> response = await this.Container
+                .CreateItemAsync<MessageContainerRecord>(
                     record,
                     new PartitionKey(record.PartitionKey),
                     cancellationToken: cancellationToken
@@ -222,7 +204,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             return response.Resource.Id;
         }
 
-        public async Task InsertAsync(InfectionReport report, IEnumerable<Region> regions, CancellationToken cancellationToken = default)
+        public async Task InsertAsync(MessageContainer report, IEnumerable<Region> regions, CancellationToken cancellationToken = default)
         {
             // Validate inputs
             if (report == null)
@@ -232,19 +214,20 @@ namespace CovidSafe.DAL.Repositories.Cosmos
 
             // Prepare records to insert (grouped by partition key)
             var recordGroups = regions.Select(
-                r => new InfectionReportRecord(report)
+                r => new MessageContainerRecord(report)
                 {
                     RegionBoundary = new RegionBoundary(
                         RegionHelper.GetRegionBoundary(r)
                     ),
-                    PartitionKey = InfectionReportRecord.GetPartitionKey(r)
+                    Region = RegionHelper.AdjustToPrecision(r),
+                    PartitionKey = MessageContainerRecord.GetPartitionKey(r)
                 }).GroupBy(r => r.PartitionKey);
 
             // Begin batch operation
             // All MatchMessageRecords will have same PartitionID in this batch
             var batches = recordGroups.Select(g => g.Aggregate(
                 this.Container.CreateTransactionalBatch(new PartitionKey(g.Key)),
-                (result, item) => result.CreateItem<InfectionReportRecord>(item)));
+                (result, item) => result.CreateItem<MessageContainerRecord>(item)));
 
             // Execute transactions
             // TODO: make a single transaction. 

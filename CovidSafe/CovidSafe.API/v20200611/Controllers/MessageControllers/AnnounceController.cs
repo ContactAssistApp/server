@@ -4,22 +4,22 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
-using CovidSafe.API.v20200505.Protos;
+using CovidSafe.API.v20200611.Protos;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CovidSafe.API.v20200505.Controllers.MessageControllers
+namespace CovidSafe.API.v20200611.Controllers.MessageControllers
 {
     /// <summary>
-    /// Handles requests for submitting <see cref="AreaMatch"/> messages
+    /// Handles <see cref="NarrowcastMessage"/> announcements
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-05-05", Deprecated = true)]
+    [ApiVersion("2020-06-11")]
     [Route("api/Messages/[controller]")]
-    public class AreaReportController : ControllerBase
+    public class AnnounceController : ControllerBase
     {
         /// <summary>
         /// AutoMapper instance for object resolution
@@ -31,11 +31,11 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
         private readonly IMessageService _reportService;
 
         /// <summary>
-        /// Creates a new <see cref="AreaReportController"/> instance
+        /// Creates a new <see cref="AnnounceController"/> instance
         /// </summary>
         /// <param name="map">AutoMapper instance</param>
         /// <param name="reportService"><see cref="MessageContainer"/> service layer</param>
-        public AreaReportController(IMapper map, IMessageService reportService)
+        public AnnounceController(IMapper map, IMessageService reportService)
         {
             // Assign local values
             this._map = map;
@@ -43,27 +43,27 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
         }
 
         /// <summary>
-        /// Publish a <see cref="AreaMatch"/> for distribution among devices
+        /// Publish a <see cref="NarrowcastMessage"/> for distribution among devices
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /api/Messages/AreaReport&amp;api-version=2020-05-05
+        ///     PUT /api/Messages/Announce&amp;api-version=2020-06-11
         ///     {
         ///         "userMessage": "Monitor symptoms for one week.",
-        ///         "areas": [{
+        ///         "area": {
         ///             "location": {
         ///                 "latitude": 74.12345,
         ///                 "longitude": -39.12345
         ///             },
         ///             "radiusMeters": 100,
-        ///             "beginTime": 1586083599,
-        ///             "endTime": 1586085189
-        ///         }]
+        ///             "beginTime": 1591997285105,
+        ///             "endTime": 1591997385105
+        ///         }
         ///     }
         ///
         /// </remarks>
-        /// <param name="request"><see cref="AreaMatch"/> to be stored</param>
+        /// <param name="request"><see cref="NarrowcastMessage"/> to be stored</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Submission successful</response>
         /// <response code="400">Malformed or invalid request</response>
@@ -73,12 +73,12 @@ namespace CovidSafe.API.v20200505.Controllers.MessageControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationResult), StatusCodes.Status400BadRequest)]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<ActionResult> PutAsync([Required] AreaMatch request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> PutAsync([Required] Protos.NarrowcastMessage request, CancellationToken cancellationToken = default)
         {
             try
             {
                 // Parse AreaMatch to AreaReport type
-                NarrowcastMessage report = this._map.Map<NarrowcastMessage>(request);
+                Entities.Messages.NarrowcastMessage report = this._map.Map<Entities.Messages.NarrowcastMessage>(request);
 
                 // Publish area
                 await this._reportService.PublishAreaAsync(report, cancellationToken);

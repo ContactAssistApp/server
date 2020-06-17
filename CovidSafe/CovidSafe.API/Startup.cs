@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 using AutoMapper;
 using CovidSafe.API.Swagger;
 using CovidSafe.DAL.Repositories;
@@ -15,7 +16,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -92,18 +92,19 @@ namespace CovidSafe.API
             
             // Configure data repository implementations
             services.AddTransient<CosmosContext>();
-            services.AddSingleton<IInfectionReportRepository, CosmosInfectionReportRepository>();
+            services.AddSingleton<IMessageContainerRepository, CosmosMessageContainerRepository>();
 
             #endregion
 
             // Add AutoMapper profiles
             services.AddAutoMapper(
                 typeof(v20200415.MappingProfiles),
-                typeof(v20200505.MappingProfiles)
+                typeof(v20200505.MappingProfiles),
+                typeof(v20200611.MappingProfiles)
             );
 
             // Configure service layer
-            services.AddSingleton<IInfectionReportService, InfectionReportService>();
+            services.AddSingleton<IMessageService, MessageService>();
 
             // Enable API versioning
             services.AddApiVersioning(o =>

@@ -7,58 +7,57 @@ namespace CovidSafe.DAL.Helpers
 	/// </summary>
 	public static class PrecisionHelper
 	{
-		/// <summary>
-		/// Returns difference between 2 closest numbers for given precision parameter
-		/// </summary>
-		/// <param name="precision">Precision parameter, any integer</param>
-		/// <returns>1 / 2^precision</returns>
-		public static double GetStep(int precision)
-		{
-			return precision < 0 ? (double)(1 << (-precision)) : 1.0 / (double)(1 << precision);
-		}
+		public static int GetStep(int precision)
+        {
+			int bits = Math.Max(8 - precision, 0);
+			return 1 << bits;
+        }
 
-		private static double RoundSymmetric(double d, int precision)
-		{
-			if (precision >= 0)
-			{
-				int exp = 1 << precision;
-				return ((double)(int)(d * exp)) / exp;
-			}
-			else
-			{
-				int exp = 1 << (-precision);
-				return (double)(((int)(d / exp)) * exp);
-			}
-		}
 		/// <summary>
 		/// Rounds given number and precision parameter.
 		/// </summary>
-		/// <param name="d">Any double number</param>
+		/// <param name="d">Any integer</param>
 		/// <param name="precision">Precision parameter, any integer</param>
-		/// <returns>Nearest number aligned with precision grid, equal to d or closer to zero</returns>
-		/// <remarks>
-		/// Reference: https://csharpindepth.com/articles/FloatingPoint
-		/// Reference: https://jonskeet.uk/csharp/DoubleConverter.cs
-		/// </remarks>
-		public static double Round(double d, int precision)
+		/// <returns>Nearest number aligned with precision grid, equal to d or closer to 0.
+		/// Precision=0 maps any int from [-256, 256] to 0.
+		/// Precision>=8 maps any int to itself</returns>
+		public static int Round(int d, int precision)
+        {
+			int bits = Math.Max(8 - precision, 0);
+			return d >= 0 ? d >> bits << bits : -(-d >> bits << bits);
+        }
+
+		/// <summary>
+		/// Rounds given number and precision parameter. Method for legacy API that supports float values.
+		/// </summary>
+		/// <param name="d">Any double value</param>
+		/// <param name="precision">Precision parameter, any integer</param>
+		/// <returns>Nearest number aligned with precision grid, equal to d or closer to 0.
+		/// Precision=0 maps any double from [-256, 256] to 0.
+		/// Precision=9 maps any double to its int lower bound</returns>
+		public static int Round(double d, int precision)
 		{
-			double shift = (double)(1 << 16);   //16 is some number that 1 << 16 > 180 and bigger than maximum precision value that we are using
-			return (RoundSymmetric(d + shift, precision) - shift);
+			return Round((int)d, precision);
 		}
 
 		/// <summary>
 		/// For given number and precision parameter, returns range [xmin, xmax] containing the number,
 		/// where xmin &lt; xmax, xmin and xmax are to numbers next to each other on the grid aligned with given precision
+		/// Rounds given number and precision parameter. Method for legacy API that supports float values.
 		/// </summary>
 		/// <param name="d">Any double number</param>
 		/// <param name="precision">Precision parameter, any integer</param>
-		/// <returns>Tuple of doubles (xmin, xmax)</returns>
-		public static Tuple<double, double> GetRange(double d, int precision)
-		{
-			double rounded = Round(d, precision);
-			double step = GetStep(precision);
+		/// <returns>Tuple of ints (xmin, xmax)</returns>
+		public static Tuple<int, int> GetRange(int d, int precision)
+        {
+			int rounded = Round(d, precision);
+			int step = GetStep(precision);
 
-			return Tuple.Create(rounded, rounded + step);
+			if (rounded == 0)
+				return Tuple.Create(-step, step);
+			else if (rounded > 0)
+				return Tuple.Create(rounded, rounded + step);
+			return Tuple.Create(rounded - step, rounded);
 		}
 	}
 }

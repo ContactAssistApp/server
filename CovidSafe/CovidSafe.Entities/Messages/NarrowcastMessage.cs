@@ -1,25 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Validation;
 using CovidSafe.Entities.Validation.Resources;
 using Newtonsoft.Json;
 
-namespace CovidSafe.Entities.Reports
+namespace CovidSafe.Entities.Messages
 {
     /// <summary>
-    /// Area-based infection report
+    /// Narrowcast message container
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     [Serializable]
-    public class AreaReport : IValidatable
+    public class NarrowcastMessage : IValidatable
     {
         /// <summary>
-        /// Infection risk <see cref="InfectionArea"/> part of this <see cref="AreaReport"/>
+        /// <see cref="NarrowcastArea"/> targeted by this <see cref="NarrowcastMessage"/>
         /// </summary>
-        [JsonProperty("Areas", Required = Required.Always)]
-        public IList<InfectionArea> Areas { get; set; } = new List<InfectionArea>();
+        [JsonProperty("Area", Required = Required.Always)]
+        public NarrowcastArea Area { get; set; }
         /// <summary>
         /// Internal UserMessage backing field
         /// </summary>
@@ -40,21 +39,17 @@ namespace CovidSafe.Entities.Reports
         {
             RequestValidationResult result = new RequestValidationResult();
 
-            // Validate areas
-            if (this.Areas.Count > 0)
+            // Validate provided NarrowcastArea
+            if (this.Area != null)
             {
-                // Validate individual areas
-                foreach (InfectionArea area in this.Areas)
-                {
-                    // Use Area.Validate()
-                    result.Combine(area.Validate());
-                }
+                // Use NarrowcastArea.Validate()
+                result.Combine(this.Area.Validate());
             }
             else
             {
                 result.Fail(
                     RequestValidationIssue.InputEmpty,
-                    nameof(this.Areas),
+                    nameof(this.Area),
                     ValidationMessages.EmptyAreas
                 );
             }

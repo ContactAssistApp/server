@@ -16,7 +16,7 @@ namespace CovidSafe.Entities.Geospatial
         /// <summary>
         /// Maximum allowed precision value;
         /// </summary>
-        public const int MAX_PRECISION = 4;
+        public const int MAX_PRECISION = 8;
         /// <summary>
         /// Minimum allowed precision value
         /// </summary>
@@ -24,21 +24,51 @@ namespace CovidSafe.Entities.Geospatial
         /// <summary>
         /// Latitude prefix of this <see cref="Region"/>
         /// </summary>
+        /// <remarks>
+        /// A region lat/lng should not have decimals, to avoid unmasking a user 
+        /// while getting the necessary amount of information to provide 
+        /// accurate messaging.
+        /// </remarks>
         [JsonProperty("latPrefix", Required = Required.Always)]
-        public double LatitudePrefix { get; set; }
+        public int LatitudePrefix { get; set; }
         /// <summary>
         /// Longitude prefix of this <see cref="Region"/>
         /// </summary>
+        /// <remarks>
+        /// A region lat/lng should not have decimals, to avoid unmasking a user 
+        /// while getting the necessary amount of information to provide 
+        /// accurate messaging.
+        /// </remarks>
         [JsonProperty("lngPrefix", Required = Required.Always)]
-        public double LongitudePrefix { get; set; }
+        public int LongitudePrefix { get; set; }
         /// <summary>
         /// Precision of this <see cref="Region"/>
         /// </summary>
         /// <remarks>
-        /// Used as a mantissa mask.
+        /// Used as a mantissa mask. The maximum available precision value is 
+        /// 9, which should be assumed in most cases when a direct latitude or 
+        /// longitude is provided.
         /// </remarks>
         [JsonProperty("precision", Required = Required.Always)]
-        public int Precision { get; set; }
+        public int Precision { get; set; } = MAX_PRECISION;
+
+        /// <summary>
+        /// Default <see cref="Region"/> constructor
+        /// </summary>
+        public Region() { }
+
+        /// <summary>
+        /// Creates a new <see cref="Region"/>
+        /// </summary>
+        /// <param name="latPrefix">Latitude prefix</param>
+        /// <param name="lngPrefix">Longitude prefix</param>
+        /// <param name="precision">Precision value</param>
+        public Region(int latPrefix, int lngPrefix, int precision = MAX_PRECISION)
+        {
+            this.LatitudePrefix = latPrefix;
+            this.LongitudePrefix = lngPrefix;
+            this.Precision = precision;
+        }
 
         /// <inheritdoc/>
         public RequestValidationResult Validate()

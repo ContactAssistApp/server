@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CovidSafe.API.v20200505.Protos;
 using CovidSafe.DAL.Services;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace CovidSafe.API.v20200505.Controllers
     /// Handles <see cref="MatchMessage"/> CRUD operations
     /// </summary>
     [ApiController]
-    [ApiVersion("2020-05-05")]
+    [ApiVersion("2020-05-05", Deprecated = true)]
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
@@ -27,16 +27,16 @@ namespace CovidSafe.API.v20200505.Controllers
         /// </summary>
         private readonly IMapper _map;
         /// <summary>
-        /// <see cref="InfectionReport"/> service layer
+        /// <see cref="MessageContainer"/> service layer
         /// </summary>
-        private readonly IInfectionReportService _reportService;
+        private readonly IMessageService _reportService;
 
         /// <summary>
         /// Creates a new <see cref="MessageController"/> instance
         /// </summary>
         /// <param name="map">AutoMapper instance</param>
-        /// <param name="reportService"><see cref="InfectionReport"/> service layer</param>
-        public MessageController(IMapper map, IInfectionReportService reportService)
+        /// <param name="reportService"><see cref="MessageContainer"/> service layer</param>
+        public MessageController(IMapper map, IMessageService reportService)
         {
             // Assign local values
             this._map = map;
@@ -74,7 +74,7 @@ namespace CovidSafe.API.v20200505.Controllers
             try
             {
                 // Submit request
-                IEnumerable<InfectionReport> reports = await this._reportService
+                IEnumerable<MessageContainer> reports = await this._reportService
                     .GetByIdsAsync(
                         request.RequestedQueries.Select(r => r.MessageId),
                         cancellationToken

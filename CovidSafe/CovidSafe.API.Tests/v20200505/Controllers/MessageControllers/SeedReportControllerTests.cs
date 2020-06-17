@@ -25,24 +25,24 @@ namespace CovidSafe.API.v20200505.Tests.Controllers.MessageControllers
         /// </summary>
         private SeedReportController _controller;
         /// <summary>
-        /// Mock <see cref="IInfectionReportRepository"/> instance
+        /// Mock <see cref="IMessageContainerRepository"/> instance
         /// </summary>
-        private Mock<IInfectionReportRepository> _repo;
+        private Mock<IMessageContainerRepository> _repo;
         /// <summary>
-        /// <see cref="InfectionReportService"/> instance
+        /// <see cref="MessageService"/> instance
         /// </summary>
-        private InfectionReportService _service;
+        private MessageService _service;
 
         /// <summary>
-        /// Creates a new <see cref="AreaReportControllerTests"/> instance
+        /// Creates a new <see cref="SeedReportControllerTests"/> instance
         /// </summary>
         public SeedReportControllerTests()
         {
             // Configure repo mock
-            this._repo = new Mock<IInfectionReportRepository>();
+            this._repo = new Mock<IMessageContainerRepository>();
 
             // Configure service
-            this._service = new InfectionReportService(this._repo.Object);
+            this._service = new MessageService(this._repo.Object);
 
             // Create AutoMapper instance
             MapperConfiguration mapperConfig = new MapperConfiguration(

@@ -7,11 +7,11 @@ using Newtonsoft.Json;
 namespace CovidSafe.Entities.Geospatial
 {
     /// <summary>
-    /// Space and time of infection risk zone
+    /// Area of Narrowcast message applicability
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     [Serializable]
-    public class InfectionArea : IValidatable
+    public class NarrowcastArea : IValidatable
     {
         /// <summary>
         /// Start time of infection risk period

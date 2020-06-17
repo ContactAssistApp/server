@@ -4,7 +4,7 @@ using System.Linq;
 using AutoMapper;
 using CovidSafe.API.v20200415.Protos;
 using CovidSafe.Entities.Geospatial;
-using CovidSafe.Entities.Reports;
+using CovidSafe.Entities.Messages;
 
 namespace CovidSafe.API.v20200415
 {
@@ -29,7 +29,7 @@ namespace CovidSafe.API.v20200415
                 .ReverseMap();
 
             // MessageInfo -> InfectionReportMetadata
-            CreateMap<MessageInfo, InfectionReportMetadata>()
+            CreateMap<MessageInfo, MessageContainerMetadata>()
                 .ForMember(
                     im => im.Id,
                     op => op.MapFrom(mi => mi.MessageId)
@@ -42,7 +42,7 @@ namespace CovidSafe.API.v20200415
 
             // IEnumerable<InfectionReportMetadata> -> MessageListResponse
             // This is a one-way response so no ReverseMap is necessary
-            CreateMap<IEnumerable<InfectionReportMetadata>, MessageListResponse>()
+            CreateMap<IEnumerable<MessageContainerMetadata>, MessageListResponse>()
                 .ForMember(
                     mr => mr.MessageInfoes,
                     op => op.MapFrom(im => im)
@@ -53,7 +53,7 @@ namespace CovidSafe.API.v20200415
                 );
 
             // Area -> InfectionArea
-            CreateMap<Area, InfectionArea>()
+            CreateMap<Area, NarrowcastArea>()
                 .ForMember(
                     ia => ia.BeginTimestamp,
                     op => op.MapFrom(a => a.BeginTime)
@@ -72,8 +72,8 @@ namespace CovidSafe.API.v20200415
                 )
                 .ReverseMap();
 
-            // BlueToothSeed -> BluetoothSeed
-            CreateMap<BlueToothSeed, BluetoothSeed>()
+            // BlueToothSeed -> BluetoothSeedMessage
+            CreateMap<BlueToothSeed, BluetoothSeedMessage>()
                 .ForMember(
                     bs => bs.BeginTimestamp,
                     op => op.MapFrom(s => s.SequenceStartTime)
@@ -89,10 +89,11 @@ namespace CovidSafe.API.v20200415
                 .ReverseMap();
 
             // AreaMatch -> AreaReport
-            CreateMap<AreaMatch, AreaReport>()
+            CreateMap<AreaMatch, NarrowcastMessage>()
                 .ForMember(
-                    ar => ar.Areas,
-                    op => op.MapFrom(am => am.Areas)
+                    ar => ar.Area,
+                    // v20200611 clarified a NarrowcastMessage should have only one Area
+                    op => op.MapFrom(am => am.Areas.FirstOrDefault())
                 )
                 .ForMember(
                     ar => ar.UserMessage,
@@ -102,14 +103,14 @@ namespace CovidSafe.API.v20200415
 
             // SelfReportRequest -> InfectionReport
             // This is only a request object so no ReverseMap is necessary
-            CreateMap<SelfReportRequest, InfectionReport>()
+            CreateMap<SelfReportRequest, MessageContainer>()
                 .ForMember(
                     ir => ir.BluetoothSeeds,
                     op => op.MapFrom(sr => sr.Seeds)
                 )
-                // Currently no AreaReports in a SelfReportRequest
+                // Currently no Narrowcast message in a SelfReportRequest
                 .ForMember(
-                    ir => ir.AreaReports,
+                    ir => ir.Narrowcasts,
                     op => op.Ignore()
                 )
                 // Not supported in v20200415
@@ -123,8 +124,8 @@ namespace CovidSafe.API.v20200415
                     op => op.Ignore()
                 );
 
-            // List<BluetoothSeed> -> BluetoothMatch
-            CreateMap<List<BluetoothSeed>, BluetoothMatch>()
+            // List<BluetoothSeedMessage> -> BluetoothMatch
+            CreateMap<List<BluetoothSeedMessage>, BluetoothMatch>()
                 .ForMember(
                     bm => bm.Seeds,
                     op => op.MapFrom(bs => bs.Select(s => new BlueToothSeed
@@ -141,10 +142,10 @@ namespace CovidSafe.API.v20200415
                 );
 
             // InfectionReport -> MatchMessage
-            CreateMap<InfectionReport, MatchMessage>()
+            CreateMap<MessageContainer, MatchMessage>()
                 .ForMember(
                     mm => mm.AreaMatches,
-                    op => op.MapFrom(ir => ir.AreaReports)
+                    op => op.MapFrom(ir => ir.Narrowcasts)
                 )
                 .ForMember(
                     mm => mm.BoolExpression,
