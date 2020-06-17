@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.8.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Spatial" Version="7.6.4" />
   </ItemGroup>
 
   <ItemGroup>

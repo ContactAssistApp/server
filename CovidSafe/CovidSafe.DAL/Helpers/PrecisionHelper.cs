@@ -7,6 +7,12 @@ namespace CovidSafe.DAL.Helpers
 	/// </summary>
 	public static class PrecisionHelper
 	{
+		public static int GetStep(int precision)
+        {
+			int bits = Math.Max(9 - precision, 0);
+			return 1 << bits;
+        }
+
 		/// <summary>
 		/// Rounds given number and precision parameter.
 		/// </summary>
