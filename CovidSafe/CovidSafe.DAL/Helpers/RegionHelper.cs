@@ -55,10 +55,13 @@ namespace CovidSafe.DAL.Helpers
                 throw new ArgumentNullException(nameof(region));
             }
 
+            Tuple<int, int> latRange = PrecisionHelper.GetRange(region.LatitudePrefix, region.Precision);
+            Tuple<int, int> lonRange = PrecisionHelper.GetRange(region.LongitudePrefix, region.Precision);
+
             return new RegionBoundary
             {
-                Min = new Coordinates { Latitude = 0, Longitude = 0 },
-                Max = new Coordinates { Latitude = 0, Longitude = 0 }
+                Min = new Coordinates { Latitude = Math.Max(latRange.Item1, Coordinates.MIN_LATITUDE), Longitude = Math.Max(lonRange.Item1, Coordinates.MIN_LONGITUDE) },
+                Max = new Coordinates { Latitude = Math.Min(latRange.Item2, Coordinates.MAX_LATITUDE), Longitude = Math.Min(lonRange.Item2, Coordinates.MAX_LONGITUDE) }
             };
         }
 
@@ -92,60 +95,63 @@ namespace CovidSafe.DAL.Helpers
             //region itself
             yield return new Region(latCurrent, lonCurrent, precision);
 
-            if (latCurrent > 0)
+            if (precision > 0)
             {
-                // South-West
-                if (lonCurrent > 0 && GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latCurrent, Longitude = (float)lonCurrent }) < radiusMeters)
+                if (latCurrent > 0)
                 {
-                    yield return new Region(latCurrent - step, lonCurrent - step, precision);
+                    // South-West
+                    if (lonCurrent > 0 && GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latCurrent, Longitude = (float)lonCurrent }) < radiusMeters)
+                    {
+                        yield return new Region(latCurrent - step, lonCurrent - step, precision);
+                    }
+                    // South 
+                    if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latCurrent, Longitude = location.Longitude }) < radiusMeters)
+                    {
+                        yield return new Region(latCurrent - step, lonCurrent, precision);
+                    }
+                    // South-East
+                    if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latCurrent, Longitude = (float)lonNext }) < radiusMeters)
+                    {
+                        yield return new Region(latCurrent - step, lonNext == lonMax ? -lonCurrent : lonNext, precision);
+                    }
                 }
-                // South 
-                if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latCurrent, Longitude = location.Longitude }) < radiusMeters)
+                if (lonCurrent > 0)
                 {
-                    yield return new Region(latCurrent - step, lonCurrent, precision);
+                    // West
+                    if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = location.Latitude, Longitude = (float)lonCurrent }) < radiusMeters)
+                    {
+                        yield return new Region(latCurrent, lonCurrent - step, precision);
+                    }
+                    //North-West
+                    if (latNext < latMax && GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latNext, Longitude = (float)lonCurrent }) < radiusMeters)
+                    {
+                        yield return new Region(latNext, lonCurrent - step, precision);
+                    }
                 }
-                // South-East
-                if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latCurrent, Longitude = (float)lonNext }) < radiusMeters)
+                if (latNext < latMax)
                 {
-                    yield return new Region(latCurrent - step, lonNext == lonMax ? -lonCurrent : lonNext, precision);
+                    //North
+                    if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latNext, Longitude = location.Longitude }) < radiusMeters)
+                    {
+                        yield return new Region(latNext, lonCurrent, precision);
+                    }
+                    //North-East
+                    if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latNext, Longitude = (float)lonNext }) < radiusMeters)
+                    {
+                        yield return new Region(latNext, lonNext == lonMax ? -lonCurrent : lonNext, precision);
+                    }
                 }
-            }
-            if (lonCurrent > 0)
-            {
-                // West
-                if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = location.Latitude, Longitude = (float)lonCurrent }) < radiusMeters)
+                //East
+                if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = location.Latitude, Longitude = (float)lonNext }) < radiusMeters)
                 {
-                    yield return new Region(latCurrent, lonCurrent - step, precision);
-                }
-                //North-West
-                if (latNext < latMax && GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latNext, Longitude = (float)lonCurrent }) < radiusMeters)
-                {
-                    yield return new Region(latNext, lonCurrent - step, precision);
-                }
-            }
-            if (latNext < latMax)
-            {
-                //North
-                if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latNext, Longitude = location.Longitude }) < radiusMeters)
-                {
-                    yield return new Region(latNext, lonCurrent, precision);
-                }
-                //North-East
-                if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = (float)latNext, Longitude = (float)lonNext }) < radiusMeters)
-                {
-                    yield return new Region(latNext, lonNext == lonMax ? -lonCurrent : lonNext, precision);
-                }
-            }
-            //East
-            if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = location.Latitude, Longitude = (float)lonNext }) < radiusMeters)
-            {
-                if (lonNext < lonMax)
-                {
-                    yield return new Region(latCurrent, lonNext, precision);
-                }
-                else if (lonCurrent > 0)
-                {
-                    yield return new Region(latCurrent, -lonCurrent, precision);
+                    if (lonNext < lonMax)
+                    {
+                        yield return new Region(latCurrent, lonNext, precision);
+                    }
+                    else if (lonCurrent > 0)
+                    {
+                        yield return new Region(latCurrent, -lonCurrent, precision);
+                    }
                 }
             }
         }

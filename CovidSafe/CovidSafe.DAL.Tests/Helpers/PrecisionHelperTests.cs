@@ -1,5 +1,6 @@
 using CovidSafe.DAL.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace CovidSafe.Tests.Helpers
 {
@@ -69,5 +70,29 @@ namespace CovidSafe.Tests.Helpers
 			Assert.AreEqual(178, PrecisionHelper.Round(179.999, 7));
 			Assert.AreEqual(179, PrecisionHelper.Round(179.999, 8));
 		}
-    }
+
+		[TestMethod]
+		public void GetRangeTest()
+		{
+			Assert.AreEqual(Tuple.Create(7, 8), PrecisionHelper.GetRange(7, 8));
+			Assert.AreEqual(Tuple.Create(6, 8), PrecisionHelper.GetRange(7, 7));
+			Assert.AreEqual(Tuple.Create(4, 8), PrecisionHelper.GetRange(7, 6));
+			Assert.AreEqual(Tuple.Create(-8, 8), PrecisionHelper.GetRange(7, 5));
+			Assert.AreEqual(Tuple.Create(-16, 16), PrecisionHelper.GetRange(7, 4));
+			Assert.AreEqual(Tuple.Create(-32, 32), PrecisionHelper.GetRange(7, 3));
+			Assert.AreEqual(Tuple.Create(-64, 64), PrecisionHelper.GetRange(7, 2));
+			Assert.AreEqual(Tuple.Create(-128, 128), PrecisionHelper.GetRange(7, 1));
+			Assert.AreEqual(Tuple.Create(-256, 256), PrecisionHelper.GetRange(7, 0));
+
+			Assert.AreEqual(Tuple.Create(-8, -7), PrecisionHelper.GetRange(-7, 8));
+			Assert.AreEqual(Tuple.Create(-8, -6), PrecisionHelper.GetRange(-7, 7));
+			Assert.AreEqual(Tuple.Create(-8, -4), PrecisionHelper.GetRange(-7, 6));
+			Assert.AreEqual(Tuple.Create(-8, 8), PrecisionHelper.GetRange(-7, 5));
+			Assert.AreEqual(Tuple.Create(-16, 16), PrecisionHelper.GetRange(-7, 4));
+			Assert.AreEqual(Tuple.Create(-32, 32), PrecisionHelper.GetRange(-7, 3));
+			Assert.AreEqual(Tuple.Create(-64, 64), PrecisionHelper.GetRange(-7, 2));
+			Assert.AreEqual(Tuple.Create(-128, 128), PrecisionHelper.GetRange(-7, 1));
+			Assert.AreEqual(Tuple.Create(-256, 256), PrecisionHelper.GetRange(-7, 0));
+		}
+	}
 }

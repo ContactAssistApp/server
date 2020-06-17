@@ -58,6 +58,74 @@ namespace CovidSafe.Tests.Helpers
             TestRegion(40, -73, 8, new Region(40, -73, 8));
         }
 
+        private void AssertRegionBounary(RegionBoundary expected, RegionBoundary actual)
+        {
+            Assert.AreEqual(expected.Min.Latitude, actual.Min.Latitude);
+            Assert.AreEqual(expected.Max.Latitude, actual.Max.Latitude);
+            Assert.AreEqual(expected.Min.Longitude, actual.Min.Longitude);
+            Assert.AreEqual(expected.Max.Longitude, actual.Max.Longitude);
+        }
+
+        [TestMethod]
+        public void NewYorkRegionBoundaryTest()
+        {
+            var r = new Region(40, -73);
+            {
+                r.Precision = 8;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 40, Longitude = -74 }, 
+                    Max = new Coordinates { Latitude = 41, Longitude = -73 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 7;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates {Latitude = 40, Longitude = -74 }, 
+                    Max = new Coordinates { Latitude = 42, Longitude = -72 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 6;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 40, Longitude = -76 }, 
+                    Max = new Coordinates { Latitude = 44, Longitude = -72 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 5;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 40, Longitude = -80 }, 
+                    Max = new Coordinates { Latitude = 48, Longitude = -72 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 4;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 32, Longitude = -80 }, 
+                    Max = new Coordinates { Latitude = 48, Longitude = -64 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 3;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 32, Longitude = -96 }, 
+                    Max = new Coordinates { Latitude = 64, Longitude = -64 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 2;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = -64, Longitude = -128 }, 
+                    Max = new Coordinates { Latitude = 64, Longitude = -64 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 1;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = -90, Longitude = -128 }, 
+                    Max = new Coordinates { Latitude = 90, Longitude = 128 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 0;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = -90, Longitude = -180 }, 
+                    Max = new Coordinates { Latitude = 90, Longitude = 180 } }, RegionHelper.GetRegionBoundary(r));
+            }
+        }
+
         [TestMethod]
         public void RegionCoverageTest_Precision0()
         {
