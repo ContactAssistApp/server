@@ -34,7 +34,7 @@ namespace CovidSafe.API.v20200415.Tests.Controllers.MessageControllers
         private MessageService _service;
 
         /// <summary>
-        /// Creates a new <see cref="AreaReportControllerTests"/> instance
+        /// Creates a new <see cref="SeedReportControllerTests"/> instance
         /// </summary>
         public SeedReportControllerTests()
         {
