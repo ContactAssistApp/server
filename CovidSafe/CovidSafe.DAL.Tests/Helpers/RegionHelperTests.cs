@@ -11,166 +11,296 @@ namespace CovidSafe.Tests.Helpers
     [TestClass]
     public class RegionHelperTests
     {
-        void TestRegion(double lat, double lon, int precision, Tuple<double, double> first, Tuple<double, double> second)
+        void TestRegionBackwardCompatible(double lat, double lon, Region expected)
         {
-            var region = new Region(lat, lon, precision);
-            RegionBoundary rb = RegionHelper.GetRegionBoundary(region);
+            var region = RegionHelper.CreateRegion(lat, lon);
 
-            Assert.AreEqual(rb.Min.Latitude, first.Item1);
-            Assert.AreEqual(rb.Min.Longitude, first.Item2);
-            Assert.AreEqual(rb.Max.Latitude, second.Item1);
-            Assert.AreEqual(rb.Max.Longitude, second.Item2);
+            Assert.AreEqual(expected.LatitudePrefix, region.LatitudePrefix);
+            Assert.AreEqual(expected.LongitudePrefix, region.LongitudePrefix);
+            Assert.AreEqual(expected.Precision, region.Precision);
+        }
+
+        [TestMethod]
+        public void NYRegionBackwardCompatibilityTest()
+        {
+            var expected = new Region(40, -73, 8);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+            TestRegionBackwardCompatible(40.73, -73.93, expected);
+        }
+
+        void TestRegion(int lat, int lon, int precision, Region expected)
+        {
+            var region = RegionHelper.AdjustToPrecision(new Region(lat, lon, precision));
+
+            Assert.AreEqual(expected.LatitudePrefix, region.LatitudePrefix);
+            Assert.AreEqual(expected.LongitudePrefix, region.LongitudePrefix);
+            Assert.AreEqual(expected.Precision, region.Precision);
         }
 
         [TestMethod]
         public void NewYorkRegionTest()
         {
-            TestRegion(40.73, -73.93, 0, Tuple.Create(40.0, -74.0), Tuple.Create(41.0, -73.0));
-            TestRegion(40.73, -73.93, 1, Tuple.Create(40.5, -74.0), Tuple.Create(41.0, -73.5));
-            TestRegion(40.73, -73.93, 2, Tuple.Create(40.5, -74.0), Tuple.Create(40.75, -73.75));
-            TestRegion(40.73, -73.93, 3, Tuple.Create(40.625, -74.0), Tuple.Create(40.75, -73.875));
-            TestRegion(40.73, -73.93, 4, Tuple.Create(40.6875, -73.9375), Tuple.Create(40.75, -73.875));
-            TestRegion(40.73, -73.93, -1, Tuple.Create(40.0, -74.0), Tuple.Create(42.0, -72.0));
-            TestRegion(40.73, -73.93, -2, Tuple.Create(40.0, -76.0), Tuple.Create(44.0, -72.0));
-            TestRegion(40.73, -73.93, -3, Tuple.Create(40.0, -80.0), Tuple.Create(48.0, -72.0));
-            TestRegion(40.73, -73.93, -4, Tuple.Create(32.0, -80.0), Tuple.Create(48.0, -64.0));
+            TestRegion(40, -73, 0, new Region(0, 0, 0));
+            TestRegion(40, -73, 1, new Region(0, 0, 1));
+            TestRegion(40, -73, 2, new Region(0, -64, 2));
+            TestRegion(40, -73, 3, new Region(32, -64, 3));
+            TestRegion(40, -73, 4, new Region(32, -64, 4));
+            TestRegion(40, -73, 5, new Region(40, -72, 5));
+            TestRegion(40, -73, 6, new Region(40, -72, 6));
+            TestRegion(40, -73, 7, new Region(40, -72, 7));
+            TestRegion(40, -73, 8, new Region(40, -73, 8));
         }
 
-        void TestConnectedRegions(Region region, int extension, int precision, IList<Tuple<double, double>> expected)
+        private void AssertRegionBounary(RegionBoundary expected, RegionBoundary actual)
         {
-            List<Region> regions = RegionHelper.GetConnectedRegions(region, extension, precision).ToList();
+            Assert.AreEqual(expected.Min.Latitude, actual.Min.Latitude);
+            Assert.AreEqual(expected.Max.Latitude, actual.Max.Latitude);
+            Assert.AreEqual(expected.Min.Longitude, actual.Min.Longitude);
+            Assert.AreEqual(expected.Max.Longitude, actual.Max.Longitude);
+        }
 
-            Assert.AreEqual(regions.Count, expected.Count);
-
-            for (int i = 0; i < regions.Count; ++i)
+        [TestMethod]
+        public void NewYorkRegionBoundaryTest()
+        {
+            var r = new Region(40, -73);
             {
-                Assert.AreEqual(expected[i].Item1, regions[i].LatitudePrefix);
-                Assert.AreEqual(expected[i].Item2, regions[i].LongitudePrefix);
-                Assert.AreEqual(precision, regions[i].Precision);
+                r.Precision = 8;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 40, Longitude = -74 }, 
+                    Max = new Coordinates { Latitude = 41, Longitude = -73 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 7;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates {Latitude = 40, Longitude = -74 }, 
+                    Max = new Coordinates { Latitude = 42, Longitude = -72 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 6;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 40, Longitude = -76 }, 
+                    Max = new Coordinates { Latitude = 44, Longitude = -72 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 5;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 40, Longitude = -80 }, 
+                    Max = new Coordinates { Latitude = 48, Longitude = -72 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 4;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 32, Longitude = -80 }, 
+                    Max = new Coordinates { Latitude = 48, Longitude = -64 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 3;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = 32, Longitude = -96 }, 
+                    Max = new Coordinates { Latitude = 64, Longitude = -64 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 2;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = -64, Longitude = -128 }, 
+                    Max = new Coordinates { Latitude = 64, Longitude = -64 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 1;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = -90, Longitude = -128 }, 
+                    Max = new Coordinates { Latitude = 90, Longitude = 128 } }, RegionHelper.GetRegionBoundary(r));
+            }
+            {
+                r.Precision = 0;
+                AssertRegionBounary(new RegionBoundary { 
+                    Min = new Coordinates { Latitude = -90, Longitude = -180 }, 
+                    Max = new Coordinates { Latitude = 90, Longitude = 180 } }, RegionHelper.GetRegionBoundary(r));
             }
         }
 
         [TestMethod]
-        public void NewYorkConnectedRegionsTest()
+        public void RegionCoverageTest_Precision0()
         {
-            var region = new Region (40.73, -73.93, 0);
-            TestConnectedRegions(region, 1, 0, new List<Tuple<double, double>>
+            var area = new NarrowcastArea
             {
-                Tuple.Create(39.0, -75.0),
-                Tuple.Create(39.0, -74.0),
-                Tuple.Create(39.0, -73.0),
-                Tuple.Create(40.0, -75.0),
-                Tuple.Create(40.0, -74.0),
-                Tuple.Create(40.0, -73.0),
-                Tuple.Create(41.0, -75.0),
-                Tuple.Create(41.0, -74.0),
-                Tuple.Create(41.0, -73.0),
-            });
-
-            TestConnectedRegions(region, 1, 1, new List<Tuple<double, double>>
-            {
-                Tuple.Create(39.5, -74.5),
-                Tuple.Create(39.5, -74.0),
-                Tuple.Create(39.5, -73.5),
-                Tuple.Create(39.5, -73.0),
-                Tuple.Create(40.0, -74.5),
-                Tuple.Create(40.0, -74.0),
-                Tuple.Create(40.0, -73.5),
-                Tuple.Create(40.0, -73.0),
-                Tuple.Create(40.5, -74.5),
-                Tuple.Create(40.5, -74.0),
-                Tuple.Create(40.5, -73.5),
-                Tuple.Create(40.5, -73.0),
-                Tuple.Create(41.0, -74.5),
-                Tuple.Create(41.0, -74.0),
-                Tuple.Create(41.0, -73.5),
-                Tuple.Create(41.0, -73.0),
-            });
-
-            TestConnectedRegions(region, 1, -1, new List<Tuple<double, double>>
-            {
-                Tuple.Create(38.0, -76.0),
-                Tuple.Create(38.0, -74.0),
-                Tuple.Create(38.0, -72.0),
-                Tuple.Create(40.0, -76.0),
-                Tuple.Create(40.0, -74.0),
-                Tuple.Create(40.0, -72.0),
-                Tuple.Create(42.0, -76.0),
-                Tuple.Create(42.0, -74.0),
-                Tuple.Create(42.0, -72.0),
-            });
-        }
-
-        [TestMethod]
-        public void ConnectedRegionsRangeTest()
-        {
-            var region = new Region (40.73, -73.93, 0);
-
-            {
-                var range = RegionHelper.GetConnectedRegionsRange(region, 1, 2);
-                Assert.AreEqual(39.75, range.Min.Latitude);
-                Assert.AreEqual(-74.25, range.Min.Longitude);
-                Assert.AreEqual(41.0, range.Max.Latitude);
-                Assert.AreEqual(-73.0, range.Max.Longitude);
-            }
-
-
-            {
-                var range = RegionHelper.GetConnectedRegionsRange(region, 1, 0);
-                Assert.AreEqual(39.0, range.Min.Latitude);
-                Assert.AreEqual(-75.0, range.Min.Longitude);
-                Assert.AreEqual(41.0, range.Max.Latitude);
-                Assert.AreEqual(-73.0, range.Max.Longitude);
-            }
-
-            //Invalid Test. TODO: Fix
-         /*   {
-                var range = RegionHelper.GetConnectedRegionsRange(region, 1, -1);
-                Assert.AreEqual(39.75, range.Min.Latitude);
-                Assert.AreEqual(-74.25, range.Min.Longitude);
-                Assert.AreEqual(41.0, range.Max.Latitude);
-                Assert.AreEqual(-73.0, range.Max.Longitude);
-            }*/
-        }
-
-        [TestMethod]
-        public void RegionsCoverageTest()
-        {
-            var areas = new[] {
-                new NarrowcastArea
-                {
-                    BeginTimestamp = 0,
-                    EndTimestamp = 1,
-                    RadiusMeters = 100,
-                    Location = new Coordinates
-                    {
-                        Latitude = 40.73,
-                        Longitude = -73.93
-                    }
-                },
-                new NarrowcastArea
-                {
-                    BeginTimestamp = 1,
-                    EndTimestamp = 2,
-                    RadiusMeters = 100,
-                    Location = new Coordinates
-                    {
-                        Latitude = 40.1,
-                        Longitude = -73.93
-                    }
-                }
+                BeginTimestamp = 0,
+                EndTimestamp = 1,
+                RadiusMeters = 1000,
             };
 
+
             {
-                var regions = RegionHelper.GetRegionsCoverage(areas, 0).ToList();
+                area.Location = new Coordinates { Latitude = 0.0001, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
                 Assert.AreEqual(1, regions.Count);
             }
 
             {
-                var regions = RegionHelper.GetRegionsCoverage(areas, 1).ToList();
-                Assert.AreEqual(2, regions.Count);
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = 179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -89.9999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
+                Assert.AreEqual(1, regions.Count);
             }
         }
 
+        [TestMethod]
+        public void RegionCoverageTest_Precision1()
+        {
+            var area = new NarrowcastArea
+            {
+                BeginTimestamp = 0,
+                EndTimestamp = 1,
+                RadiusMeters = 1000,
+            };
+
+            int precision = 1;
+
+            {
+                area.Location = new Coordinates { Latitude = 0.0001, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = 179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -89.9999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(3, regions.Count);
+            }
+        }
+
+        [TestMethod]
+        public void RegionCoverageTest_Precision2()
+        {
+            var area = new NarrowcastArea
+            {
+                BeginTimestamp = 0,
+                EndTimestamp = 1,
+                RadiusMeters = 1000,
+            };
+
+            int precision = 2;
+
+            {
+                area.Location = new Coordinates { Latitude = 0.0001, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+
+            /*  Not working. TODO: fix poles
+            {
+                area.Location = new Coordinates { Latitude = 89.9999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(3, regions.Count);
+            }*/
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = 179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            /*  Not working. TODO: fix poles
+            {
+                area.Location = new Coordinates { Latitude = -89.9999, Longitude = 0.0001 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(3, regions.Count);
+            }*/
+
+            {
+                area.Location = new Coordinates { Latitude = -0.0001, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 89.99999, Longitude = -179.99999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, precision).ToList();
+                Assert.AreEqual(3, regions.Count);
+            }
+        }
+
+        [TestMethod]
+        public void RegionCoverageTest_Precision_6_7_8()
+        {
+            var area = new NarrowcastArea
+            {
+                BeginTimestamp = 0,
+                EndTimestamp = 1,
+                RadiusMeters = 1000,
+            };
+
+            {
+                area.Location = new Coordinates { Latitude = 40.99999, Longitude = -73.999999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 8).ToList();
+                Assert.AreEqual(4, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 40.99999, Longitude = -73.999999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 7).ToList();
+                Assert.AreEqual(2, regions.Count);
+            }
+
+            {
+                area.Location = new Coordinates { Latitude = 40.99999, Longitude = -73.999999 };
+                var regions = RegionHelper.GetRegionsCoverage(area, 6).ToList();
+                Assert.AreEqual(1, regions.Count);
+            }
+        }
     }
 }

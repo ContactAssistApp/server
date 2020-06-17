@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using CovidSafe.API.v20200415.Protos;
+using CovidSafe.DAL.Helpers;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
@@ -69,8 +70,8 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         {
             try
             {
-                // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region(lat, lon, precision);
+                // Pull queries matching parameters, Legacy precision parameter is ignored
+                var region = RegionHelper.CreateRegion(lat, lon);
 
                 IEnumerable<MessageContainerMetadata> results = await this._reportService
                     .GetLatestInfoAsync(region, lastTimestamp, cancellationToken);
@@ -116,8 +117,8 @@ namespace CovidSafe.API.v20200415.Controllers.MessageControllers
         {
             try
             {
-                // Pull queries matching parameters
-                var region = new Entities.Geospatial.Region(lat, lon, precision);
+                // Pull queries matching parameters. Legacy precision is ignored
+                var region = RegionHelper.CreateRegion(lat, lon);
 
                 long size = await this._reportService
                     .GetLatestRegionDataSizeAsync(region, lastTimestamp, cancellationToken);

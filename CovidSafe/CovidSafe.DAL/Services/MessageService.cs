@@ -23,9 +23,14 @@ namespace CovidSafe.DAL.Services
         private IMessageContainerRepository _reportRepo;
 
         /// <summary>
-        /// Precision of regions used for keys.
+        /// Minimal precision of regions used for keys.
         /// </summary>
-        private int RegionPrecision = 4;
+        private int PrecisionMin = 0;
+
+        /// <summary>
+        /// Maximal precision of regions used for keys.
+        /// </summary>
+        private int PrecisionMax = 8;
 
         /// <summary>
         /// Creates a new <see cref="MessageService"/> instance
@@ -81,7 +86,7 @@ namespace CovidSafe.DAL.Services
                 if(validationResult.Passed)
                 {
                     // Get message information from database
-                    return await this._reportRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
+                    return await this._reportRepo.GetLatestAsync(RegionHelper.AdjustToPrecision(region), lastTimestamp, cancellationToken);
                 }
                 else
                 {
@@ -104,7 +109,7 @@ namespace CovidSafe.DAL.Services
             if(validationResult.Passed)
             {
                 // Get messages from database
-                return await this._reportRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
+                return await this._reportRepo.GetLatestRegionSizeAsync(RegionHelper.AdjustToPrecision(region), lastTimestamp, cancellationToken);
             }
             else
             {
@@ -130,7 +135,7 @@ namespace CovidSafe.DAL.Services
                 container.Narrowcasts.Add(message);
 
                 // Define regions for the published message
-                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(message.Area, this.RegionPrecision);
+                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(message.Area, this.PrecisionMin, this.PrecisionMax);
 
                 // Publish
                 await this._reportRepo.InsertAsync(container, messageRegions, cancellationToken);
@@ -160,7 +165,7 @@ namespace CovidSafe.DAL.Services
             if(validationResult.Passed)
             {
                 // Push to upstream data repository
-                return await this._reportRepo.InsertAsync(report, region, cancellationToken);
+                return await this._reportRepo.InsertAsync(report, RegionHelper.AdjustToPrecision(region), cancellationToken);
             }
             else
             {
@@ -208,7 +213,7 @@ namespace CovidSafe.DAL.Services
                 }
 
                 // Store in data repository
-                return await this._reportRepo.InsertAsync(report, region, cancellationToken);
+                return await this._reportRepo.InsertAsync(report, RegionHelper.AdjustToPrecision(region), cancellationToken);
             }
             else
             {
