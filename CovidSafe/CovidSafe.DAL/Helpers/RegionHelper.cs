@@ -139,7 +139,14 @@ namespace CovidSafe.DAL.Helpers
             //East
             if (GeoHelper.DistanceMeters(location, new Coordinates { Latitude = location.Latitude, Longitude = (float)lonNext }) < radiusMeters)
             {
-                yield return new Region(latCurrent, lonNext == lonMax ? -lonCurrent : lonNext, precision);
+                if (lonNext < lonMax)
+                {
+                    yield return new Region(latCurrent, lonNext, precision);
+                }
+                else if (lonCurrent > 0)
+                {
+                    yield return new Region(latCurrent, -lonCurrent, precision);
+                }
             }
         }
 
