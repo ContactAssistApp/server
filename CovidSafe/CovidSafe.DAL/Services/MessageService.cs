@@ -30,7 +30,7 @@ namespace CovidSafe.DAL.Services
         /// <summary>
         /// Maximal precision of regions used for keys.
         /// </summary>
-        private int PrecisionMax = 9;
+        private int PrecisionMax = 8;
 
         /// <summary>
         /// Creates a new <see cref="MessageService"/> instance
