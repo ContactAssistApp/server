@@ -5,7 +5,6 @@ using AutoMapper;
 using CovidSafe.API.v20200415.Protos;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Messages;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace CovidSafe.API.v20200415
 {
