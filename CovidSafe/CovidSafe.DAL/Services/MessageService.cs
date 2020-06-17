@@ -86,7 +86,7 @@ namespace CovidSafe.DAL.Services
                 if(validationResult.Passed)
                 {
                     // Get message information from database
-                    return await this._reportRepo.GetLatestAsync(region, lastTimestamp, cancellationToken);
+                    return await this._reportRepo.GetLatestAsync(RegionHelper.AdjustToPrecision(region), lastTimestamp, cancellationToken);
                 }
                 else
                 {
@@ -109,7 +109,7 @@ namespace CovidSafe.DAL.Services
             if(validationResult.Passed)
             {
                 // Get messages from database
-                return await this._reportRepo.GetLatestRegionSizeAsync(region, lastTimestamp, cancellationToken);
+                return await this._reportRepo.GetLatestRegionSizeAsync(RegionHelper.AdjustToPrecision(region), lastTimestamp, cancellationToken);
             }
             else
             {
@@ -165,7 +165,7 @@ namespace CovidSafe.DAL.Services
             if(validationResult.Passed)
             {
                 // Push to upstream data repository
-                return await this._reportRepo.InsertAsync(report, region, cancellationToken);
+                return await this._reportRepo.InsertAsync(report, RegionHelper.AdjustToPrecision(region), cancellationToken);
             }
             else
             {
@@ -213,7 +213,7 @@ namespace CovidSafe.DAL.Services
                 }
 
                 // Store in data repository
-                return await this._reportRepo.InsertAsync(report, region, cancellationToken);
+                return await this._reportRepo.InsertAsync(report, RegionHelper.AdjustToPrecision(region), cancellationToken);
             }
             else
             {
