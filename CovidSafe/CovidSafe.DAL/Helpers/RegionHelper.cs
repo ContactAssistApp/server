@@ -81,7 +81,6 @@ namespace CovidSafe.DAL.Helpers
             int latMax = (int)Coordinates.MAX_LATITUDE;
             int lonMax = (int)Coordinates.MAX_LONGITUDE;
 
-            yield return CreateRegion(location.Latitude, location.Longitude, precision);
             int step = PrecisionHelper.GetStep(precision);
 
             int latCurrent = PrecisionHelper.Round(location.Latitude, precision);
@@ -176,16 +175,17 @@ namespace CovidSafe.DAL.Helpers
         /// <summary>
         /// Enumerates all <see cref="Region"/>s of given precision covering given areas/>
         /// </summary>
-        /// <param name="areas">Container of <see cref="NarrowcastArea"/>s</param>
-        /// <param name="precision">Precision. Any integer number</param>
+        /// <param name="area"><see cref="NarrowcastArea"/>s</param>
+        /// <param name="precisionStart">Minimal precision. Any integer number</param>
+        /// <param name="precisionEnd">Maximal precision. Any integer number larger than precisionStart</param>
         /// <returns>Collection of <see cref="Region"/>s</returns>
 
-        public static IEnumerable<Region> GetRegionsCoverage(IEnumerable<NarrowcastArea> areas, int precision)
+        public static IEnumerable<Region> GetRegionsCoverage(NarrowcastArea area, int precisionStart, int precisionEnd)
         {
-            var result = new HashSet<Region>(new RegionComparer());
-            foreach (var a in areas)
+            var result = new List<Region>();
+            for (int p = precisionStart; p <= precisionEnd; ++p)
             {
-                result.UnionWith(GetRegionsCoverage(a, precision));
+                result.AddRange(GetRegionsCoverage(area, p));
             }
             return result;
         }

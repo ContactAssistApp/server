@@ -23,9 +23,14 @@ namespace CovidSafe.DAL.Services
         private IMessageContainerRepository _reportRepo;
 
         /// <summary>
-        /// Precision of regions used for keys.
+        /// Minimal precision of regions used for keys.
         /// </summary>
-        private int RegionPrecision = 4;
+        private int PrecisionMin = 0;
+
+        /// <summary>
+        /// Maximal precision of regions used for keys.
+        /// </summary>
+        private int PrecisionMax = 9;
 
         /// <summary>
         /// Creates a new <see cref="MessageService"/> instance
@@ -130,7 +135,7 @@ namespace CovidSafe.DAL.Services
                 container.Narrowcasts.Add(message);
 
                 // Define regions for the published message
-                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(message.Area, this.RegionPrecision);
+                IEnumerable<Region> messageRegions = RegionHelper.GetRegionsCoverage(message.Area, this.PrecisionMin, this.PrecisionMax);
 
                 // Publish
                 await this._reportRepo.InsertAsync(container, messageRegions, cancellationToken);

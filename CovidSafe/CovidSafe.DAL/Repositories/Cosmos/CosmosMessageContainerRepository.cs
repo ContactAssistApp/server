@@ -21,15 +21,6 @@ namespace CovidSafe.DAL.Repositories.Cosmos
     public class CosmosMessageContainerRepository : CosmosRepository, IMessageContainerRepository
     {
         /// <summary>
-        /// Precision of regions that are used for keys.
-        /// </summary>
-        private int RegionPrecision = 4;
-        /// <summary>
-        /// Search extension size
-        /// </summary>
-        private int RegionsExtension = 1;
-
-        /// <summary>
         /// Creates a new <see cref="CosmosMessageContainerRepository"/> instance
         /// </summary>
         /// <param name="dbContext"><see cref="CosmosContext"/> instance</param>

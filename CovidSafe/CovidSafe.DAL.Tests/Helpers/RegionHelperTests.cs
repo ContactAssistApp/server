@@ -60,41 +60,28 @@ namespace CovidSafe.Tests.Helpers
         }
 
         [TestMethod]
-        public void RegionsCoverageTest()
+        public void SimpleRegionsCoverageTest()
         {
-            var areas = new[] {
-                new NarrowcastArea
+            var area = new NarrowcastArea
+            {
+                BeginTimestamp = 0,
+                EndTimestamp = 1,
+                RadiusMeters = 100,
+                Location = new Coordinates
                 {
-                    BeginTimestamp = 0,
-                    EndTimestamp = 1,
-                    RadiusMeters = 100,
-                    Location = new Coordinates
-                    {
-                        Latitude = 40.73,
-                        Longitude = -73.93
-                    }
-                },
-                new NarrowcastArea
-                {
-                    BeginTimestamp = 1,
-                    EndTimestamp = 2,
-                    RadiusMeters = 100,
-                    Location = new Coordinates
-                    {
-                        Latitude = 40.1,
-                        Longitude = -74.93
-                    }
+                    Latitude = 40.73,
+                    Longitude = -73.93
                 }
             };
 
             {
-                var regions = RegionHelper.GetRegionsCoverage(areas, 0).ToList();
+                var regions = RegionHelper.GetRegionsCoverage(area, 0).ToList();
                 Assert.AreEqual(1, regions.Count);
             }
 
             {
-                var regions = RegionHelper.GetRegionsCoverage(areas, 9).ToList();
-                Assert.AreEqual(2, regions.Count);
+                var regions = RegionHelper.GetRegionsCoverage(area, 9).ToList();
+                Assert.AreEqual(1, regions.Count);
             }
         }
 
