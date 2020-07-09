@@ -54,7 +54,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         /// </remarks>
         /// <param name="lat">Latitude prefix (no decimals) of desired <see cref="Region"/></param>
         /// <param name="lon">Longitude prefix (no decimals) of desired <see cref="Region"/></param>
-        /// <param name="precision">Precision of desired <see cref="Region"/></param>
+        /// <param name="precision">Precision of desired <see cref="Region"/>. 0 - whole globe, 8 - single degree precision</param>
         /// <param name="lastTimestamp">Latest <see cref="NarrowcastMessage"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request with results</response>
@@ -105,7 +105,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         /// </remarks>
         /// <param name="lat">Latitude prefix (no decimals) of desired <see cref="Region"/></param>
         /// <param name="lon">Longitude prefix (no decimals) of desired <see cref="Region"/></param>
-        /// <param name="precision">Precision of desired <see cref="Region"/></param>
+        /// <param name="precision">Precision of desired <see cref="Region"/>. 0 - whole globe, 8 - single degree precision</param>
         /// <param name="lastTimestamp">Latest <see cref="MessageResponse"/> timestamp on client device, in ms from UNIX epoch</param>
         /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
         /// <response code="200">Successful request</response>
