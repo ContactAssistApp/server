@@ -14,6 +14,16 @@ namespace CovidSafe.Entities.Geospatial
     public class NarrowcastArea : IValidatable
     {
         /// <summary>
+        /// Maximum allowed age of a Narrowcast message, in days
+        /// </summary>
+        private const int FUTURE_TIME_WINDOW_DAYS = 365;
+
+        /// <summary>
+        /// Maximum allowed age of a Narrowcast message, in days
+        /// </summary>
+        private const int PAST_TIME_WINDOW_DAYS = 14;
+
+        /// <summary>
         /// Start time of infection risk period
         /// </summary>
         /// <remarks>
@@ -64,8 +74,14 @@ namespace CovidSafe.Entities.Geospatial
             }
 
             // Validate timestamps
-            result.Combine(Validator.ValidateTimestamp(this.BeginTimestamp, parameterName: nameof(this.BeginTimestamp)));
-            result.Combine(Validator.ValidateTimestamp(this.EndTimestamp, parameterName: nameof(this.EndTimestamp)));
+            result.Combine(Validator.ValidateTimestamp(this.BeginTimestamp,
+                asOf: DateTimeOffset.UtcNow.AddDays(FUTURE_TIME_WINDOW_DAYS).ToUnixTimeMilliseconds(),
+                maxAgeDays: FUTURE_TIME_WINDOW_DAYS + PAST_TIME_WINDOW_DAYS,
+                parameterName: nameof(this.BeginTimestamp)));
+            result.Combine(Validator.ValidateTimestamp(this.EndTimestamp,
+                asOf: DateTimeOffset.UtcNow.AddDays(FUTURE_TIME_WINDOW_DAYS).ToUnixTimeMilliseconds(),
+                maxAgeDays: FUTURE_TIME_WINDOW_DAYS + PAST_TIME_WINDOW_DAYS,
+                parameterName: nameof(this.EndTimestamp)));
             result.Combine(Validator.ValidateTimeRange(this.BeginTimestamp, this.EndTimestamp));
 
             return result;

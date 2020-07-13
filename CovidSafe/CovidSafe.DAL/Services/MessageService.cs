@@ -33,11 +33,6 @@ namespace CovidSafe.DAL.Services
         private int PrecisionMax = 8;
 
         /// <summary>
-        /// Maximum allowed age of a Narrowcast message, in days
-        /// </summary>
-        public const int MAX_MESSAGE_AGE_DAYS = 365;
-
-        /// <summary>
         /// Creates a new <see cref="MessageService"/> instance
         /// </summary>
         /// <param name="messageRepo"><see cref="MessageContainer"/> data repository</param>
@@ -192,11 +187,7 @@ namespace CovidSafe.DAL.Services
             }
 
             // Validate timestamp
-            RequestValidationResult validationResult = Validator.ValidateTimestamp(
-                timeAtRequest,
-                DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                MAX_MESSAGE_AGE_DAYS
-            );
+            RequestValidationResult validationResult = Validator.ValidateTimestamp(timeAtRequest);
 
             // Validate seeds
             foreach(BluetoothSeedMessage seed in seeds)
