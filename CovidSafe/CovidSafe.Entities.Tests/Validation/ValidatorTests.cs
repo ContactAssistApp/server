@@ -268,5 +268,79 @@ namespace CovidSafe.Entities.Tests.Validation
             Assert.IsFalse(result1.Passed);
             Assert.IsFalse(result2.Passed);
         }
+
+        /// <summary>
+        /// <see cref="NarrowcastArea.Validate()"/> accepts 
+        /// valid time ranges
+        /// </summary>
+        [TestMethod]
+        public void ValidateNarrowcastArea_AcceptsAreaFromValidTimeRange()
+        {
+            var area = new Geospatial.NarrowcastArea
+            {
+                Location = new Geospatial.Coordinates
+                {
+                    Latitude = 0,
+                    Longitude = 0
+                },
+                BeginTimestamp = DateTimeOffset.UtcNow.AddDays(-11).ToUnixTimeMilliseconds(),
+                EndTimestamp = DateTimeOffset.UtcNow.AddDays(35).ToUnixTimeMilliseconds(),
+                RadiusMeters = 100
+            };
+
+            // Act
+            RequestValidationResult result = area.Validate();
+
+            // Assert
+            Assert.IsTrue(result.Passed);
+        }
+
+        /// <summary>
+        /// <see cref="NarrowcastArea.Validate()"/> accepts 
+        /// valid time ranges
+        /// </summary>
+        [TestMethod]
+        public void ValidateNarrowcastArea_FailsOnAreaFromInvalidTimeRange()
+        {
+            {
+                var tooOld = new Geospatial.NarrowcastArea
+                {
+                    Location = new Geospatial.Coordinates
+                    {
+                        Latitude = 0,
+                        Longitude = 0
+                    },
+                    BeginTimestamp = DateTimeOffset.UtcNow.AddDays(-28).ToUnixTimeMilliseconds(),
+                    EndTimestamp = DateTimeOffset.UtcNow.AddDays(-14).ToUnixTimeMilliseconds(),
+                    RadiusMeters = 100
+                };
+
+                // Act
+                RequestValidationResult result = tooOld.Validate();
+
+                // Assert
+                Assert.IsFalse(result.Passed);
+            }
+
+            {
+                var tooFuturistic = new Geospatial.NarrowcastArea
+                {
+                    Location = new Geospatial.Coordinates
+                    {
+                        Latitude = 0,
+                        Longitude = 0
+                    },
+                    BeginTimestamp = DateTimeOffset.UtcNow.AddDays(380).ToUnixTimeMilliseconds(),
+                    EndTimestamp = DateTimeOffset.UtcNow.AddDays(390).ToUnixTimeMilliseconds(),
+                    RadiusMeters = 100
+                };
+
+                // Act
+                RequestValidationResult result = tooFuturistic.Validate();
+
+                // Assert
+                Assert.IsFalse(result.Passed);
+            }
+        }
     }
 }
