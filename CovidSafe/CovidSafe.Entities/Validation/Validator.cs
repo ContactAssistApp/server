@@ -195,5 +195,32 @@ namespace CovidSafe.Entities.Validation
 
             return result;
         }
+
+
+        /// <summary>
+        /// Determines if a value belong to range [start, end]
+        /// </summary>
+        /// <param name="value">Value to validate</param>
+        /// <param name="start">Start of the range</param>
+        /// <param name="end">End of the range</param>
+        /// <param name="message">Message</param>
+        /// <param name="parameterName">Optionally, name of the parameter which originally contained the value</param>
+        /// <returns><see cref="RequestValidationResult"/></returns>
+        public static RequestValidationResult ValidateFromRange(long value, long start, long end, string message, string parameterName = null)
+        {
+            RequestValidationResult result = new RequestValidationResult();
+
+            if (value < start || value > end)
+            {
+                result.Fail(
+                    RequestValidationIssue.InputInvalid,
+                    parameterName ?? nameof(value),
+                    message,
+                    value.ToString()
+                );
+            }
+
+            return result;
+        }
     }
 }
