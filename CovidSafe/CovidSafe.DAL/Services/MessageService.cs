@@ -35,7 +35,7 @@ namespace CovidSafe.DAL.Services
         /// <summary>
         /// Maximum allowed age of a Narrowcast message, in days
         /// </summary>
-        public const int MAX_MESSAGE_AGE_DAYS = 365;
+        public const int MAX_MESSAGE_AGE_DAYS = 14;
 
         /// <summary>
         /// Creates a new <see cref="MessageService"/> instance
@@ -86,7 +86,13 @@ namespace CovidSafe.DAL.Services
                 RequestValidationResult validationResult = region.Validate();
 
                 // Validate timestamp
-                validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp));
+                validationResult.Combine(Validator.ValidateFromRange(
+                    lastTimestamp,
+                    0,
+                    DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeMilliseconds(),
+                    Entities.Validation.Resources.ValidationMessages.InvalidTimestamp));
+
+                lastTimestamp = Math.Max(lastTimestamp, DateTimeOffset.UtcNow.AddDays(-MAX_MESSAGE_AGE_DAYS).ToUnixTimeMilliseconds());
 
                 if(validationResult.Passed)
                 {
@@ -109,9 +115,18 @@ namespace CovidSafe.DAL.Services
             }
 
             RequestValidationResult validationResult = region.Validate();
-            validationResult.Combine(Validator.ValidateTimestamp(lastTimestamp, parameterName: nameof(lastTimestamp)));
 
-            if(validationResult.Passed)
+            // Validate timestamp
+            validationResult.Combine(Validator.ValidateFromRange(
+                lastTimestamp,
+                0,
+                DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeMilliseconds(),
+                Entities.Validation.Resources.ValidationMessages.InvalidTimestamp));
+
+            lastTimestamp = Math.Max(lastTimestamp, DateTimeOffset.UtcNow.AddDays(-MAX_MESSAGE_AGE_DAYS).ToUnixTimeMilliseconds());
+
+
+            if (validationResult.Passed)
             {
                 // Get messages from database
                 return await this._reportRepo.GetLatestRegionSizeAsync(RegionHelper.AdjustToPrecision(region), lastTimestamp, cancellationToken);
@@ -192,11 +207,7 @@ namespace CovidSafe.DAL.Services
             }
 
             // Validate timestamp
-            RequestValidationResult validationResult = Validator.ValidateTimestamp(
-                timeAtRequest,
-                DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                MAX_MESSAGE_AGE_DAYS
-            );
+            RequestValidationResult validationResult = Validator.ValidateTimestamp(timeAtRequest);
 
             // Validate seeds
             foreach(BluetoothSeedMessage seed in seeds)
