@@ -57,6 +57,71 @@ namespace CovidSafe.API.v20200611.Tests.Controllers.MessageControllers
         }
 
         /// <summary>
+        /// <see cref="AnnounceController.DeleteAsync(string, CancellationToken)"/> 
+        /// returns <see cref="BadRequestObjectResult"/> when no <see cref="Area"/> objects are provided 
+        /// with request
+        /// </summary>
+        [TestMethod]
+        public async Task DeleteAsync_BadRequestObjectWithInvalidMessageId()
+        {
+            // Arrange
+            string invalidId = "this is an invalid ID.";
+
+            // Act
+            ActionResult controllerResponse = await this._controller
+                .DeleteAsync(invalidId, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(BadRequestObjectResult));
+        }
+
+        /// <summary>
+        /// <see cref="AnnounceController.DeleteAsync(string, CancellationToken)"/> 
+        /// returns <see cref="NotFoundResult"/> when no <see cref="NarrowcastMessage"/> 
+        /// objects are matched by the provided 'messageId' parameter
+        /// </summary>
+        [TestMethod]
+        public async Task DeleteAsync_NotFoundWithInvalidMessageId()
+        {
+            // Arrange
+            string unmatchedId = "00000000-0000-0000-0000-000000000001";
+            this._repo
+                .Setup(r => r.DeleteAsync(It.IsAny<string>(), CancellationToken.None))
+                .Returns(Task.FromResult(true));
+
+            // Act
+            ActionResult controllerResponse = await this._controller
+                .DeleteAsync(unmatchedId, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(NotFoundResult));
+        }
+
+        /// <summary>
+        /// <see cref="AnnounceController.DeleteAsync(string, CancellationToken)"/> 
+        /// returns <see cref="OkResult"/> with valid input data
+        /// </summary>
+        [TestMethod]
+        public async Task DeleteAsync_OkWithValidInputs()
+        {
+            // Arrange
+            string validId = "00000000-0000-0000-0000-000000000001";
+            this._repo
+                .Setup(r => r.DeleteAsync(validId, CancellationToken.None))
+                .Returns(Task.FromResult(true));
+
+            // Act
+            ActionResult controllerResponse = await this._controller
+                .DeleteAsync(validId, CancellationToken.None);
+
+            // Assert
+            Assert.IsNotNull(controllerResponse);
+            Assert.IsInstanceOfType(controllerResponse, typeof(OkResult));
+        }
+
+        /// <summary>
         /// <see cref="AnnounceController.PutAsync(NarrowcastMessage, CancellationToken)"/> 
         /// returns <see cref="BadRequestObjectResult"/> when no <see cref="Area"/> objects are provided 
         /// with request

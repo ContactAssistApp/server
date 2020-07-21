@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,6 +67,10 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
                 // Attempt delete
                 await this._reportService.DeleteMessageByIdAsync(messageId, cancellationToken);
                 return Ok();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (RequestValidationFailedException ex)
             {

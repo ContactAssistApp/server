@@ -8,6 +8,7 @@ using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Messages;
+using CovidSafe.Entities.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -38,6 +39,87 @@ namespace CovidSafe.DAL.Tests.Services
 
             // Create service
             this._service = new MessageService(this._repo.Object);
+        }
+
+        /// <summary>
+        /// <see cref="MessageService.DeleteMessageByIdAsync(string, CancellationToken)"/>
+        /// throws <see cref="ArgumentNullException"/> with empty 'id' parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task DeleteMessageById_ArgumentNullOnEmptyId()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            await this._service
+                .DeleteMessageByIdAsync(null, CancellationToken.None);
+
+            // Assert
+            // Exception caught by decorator
+        }
+
+        /// <summary>
+        /// <see cref="MessageService.DeleteMessageByIdAsync(string, CancellationToken)"/>
+        /// throws <see cref="KeyNotFoundException"/> with unmatched 'id' parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(KeyNotFoundException))]
+        public async Task DeleteMessageById_KeyNotFoundOnUnmatchedId()
+        {
+            // Arrange
+            string unmatchedId = "00000000-0000-0000-0000-000000000001";
+            this._repo
+                .Setup(r => r.DeleteAsync(It.IsAny<string>(), CancellationToken.None))
+                .Returns(Task.FromResult(false));
+
+            // Act
+            await this._service
+                .DeleteMessageByIdAsync(unmatchedId, CancellationToken.None);
+
+            // Assert
+            // Exception caught by decorator
+        }
+
+        /// <summary>
+        /// <see cref="MessageService.DeleteMessageByIdAsync(string, CancellationToken)"/>
+        /// throws <see cref="RequestValidationFailedException"/> with non-GUID 'id' parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(RequestValidationFailedException))]
+        public async Task DeleteMessageById_RequestValidationFailedOnInvalidId()
+        {
+            // Arrange
+            string invalidId = "this is not a valid ID";
+
+            // Act
+            await this._service
+                .DeleteMessageByIdAsync(invalidId, CancellationToken.None);
+
+            // Assert
+            // Exception caught by decorator
+        }
+
+        /// <summary>
+        /// <see cref="MessageService.DeleteMessageByIdAsync(string, CancellationToken)"/>
+        /// succeeds with valid 'id' parameter
+        /// </summary>
+        [TestMethod]
+        public async Task DeleteMessageById_SucceedsOnValidId()
+        {
+            // Arrange
+            string validId = "00000000-0000-0000-0000-000000000001";
+            this._repo
+                .Setup(r => r.DeleteAsync(validId, CancellationToken.None))
+                .Returns(Task.FromResult(true));
+
+            // Act
+            await this._service
+                .DeleteMessageByIdAsync(validId, CancellationToken.None);
+
+            // Assert
+            // No exceptions should be thrown
         }
 
         /// <summary>

@@ -96,7 +96,7 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task DeleteAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
         {
             if(String.IsNullOrEmpty(id))
             {
@@ -107,10 +107,20 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             // Necessary to get PartitionKey
             MessageContainerRecord toDelete = await this._getRecordById(id, cancellationToken);
 
-            await this.Container.DeleteItemAsync<MessageContainerRecord>(
-                id,
-                new PartitionKey(toDelete.PartitionKey),
-                cancellationToken: cancellationToken);
+            if(toDelete != null)
+            {
+                await this.Container.DeleteItemAsync<MessageContainerRecord>(
+                    id,
+                    new PartitionKey(toDelete.PartitionKey),
+                    cancellationToken: cancellationToken
+                );
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <inheritdoc/>

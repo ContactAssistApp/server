@@ -59,7 +59,13 @@ namespace CovidSafe.DAL.Services
 
             if(validationStatus.Passed)
             {
-                await this._reportRepo.DeleteAsync(id, cancellationToken);
+                bool result = await this._reportRepo.DeleteAsync(id, cancellationToken);
+
+                if(!result)
+                {
+                    // No matching records, throw exception to signal this
+                    throw new KeyNotFoundException();
+                }
             }
             else
             {
