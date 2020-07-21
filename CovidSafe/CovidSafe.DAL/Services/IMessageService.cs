@@ -13,6 +13,12 @@ namespace CovidSafe.DAL.Services
     public interface IMessageService : IService
     {
         /// <summary>
+        /// Deletes a <see cref="MessageContainer"/> based on its unique identifier
+        /// </summary>
+        /// <param name="id">Identifier of <see cref="MessageContainer"/> to delete</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        Task DeleteMessageByIdAsync(string id, CancellationToken cancellationToken = default);
+        /// <summary>
         /// Retrieves a collection of <see cref="MessageContainer"/> objects by their unique identifiers
         /// </summary>
         /// <param name="ids">Collection of <see cref="MessageContainer"/> identifiers</param>
