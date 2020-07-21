@@ -43,12 +43,48 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
         }
 
         /// <summary>
+        /// Deletes a <see cref="NarrowcastMessage"/>
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE /api/Messages/Announce?messageId=00000000-0000-0000-0000-000000000000&amp;api-version=2020-06-11
+        ///     
+        /// </remarks>
+        /// <param name="messageId">Unique <see cref="NarrowcastMessage"/> to delete</param>
+        /// <param name="cancellationToken">Cancellation token (not required in API call)</param>
+        /// <response code="200">Delete successful</response>
+        /// <response code="400">Malformed or invalid request</response>
+        [HttpDelete]
+        [Consumes("application/x-protobuf", "application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<ActionResult> DeleteAsync([Required] string messageId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // Attempt delete
+                await this._reportService.DeleteMessageByIdAsync(messageId, cancellationToken);
+                return Ok();
+            }
+            catch (RequestValidationFailedException ex)
+            {
+                // Only return validation issues
+                return BadRequest(ex.ValidationResult);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
         /// Publish a <see cref="NarrowcastMessage"/> for distribution among devices
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /api/Messages/Announce&amp;api-version=2020-06-11
+        ///     PUT /api/Messages/Announce?api-version=2020-06-11
         ///     {
         ///         "userMessage": "Monitor symptoms for one week.",
         ///         "area": {
