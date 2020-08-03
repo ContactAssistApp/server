@@ -117,6 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Access denied.</value>
+    <comment>Access denied.</comment>
+  </data>
+  <data name="AuthMethodNotSupported" xml:space="preserve">
+    <value>Provided authentication method is not supported</value>
+    <comment>Provided authentication method is not supported.</comment>
+  </data>
   <data name="EmptyAreas" xml:space="preserve">
     <value>No areas provided in collection.</value>
     <comment>Areas collection was empty.</comment>
@@ -164,6 +172,10 @@
   <data name="InvalidTimestampAge" xml:space="preserve">
     <value>'{0}' is not a valid timestamp (violates age restriction).</value>
     <comment>Timestamps are either too old or exceed the current date by 24 hours.</comment>
+  </data>
+  <data name="MissingAuthenticationHeader" xml:space="preserve">
+    <value>Authentication header is missing.</value>
+    <comment>Authentication header is missing.</comment>
   </data>
   <data name="NullLocation" xml:space="preserve">
     <value>Location property is null or empty.</value>
