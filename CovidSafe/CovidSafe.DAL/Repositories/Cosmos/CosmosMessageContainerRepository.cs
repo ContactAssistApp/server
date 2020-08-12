@@ -11,7 +11,6 @@ using CovidSafe.Entities.Geospatial;
 using CovidSafe.Entities.Messages;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
-using Microsoft.Azure.Cosmos.Spatial;
 
 namespace CovidSafe.DAL.Repositories.Cosmos
 {
@@ -30,6 +29,44 @@ namespace CovidSafe.DAL.Repositories.Cosmos
             this.Container = this.Context.GetContainer(
                 this.Context.SchemaOptions.MessageContainerName
             );
+        }
+
+        /// <summary>
+        /// Retrieves a <see cref="MessageContainerRecord"/> object by its unique identifier
+        /// </summary>
+        /// <param name="id">Unique <see cref="MessageContainerRecord"/> identifier</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns><see cref="MessageContainerRecord"/> matching provided identifier, or null</returns>
+        /// <remarks>
+        /// Some functions require the Cosmos record attributes of a matching document, whereas 
+        /// <see cref="GetAsync(string, CancellationToken)"/> by definition returns the object represented 
+        /// by this repository. Hence, this function was created to retrieve the actual <see cref="CosmosRecord{T}"/> 
+        /// implementation to allow examination of the additional attributes.
+        /// </remarks>
+        private async Task<MessageContainerRecord> _getRecordById(string id, CancellationToken cancellationToken)
+        {
+            // Create LINQ query
+            var queryable = this.Container
+                .GetItemLinqQueryable<MessageContainerRecord>();
+
+            // Execute query
+            var iterator = queryable
+                .Where(r =>
+                    r.Id == id
+                    && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
+                )
+                .ToFeedIterator();
+
+            List<MessageContainerRecord> results = new List<MessageContainerRecord>();
+
+            while (iterator.HasMoreResults)
+            {
+                results.AddRange(await iterator.ReadNextAsync());
+            }
+
+            // There should only ever be one result
+            // This is a semantic of how SELECT works in the LINQ/CosmosDB SDK
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -59,29 +96,52 @@ namespace CovidSafe.DAL.Repositories.Cosmos
         }
 
         /// <inheritdoc/>
-        public async Task<MessageContainer> GetAsync(string messageId, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
         {
-            // Create LINQ query
-            var queryable = this.Container
-                .GetItemLinqQueryable<MessageContainerRecord>();
-
-            // Execute query
-            var iterator = queryable
-                .Where(r =>
-                    r.Id == messageId
-                    && r.Version == MessageContainerRecord.CURRENT_RECORD_VERSION
-                )
-                .Select(r => r.Value)
-                .ToFeedIterator();
-
-            List<MessageContainer> results = new List<MessageContainer>();
-
-            while (iterator.HasMoreResults)
+            if(String.IsNullOrEmpty(id))
             {
-                results.AddRange(await iterator.ReadNextAsync());
+                throw new ArgumentNullException(nameof(id));
             }
 
-            return results.FirstOrDefault();
+            // Retrieve the record to be deleted
+            // Necessary to get PartitionKey
+            MessageContainerRecord toDelete = await this._getRecordById(id, cancellationToken);
+
+            if(toDelete != null)
+            {
+                await this.Container.DeleteItemAsync<MessageContainerRecord>(
+                    id,
+                    new PartitionKey(toDelete.PartitionKey),
+                    cancellationToken: cancellationToken
+                );
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<MessageContainer> GetAsync(string messageId, CancellationToken cancellationToken = default)
+        {
+            if(String.IsNullOrEmpty(messageId))
+            {
+                throw new ArgumentNullException(nameof(messageId));
+            }
+
+            // Get result from private function
+            MessageContainerRecord record = await this._getRecordById(messageId, cancellationToken);
+
+            if (record != null)
+            {
+                return record.Value;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <inheritdoc/>

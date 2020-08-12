@@ -47,6 +47,33 @@ namespace CovidSafe.DAL.Services
         }
 
         /// <inheritdoc/>
+        public async Task DeleteMessageByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            if(String.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            // Confirm ID is valid
+            RequestValidationResult validationStatus = Validator.ValidateGuid(id, nameof(id));
+
+            if(validationStatus.Passed)
+            {
+                bool result = await this._reportRepo.DeleteAsync(id, cancellationToken);
+
+                if(!result)
+                {
+                    // No matching records, throw exception to signal this
+                    throw new KeyNotFoundException();
+                }
+            }
+            else
+            {
+                throw new RequestValidationFailedException(validationStatus);
+            }
+        }
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<MessageContainer>> GetByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
         {
             if(ids == null || ids.Count() == 0)

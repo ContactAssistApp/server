@@ -11,6 +11,13 @@ namespace CovidSafe.DAL.Repositories
     public interface IRepository<T, TT>
     {
         /// <summary>
+        /// Deletes an object matching the provided identifier
+        /// </summary>
+        /// <param name="id">Unique object identifier</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>True if record was found and deleted, false if no matching record was found</returns>
+        Task<bool> DeleteAsync(TT id, CancellationToken cancellationToken = default);
+        /// <summary>
         /// Retrieves an object which matches the provided identifier
         /// </summary>
         /// <param name="id">Unique object identifier</param>
