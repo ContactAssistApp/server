@@ -8,6 +8,7 @@ using CovidSafe.API.v20200611.Protos;
 using CovidSafe.DAL.Services;
 using CovidSafe.Entities.Messages;
 using CovidSafe.Entities.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace CovidSafe.API.v20200611.Controllers.MessageControllers
     /// </summary>
     [ApiController]
     [ApiVersion("2020-06-11")]
+    [Authorize]
     [Route("api/Messages/[controller]")]
     public class AnnounceController : ControllerBase
     {

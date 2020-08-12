@@ -11,6 +11,7 @@ using CovidSafe.DAL.Repositories;
 using CovidSafe.DAL.Repositories.Cosmos;
 using CovidSafe.DAL.Repositories.Cosmos.Client;
 using CovidSafe.DAL.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -106,6 +107,11 @@ namespace CovidSafe.API
             // Configure service layer
             services.AddSingleton<IMessageService, MessageService>();
 
+            services.AddSingleton<IUserService, TestUserService>();
+
+            services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, DAL.Handlers.BasicAuthHandler>("BasicAuthentication", null);
+
             // Enable API versioning
             services.AddApiVersioning(o =>
             {
@@ -152,8 +158,8 @@ namespace CovidSafe.API
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
-
             // Add Swagger
             app.UseSwagger(c =>
             {

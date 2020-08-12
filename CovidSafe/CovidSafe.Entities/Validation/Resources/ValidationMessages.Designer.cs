@@ -61,6 +61,24 @@ namespace CovidSafe.Entities.Validation.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access denied..
+        /// </summary>
+        public static string AccessDenied {
+            get {
+                return ResourceManager.GetString("AccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provided authentication method is not supported.
+        /// </summary>
+        public static string AuthMethodNotSupported {
+            get {
+                return ResourceManager.GetString("AuthMethodNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No areas provided in collection..
         /// </summary>
         public static string EmptyAreas {
@@ -165,6 +183,15 @@ namespace CovidSafe.Entities.Validation.Resources {
         public static string InvalidTimestampAge {
             get {
                 return ResourceManager.GetString("InvalidTimestampAge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication header is missing..
+        /// </summary>
+        public static string MissingAuthenticationHeader {
+            get {
+                return ResourceManager.GetString("MissingAuthenticationHeader", resourceCulture);
             }
         }
         
